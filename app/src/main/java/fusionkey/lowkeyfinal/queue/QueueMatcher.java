@@ -131,7 +131,7 @@ public class QueueMatcher implements IQueueMatcher {
                         Log.e("findListener", response.toString());
 
                         try {
-                            // continue only of the response has data
+                            // continue only if the response has data
                             if(!response.get(DATA_JSON_KEY).equals("")) {
                                 final String listener = response.get(DATA_JSON_KEY).toString();
 
