@@ -29,9 +29,6 @@ public class StartTab extends Fragment {
     @Override
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
-        if(checkLayout()==1)
-        rootView = inflater.inflate(R.layout.activity_profile_tabmess, container, false);
-        else
             rootView=inflater.inflate(R.layout.activity_profile_tab, container, false);
 
         messages = (TextView) rootView.findViewById(R.id.messages);
