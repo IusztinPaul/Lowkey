@@ -114,4 +114,8 @@ public class LoadingAsyncTask extends AsyncTask<Void, Integer, JSONObject> {
     public JSONObject getJsonResponseContainer() {
         return jsonResponseContainer;
     }
+
+    public JSONObject getJsonResponseContainer() {
+        return jsonResponseContainer;
+    }
 }
