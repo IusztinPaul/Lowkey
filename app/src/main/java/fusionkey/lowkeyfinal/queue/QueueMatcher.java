@@ -94,8 +94,10 @@ public class QueueMatcher implements IQueueMatcher {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.e("findSpeakerError", error.toString());
-                        if(findSpeakerRunnable != null)
+                        if(findSpeakerRunnable != null) {
                             findSpeakerRunnable.setResponseContainer(new JSONObject());
+                            findSpeakerRunnable.setStillChecking(false);
+                        }
                     }
                 }) {
 
@@ -152,8 +154,10 @@ public class QueueMatcher implements IQueueMatcher {
                             }
                         } catch (JSONException e) {
                             Log.e("JSONException", "Json response had no '" + DATA_JSON_KEY +  "' key");
-                            if(findListenerRunnable != null)
+                            if(findListenerRunnable != null) {
                                 findListenerRunnable.setResponseContainer(new JSONObject());
+                                findListenerRunnable.setStillChecking(false);
+                            }
                         }
                     }
                 },
@@ -161,6 +165,8 @@ public class QueueMatcher implements IQueueMatcher {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.e("findSpeakerError", error.toString());
+                        if(findListenerRunnable != null)
+                            findListenerRunnable.setResponseContainer(new JSONObject());
                     }
 
                 }) {

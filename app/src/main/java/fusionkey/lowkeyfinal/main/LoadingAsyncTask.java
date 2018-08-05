@@ -96,4 +96,8 @@ public class LoadingAsyncTask extends AsyncTask<Void, Integer, JSONObject> {
         this.progressBar.setVisibility(View.GONE);
         this.jsonResponseContainer = jsonObject;
     }
+
+    public JSONObject getJsonResponseContainer() {
+        return jsonResponseContainer;
+    }
 }
