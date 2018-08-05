@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import fusionkey.lowkeyfinal.R;
@@ -15,6 +16,8 @@ import fusionkey.lowkeyfinal.R;
 public class StartTab extends Fragment {
     TextView getStarted;
     TextView messages;
+    FrameLayout greenLayout;
+    FrameLayout redLayout;
     View rootView;
     @Override
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
@@ -26,6 +29,8 @@ public class StartTab extends Fragment {
 
         messages = (TextView) rootView.findViewById(R.id.messages);
         getStarted = (TextView) rootView.findViewById(R.id.getstarted);
+        greenLayout= (FrameLayout) rootView.findViewById(R.id.frameLayout);
+        redLayout = (FrameLayout) rootView.findViewById(R.id.frameLayout1);
 
         messages.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -46,6 +51,22 @@ public class StartTab extends Fragment {
                 SharedPreferences.Editor editor = preferences.edit();
                 editor.putString("layout","getStarted");
                 editor.apply();
+
+            }
+        });
+
+        greenLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+
+            }
+        });
+
+        redLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
 
             }
         });
