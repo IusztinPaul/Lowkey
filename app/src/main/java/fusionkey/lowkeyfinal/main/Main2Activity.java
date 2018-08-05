@@ -85,13 +85,13 @@ public class Main2Activity extends AppCompatActivity {
         public Fragment getItem(int position) {
             switch (position){
                 case 0:
-                    ChatTab Chat = new ChatTab();
+                    ProfileTab Chat = new ProfileTab();
                     return Chat;
                 case 1:
                     NewsFeedTab Contacts = new NewsFeedTab();
                     return Contacts;
                 case 2:
-                    ProfileTab Profile = new ProfileTab();
+                    StartTab Profile = new StartTab();
                     return Profile;
                 default:
                     return null;
