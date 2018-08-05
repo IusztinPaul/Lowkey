@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.AsyncTask;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import org.json.JSONObject;
 
@@ -14,14 +15,19 @@ import static com.android.volley.Request.Method.HEAD;
 
 public class LoadingAsyncTask extends AsyncTask<Void, Integer, JSONObject> {
 
+    public static final String FIND_LOBBY_TOAST = "The chat is starting!";
+    public static final String EXIT_LOBBY_TOAST = "You have exited the loading screen!";
+
     private QueueMatcher queueMatcher;
     private ProgressBar progressBar;
+    private Activity currentActivty;
     private boolean findListener;
 
     private JSONObject jsonResponseContainer;
 
     LoadingAsyncTask(String currentUser, Activity currentActivity, ProgressBar progressBar, boolean findListener) {
         this.queueMatcher = new QueueMatcher(currentUser, currentActivity);
+        this.currentActivty = currentActivity;
         this.progressBar = progressBar;
         this.progressBar.setVisibility(View.GONE);
         this.findListener = findListener;
@@ -56,7 +62,7 @@ public class LoadingAsyncTask extends AsyncTask<Void, Integer, JSONObject> {
         }
 
         if (findListener)
-            while (queueMatcher.isLoopCheckerAliveListener()) {
+            while (queueMatcher.isLoopCheckerAliveListener() && !isCancelled()) {
                 publishProgress(queueMatcher.getLoopStateListener());
 
                 try {
@@ -68,7 +74,7 @@ public class LoadingAsyncTask extends AsyncTask<Void, Integer, JSONObject> {
                 }
             }
         else
-            while (queueMatcher.isLoopCheckerAliveSpeaker()) {
+            while (queueMatcher.isLoopCheckerAliveSpeaker() && !isCancelled()) {
                 publishProgress(queueMatcher.getLoopStateSpeaker());
 
                 try {
@@ -93,11 +99,22 @@ public class LoadingAsyncTask extends AsyncTask<Void, Integer, JSONObject> {
     }
 
     @Override
+    protected void onCancelled(JSONObject jsonObject) {
+        Toast.makeText(this.currentActivty, EXIT_LOBBY_TOAST, Toast.LENGTH_SHORT).show();
+
+        if(findListener)
+            queueMatcher.stopFindingListener();
+        else
+            queueMatcher.stopFindingSpeaker();
+    }
+
+    @Override
     protected void onPostExecute(JSONObject jsonObject) {
         super.onPostExecute(jsonObject);
         this.progressBar.setVisibility(View.GONE);
         this.jsonResponseContainer = jsonObject;
 
+        Toast.makeText(this.currentActivty, FIND_LOBBY_TOAST, Toast.LENGTH_SHORT).show();
     }
 
     public JSONObject getJsonResponseContainer() {
