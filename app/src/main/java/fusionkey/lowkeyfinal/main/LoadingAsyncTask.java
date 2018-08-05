@@ -10,6 +10,8 @@ import org.json.JSONObject;
 import fusionkey.lowkeyfinal.queue.LobbyCheckerRunnable;
 import fusionkey.lowkeyfinal.queue.QueueMatcher;
 
+import static com.android.volley.Request.Method.HEAD;
+
 public class LoadingAsyncTask extends AsyncTask<Void, Integer, JSONObject> {
 
     private QueueMatcher queueMatcher;
@@ -95,6 +97,7 @@ public class LoadingAsyncTask extends AsyncTask<Void, Integer, JSONObject> {
         super.onPostExecute(jsonObject);
         this.progressBar.setVisibility(View.GONE);
         this.jsonResponseContainer = jsonObject;
+
     }
 
     public JSONObject getJsonResponseContainer() {

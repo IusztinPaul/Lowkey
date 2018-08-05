@@ -3,6 +3,7 @@ package fusionkey.lowkeyfinal.main;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,12 +13,14 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import fusionkey.lowkeyfinal.R;
+import fusionkey.lowkeyfinal.entryActivity.EntryActivity;
+import fusionkey.lowkeyfinal.login.LoginActivity;
 
 public class StartTab extends Fragment {
     TextView getStarted;
     TextView messages;
-    FrameLayout greenLayout;
-    FrameLayout redLayout;
+    ConstraintLayout green;
+    ConstraintLayout redLayout;
     View rootView;
     @Override
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
@@ -29,9 +32,9 @@ public class StartTab extends Fragment {
 
         messages = (TextView) rootView.findViewById(R.id.messages);
         getStarted = (TextView) rootView.findViewById(R.id.getstarted);
-        greenLayout= (FrameLayout) rootView.findViewById(R.id.frameLayout);
-        redLayout = (FrameLayout) rootView.findViewById(R.id.frameLayout1);
-
+        green= (ConstraintLayout) rootView.findViewById(R.id.green);
+        redLayout = (ConstraintLayout) rootView.findViewById(R.id.red);
+        TextView goGreen = (TextView) rootView.findViewById(R.id.textView7);
         messages.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -55,14 +58,15 @@ public class StartTab extends Fragment {
             }
         });
 
-        greenLayout.setOnClickListener(new View.OnClickListener() {
+        goGreen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent intent = new Intent(getContext(), GetStarted.class);
+                startActivity(intent);
 
             }
         });
-
+/*
         redLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -70,7 +74,7 @@ public class StartTab extends Fragment {
 
             }
         });
-
+*/
         return rootView;
     }
     private int checkLayout(){
@@ -81,4 +85,5 @@ public class StartTab extends Fragment {
         }
     return 0;
     }
+
 }
