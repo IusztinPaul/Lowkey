@@ -19,13 +19,14 @@ import static fusionkey.lowkeyfinal.LowKeyApplication.requestQueueSingleton;
 
 public class LobbyCheckerRunnable implements Runnable {
 
-    private final int TIME_LOOPING_MILLISECONDS = 30 * 1000;
+    public static final int TIME_LOOPING_MILLISECONDS = 30 * 1000;
 
     private String requestUrl;
     private String listener;
     private String callerSpeaker;
 
     private boolean stillChecking;
+    private int i;
     private JSONObject responseContainer;
 
     LobbyCheckerRunnable(String requestUrl, String listener, String callerSpeaker) {
@@ -37,7 +38,7 @@ public class LobbyCheckerRunnable implements Runnable {
 
     @Override
     public void run() {
-        int i = TIME_LOOPING_MILLISECONDS;
+        i = TIME_LOOPING_MILLISECONDS;
         boolean dataFound = false;
         stillChecking = true;
 
@@ -79,7 +80,7 @@ public class LobbyCheckerRunnable implements Runnable {
         }
     }
 
-    boolean isStillChecking() {
+    public boolean isStillChecking() {
         return stillChecking;
     }
 
@@ -97,6 +98,10 @@ public class LobbyCheckerRunnable implements Runnable {
 
     String getListener() {
         return listener;
+    }
+
+    public int getLoopState() {
+        return i;
     }
 
     synchronized void setListener(String listener) {

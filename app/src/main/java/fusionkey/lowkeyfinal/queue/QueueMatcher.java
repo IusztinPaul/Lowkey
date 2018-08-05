@@ -241,6 +241,28 @@ public class QueueMatcher implements IQueueMatcher {
         }
     }
 
+    public boolean isLoopCheckerAliveListener() {
+        return findListenerRunnable != null && findListenerRunnable.isStillChecking();
+    }
+
+    public boolean isLoopCheckerAliveSpeaker() {
+        return findSpeakerRunnable != null && findSpeakerRunnable.isStillChecking();
+    }
+
+    public int getLoopStateListener() {
+        if(findListenerRunnable == null)
+            return 0;
+
+        return findListenerRunnable.getLoopState();
+    }
+
+    public int getLoopStateSpeaker() {
+        if(findSpeakerRunnable == null)
+            return 0;
+
+        return findSpeakerRunnable.getLoopState();
+    }
+
     private String getAbsoluteUrlWithQueryString(Map<?, ?> queryParameters, String relativeUrl) {
         StringBuilder sb = new StringBuilder();
         for (Map.Entry<?, ?> entry : queryParameters.entrySet()) {
