@@ -1,4 +1,4 @@
-package ro.fusionkey.lowkey.models.auth;
+package fusionkey.lowkeyfinal.Models.auth;
 
 public class User {
     // identification data

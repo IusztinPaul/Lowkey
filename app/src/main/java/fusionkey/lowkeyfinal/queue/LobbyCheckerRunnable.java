@@ -1,4 +1,4 @@
-package ro.fusionkey.lowkey.queue;
+package fusionkey.lowkeyfinal.queue;
 
 import android.util.Log;
 
@@ -14,7 +14,7 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-import static ro.fusionkey.lowkey.LowKeyApplication.requestQueueSingleton;
+import static fusionkey.lowkeyfinal.LowKeyApplication.requestQueueSingleton;
 
 
 public class LobbyCheckerRunnable implements Runnable {

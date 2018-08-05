@@ -1,9 +1,9 @@
-package ro.fusionkey.lowkey.queue;
+package fusionkey.lowkeyfinal.queue;
 
 import android.app.Activity;
 import android.util.Log;
 
-import static ro.fusionkey.lowkey.LowKeyApplication.requestQueueSingleton;
+import static fusionkey.lowkeyfinal.LowKeyApplication.requestQueueSingleton;
 
 import com.android.volley.Request;
 import com.android.volley.Response;

@@ -1,8 +1,9 @@
-package ro.fusionkey.lowkey;
+package fusionkey.lowkeyfinal;
 
 import android.app.Application;
 
-import ro.fusionkey.lowkey.queue.RequestQueueSingleton;
+import fusionkey.lowkeyfinal.queue.RequestQueueSingleton;
+
 
 public class LowKeyApplication extends Application {
 

@@ -1,4 +1,4 @@
-package ro.fusionkey.lowkey.queue;
+package fusionkey.lowkeyfinal.queue;
 
 import org.json.JSONObject;
 
