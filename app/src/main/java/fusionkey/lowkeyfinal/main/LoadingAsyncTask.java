@@ -103,5 +103,6 @@ public class LoadingAsyncTask extends AsyncTask<Void, Integer, JSONObject> {
     protected void onPostExecute(JSONObject jsonObject) {
         super.onPostExecute(jsonObject);
         this.progressBar.setVisibility(View.GONE);
+
     }
 }
