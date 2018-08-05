@@ -1,13 +1,16 @@
 package fusionkey.lowkeyfinal.main;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import org.json.JSONObject;
 
+import fusionkey.lowkeyfinal.ChatActivity;
 import fusionkey.lowkeyfinal.queue.LobbyCheckerRunnable;
 import fusionkey.lowkeyfinal.queue.QueueMatcher;
 
@@ -22,13 +25,14 @@ public class LoadingAsyncTask extends AsyncTask<Void, Integer, JSONObject> {
     private ProgressBar progressBar;
     private Activity currentActivty;
     private boolean findListener;
-
+    private Activity currentActivity;
     private JSONObject jsonResponseContainer;
 
     LoadingAsyncTask(String currentUser, Activity currentActivity, ProgressBar progressBar, boolean findListener) {
         this.queueMatcher = new QueueMatcher(currentUser, currentActivity);
         this.currentActivty = currentActivity;
         this.progressBar = progressBar;
+        this.currentActivity = currentActivity;
         this.progressBar.setVisibility(View.GONE);
         this.findListener = findListener;
     }
@@ -102,7 +106,7 @@ public class LoadingAsyncTask extends AsyncTask<Void, Integer, JSONObject> {
     protected void onCancelled(JSONObject jsonObject) {
         Toast.makeText(this.currentActivty, EXIT_LOBBY_TOAST, Toast.LENGTH_SHORT).show();
 
-        if(findListener)
+        if (findListener)
             queueMatcher.stopFindingListener();
         else
             queueMatcher.stopFindingSpeaker();
@@ -114,8 +118,17 @@ public class LoadingAsyncTask extends AsyncTask<Void, Integer, JSONObject> {
         this.progressBar.setVisibility(View.GONE);
         this.jsonResponseContainer = jsonObject;
 
+        if (jsonObject == null) {
+            Log.e("container : ", "null");
+        } else {
+            Log.e("container :", jsonObject.toString());
+            Intent intent = new Intent(currentActivity, ChatActivity.class);
+            currentActivity.startActivity(intent);
+        }
+
         Toast.makeText(this.currentActivty, FIND_LOBBY_TOAST, Toast.LENGTH_SHORT).show();
     }
+
 
     public JSONObject getJsonResponseContainer() {
         return jsonResponseContainer;

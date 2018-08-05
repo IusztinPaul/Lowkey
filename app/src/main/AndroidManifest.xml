@@ -26,6 +26,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".Chat" />
+        <activity android:name=".ChatActivity"></activity>
         <activity android:name=".main.GetStarted"></activity>
     </application>
 
