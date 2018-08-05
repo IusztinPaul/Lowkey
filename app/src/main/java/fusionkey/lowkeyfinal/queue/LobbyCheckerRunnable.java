@@ -52,8 +52,10 @@ public class LobbyCheckerRunnable implements Runnable {
                 Thread.sleep(2);
                 i -= 2;
 
-                if(i <= 0)
+                if(i <= 0) {
+                    i = 0;
                     break;
+                }
             }
 
             if(responseContainer != null && !responseContainer.get("data").equals("")) {

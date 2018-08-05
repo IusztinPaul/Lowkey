@@ -3,7 +3,6 @@ package fusionkey.lowkeyfinal.main;
 import android.app.Activity;
 import android.os.AsyncTask;
 import android.view.View;
-import android.widget.CalendarView;
 import android.widget.ProgressBar;
 
 import org.json.JSONObject;
@@ -17,7 +16,9 @@ public class LoadingAsyncTask extends AsyncTask<Void, Integer, JSONObject> {
     private ProgressBar progressBar;
     private boolean findListener;
 
-    public LoadingAsyncTask(String currentUser, Activity currentActivity, ProgressBar progressBar, boolean findListener) {
+    private JSONObject jsonResponseContainer;
+
+    LoadingAsyncTask(String currentUser, Activity currentActivity, ProgressBar progressBar, boolean findListener) {
         this.queueMatcher = new QueueMatcher(currentUser, currentActivity);
         this.progressBar = progressBar;
         this.progressBar.setVisibility(View.GONE);
@@ -34,7 +35,7 @@ public class LoadingAsyncTask extends AsyncTask<Void, Integer, JSONObject> {
     @Override
     protected JSONObject doInBackground(Void... voids) {
 
-        if(findListener)
+        if (findListener)
             queueMatcher.findListener();
         else
             queueMatcher.findSpeakers();
@@ -43,7 +44,7 @@ public class LoadingAsyncTask extends AsyncTask<Void, Integer, JSONObject> {
             Thread.sleep(500);
         } catch (InterruptedException e) {
 
-            if(findListener)
+            if (findListener)
                 queueMatcher.stopFindingListener();
             else
                 queueMatcher.stopFindingSpeaker();
@@ -52,19 +53,14 @@ public class LoadingAsyncTask extends AsyncTask<Void, Integer, JSONObject> {
             return null;
         }
 
-        if(findListener)
+        if (findListener)
             while (queueMatcher.isLoopCheckerAliveListener()) {
                 publishProgress(queueMatcher.getLoopStateListener());
 
                 try {
                     Thread.sleep(500);
                 } catch (InterruptedException e) {
-
-                    if(findListener)
-                        queueMatcher.stopFindingListener();
-                    else
-                        queueMatcher.stopFindingSpeaker();
-
+                    queueMatcher.stopFindingListener();
                     e.printStackTrace();
                     return null;
                 }
@@ -76,18 +72,13 @@ public class LoadingAsyncTask extends AsyncTask<Void, Integer, JSONObject> {
                 try {
                     Thread.sleep(500);
                 } catch (InterruptedException e) {
-
-                    if(findListener)
-                        queueMatcher.stopFindingListener();
-                    else
-                        queueMatcher.stopFindingSpeaker();
-
+                    queueMatcher.stopFindingSpeaker();
                     e.printStackTrace();
                     return null;
                 }
             }
 
-        if(findListener)
+        if (findListener)
             return queueMatcher.getListener();
         else
             return queueMatcher.getSpeakers();
@@ -103,5 +94,6 @@ public class LoadingAsyncTask extends AsyncTask<Void, Integer, JSONObject> {
     protected void onPostExecute(JSONObject jsonObject) {
         super.onPostExecute(jsonObject);
         this.progressBar.setVisibility(View.GONE);
+        this.jsonResponseContainer = jsonObject;
     }
 }
