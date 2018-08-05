@@ -19,9 +19,11 @@ public class GetStarted extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.loading_activity);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Intent intent = getIntent();
+        Boolean listenerString = intent.getBooleanExtra("Listener",true);
 
         progressBar = (ProgressBar) findViewById(R.id.loadingBar);
-        final LoadingAsyncTask loadingAsyncTask = new LoadingAsyncTask(currentUser,this,progressBar,false);
+        final LoadingAsyncTask loadingAsyncTask = new LoadingAsyncTask(currentUser,this,progressBar,listenerString);
         loadingAsyncTask.execute();
 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {

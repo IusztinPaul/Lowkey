@@ -68,19 +68,20 @@ public class StartTab extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getContext(), GetStarted.class);
+                intent.putExtra("Listener",true);
                 startActivity(intent);
 
             }
         });
-/*
-        redLayout.setOnClickListener(new View.OnClickListener() {
+        imag2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent intent = new Intent(getContext(), GetStarted.class);
+                intent.putExtra("Listener",false);
+                startActivity(intent);
 
             }
         });
-*/
         return rootView;
     }
     private int checkLayout(){
