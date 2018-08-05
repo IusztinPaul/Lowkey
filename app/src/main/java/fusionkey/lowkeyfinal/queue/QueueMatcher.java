@@ -165,8 +165,10 @@ public class QueueMatcher implements IQueueMatcher {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.e("findSpeakerError", error.toString());
-                        if(findListenerRunnable != null)
+                        if(findListenerRunnable != null) {
                             findListenerRunnable.setResponseContainer(new JSONObject());
+                            findListenerRunnable.setStillChecking(false);
+                        }
                     }
 
                 }) {
