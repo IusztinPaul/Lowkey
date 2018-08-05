@@ -20,16 +20,19 @@ public class GetStarted extends AppCompatActivity {
         setContentView(R.layout.loading_activity);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
+        progressBar = (ProgressBar) findViewById(R.id.loadingBar);
+        final LoadingAsyncTask loadingAsyncTask = new LoadingAsyncTask(currentUser,this,progressBar,false);
+        loadingAsyncTask.execute();
+
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                loadingAsyncTask.cancel(true);
                 Intent intent = new Intent(GetStarted.this, Main2Activity.class);
                 startActivity(intent);
             }
         });
 
-        progressBar = (ProgressBar) findViewById(R.id.loadingBar);
-        LoadingAsyncTask loadingAsyncTask = new LoadingAsyncTask(currentUser,this,progressBar,true);
-        loadingAsyncTask.execute();
+
     }
 }

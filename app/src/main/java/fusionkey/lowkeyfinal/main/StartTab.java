@@ -2,6 +2,7 @@ package fusionkey.lowkeyfinal.main;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.Image;
 import android.preference.PreferenceManager;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
@@ -10,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import fusionkey.lowkeyfinal.R;
@@ -22,6 +24,8 @@ public class StartTab extends Fragment {
     ConstraintLayout green;
     ConstraintLayout redLayout;
     View rootView;
+    ImageView imag1;
+    ImageView imag2;
     @Override
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
@@ -34,6 +38,8 @@ public class StartTab extends Fragment {
         getStarted = (TextView) rootView.findViewById(R.id.getstarted);
         green= (ConstraintLayout) rootView.findViewById(R.id.green);
         redLayout = (ConstraintLayout) rootView.findViewById(R.id.red);
+        imag1 = (ImageView) rootView.findViewById(R.id.imageView6);
+        imag2 = (ImageView) rootView.findViewById(R.id.imageView7);
         TextView goGreen = (TextView) rootView.findViewById(R.id.textView7);
         messages.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -58,7 +64,7 @@ public class StartTab extends Fragment {
             }
         });
 
-        goGreen.setOnClickListener(new View.OnClickListener() {
+        imag1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getContext(), GetStarted.class);
