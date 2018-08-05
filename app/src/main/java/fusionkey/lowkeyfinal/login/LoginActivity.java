@@ -1,4 +1,4 @@
-package fusionkey.lowkeyfinal.Login;
+package fusionkey.lowkeyfinal.login;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -31,8 +31,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-import fusionkey.lowkeyfinal.EntryActivity.EntryActivity;
-import fusionkey.lowkeyfinal.MainActivity.Main2Activity;
+import fusionkey.lowkeyfinal.entryActivity.EntryActivity;
+import fusionkey.lowkeyfinal.main.Main2Activity;
 import fusionkey.lowkeyfinal.R;
 
 /**

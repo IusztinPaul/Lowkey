@@ -1,14 +1,10 @@
-package fusionkey.lowkeyfinal.Adapters;
+package fusionkey.lowkeyfinal.listAdapters;
 
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
-import fusionkey.lowkeyfinal.Models.NewsFeedMessage;
 import fusionkey.lowkeyfinal.R;
 
 public class ChatTabViewHolder extends RecyclerView.ViewHolder {

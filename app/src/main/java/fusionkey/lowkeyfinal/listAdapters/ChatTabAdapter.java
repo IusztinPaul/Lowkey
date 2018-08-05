@@ -1,4 +1,4 @@
-package fusionkey.lowkeyfinal.Adapters;
+package fusionkey.lowkeyfinal.listAdapters;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,7 +10,7 @@ import java.util.List;
 
 
 import fusionkey.lowkeyfinal.R;
-import fusionkey.lowkeyfinal.Models.NewsFeedMessage;
+import fusionkey.lowkeyfinal.models.NewsFeedMessage;
 
 public class ChatTabAdapter extends RecyclerView.Adapter<ChatTabViewHolder> {
 

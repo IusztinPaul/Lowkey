@@ -1,4 +1,4 @@
-package fusionkey.lowkeyfinal.Models;
+package fusionkey.lowkeyfinal.models;
 
 public class NewsFeedMessage {
 

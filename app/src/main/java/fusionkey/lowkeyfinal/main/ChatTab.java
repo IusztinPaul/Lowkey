@@ -1,4 +1,4 @@
-package fusionkey.lowkeyfinal.MainActivity;
+package fusionkey.lowkeyfinal.main;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -10,8 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import fusionkey.lowkeyfinal.EntryActivity.EntryActivity;
-import fusionkey.lowkeyfinal.Login.LoginActivity;
+import fusionkey.lowkeyfinal.entryActivity.EntryActivity;
 import fusionkey.lowkeyfinal.R;
 
 public class ChatTab extends Fragment {

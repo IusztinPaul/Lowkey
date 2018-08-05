@@ -1,9 +1,7 @@
-package fusionkey.lowkeyfinal.MainActivity;
+package fusionkey.lowkeyfinal.main;
 
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -19,15 +17,12 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 
 import java.util.ArrayList;
 
-import fusionkey.lowkeyfinal.Adapters.ChatTabAdapter;
+import fusionkey.lowkeyfinal.listAdapters.ChatTabAdapter;
 import fusionkey.lowkeyfinal.Chat;
-import fusionkey.lowkeyfinal.EntryActivity.EntryActivity;
-import fusionkey.lowkeyfinal.Login.LoginActivity;
-import fusionkey.lowkeyfinal.Models.NewsFeedMessage;
+import fusionkey.lowkeyfinal.models.NewsFeedMessage;
 import fusionkey.lowkeyfinal.R;
 
 public class NewsFeedTab extends Fragment{
