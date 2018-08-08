@@ -37,10 +37,16 @@ public class QueueMatcher implements IQueueMatcher {
     static final String LISTENER_RELATIVE_URL = "listener/";
     static final String SEAPKER_RELATIVE_URL = "speaker/";
 
-    static final String DATA_JSON_KEY = "data";
+    public static final String DATA_JSON_KEY = "data";
+    public static final String ERROR_JSON_LEY = "errorMessage";
+    public static final String STATUS_CODE_JSON_KEY = "statusCode";
+    public static final String DELETE_INFO_JSON_KEY = "deleteInfoMessage";
+    public static final String RESPONSE_NO_DATA = "";
 
     static final String USER_API_QUERY_STRING = "user";
     static final String LISTENER_API_QUERY_STRING = "listener";
+
+    public static final JSONObject JSON_FAILED_REQUESTED_OBJECT = new JSONObject();
 
     private String currentUser;
     private Activity currentActivity;
@@ -67,16 +73,18 @@ public class QueueMatcher implements IQueueMatcher {
         String url = getAbsoluteUrlWithQueryString(queryParameters, LISTENER_RELATIVE_URL);
 
         findSpeakerRunnable = new LobbyCheckerRunnable(url, currentUser, null);
+
+        // Call L0 lambda function
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url,null,
                 new Response.Listener<JSONObject>() {
 
                     @Override
                     public void onResponse(JSONObject response) {
-                        Log.e("findSpeaker", response.toString());
+                        Log.e("findSpeakers", response.toString());
 
                         try {
                             // continue only of the response has data
-                            if(!response.get(DATA_JSON_KEY).equals(""))
+                            if(!response.get(DATA_JSON_KEY).equals(RESPONSE_NO_DATA))
                                 currentActivity.runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
@@ -86,7 +94,7 @@ public class QueueMatcher implements IQueueMatcher {
                         } catch (JSONException e) {
                             Log.e("JSONException", "Json response had no '" + DATA_JSON_KEY +  "' key");
                             if(findSpeakerRunnable != null)
-                                findSpeakerRunnable.setResponseContainer(new JSONObject());
+                                findSpeakerRunnable.setResponseContainer(JSON_FAILED_REQUESTED_OBJECT);
                         }
                     }
                 },
@@ -95,7 +103,7 @@ public class QueueMatcher implements IQueueMatcher {
                     public void onErrorResponse(VolleyError error) {
                         Log.e("findSpeakerError", error.toString());
                         if(findSpeakerRunnable != null) {
-                            findSpeakerRunnable.setResponseContainer(new JSONObject());
+                            findSpeakerRunnable.setResponseContainer(JSON_FAILED_REQUESTED_OBJECT);
                             findSpeakerRunnable.setStillChecking(false);
                         }
                     }
@@ -125,6 +133,7 @@ public class QueueMatcher implements IQueueMatcher {
         queryParameters.put(USER_API_QUERY_STRING, currentUser);
         String url = getAbsoluteUrlWithQueryString(queryParameters, SEAPKER_RELATIVE_URL);
 
+        // call S0 lambda function
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url,null,
                 new Response.Listener<JSONObject>() {
 
@@ -134,15 +143,13 @@ public class QueueMatcher implements IQueueMatcher {
 
                         try {
                             // continue only if the response has data
-                            if(!response.get(DATA_JSON_KEY).equals("")) {
+                            if(!response.get(DATA_JSON_KEY).equals(RESPONSE_NO_DATA)) {
                                 final String listener = response.get(DATA_JSON_KEY).toString();
 
                                 HashMap<String, String> queryParameters = new HashMap<>();
                                 queryParameters.put(USER_API_QUERY_STRING, currentUser);
                                 queryParameters.put(LISTENER_API_QUERY_STRING, listener);
-
                                 final String url = getAbsoluteUrlWithQueryString(queryParameters, SEAPKER_RELATIVE_URL);
-                                Log.e("URL", url);
 
                                 currentActivity.runOnUiThread(new Runnable() {
                                     @Override
@@ -155,7 +162,7 @@ public class QueueMatcher implements IQueueMatcher {
                         } catch (JSONException e) {
                             Log.e("JSONException", "Json response had no '" + DATA_JSON_KEY +  "' key");
                             if(findListenerRunnable != null) {
-                                findListenerRunnable.setResponseContainer(new JSONObject());
+                                findListenerRunnable.setResponseContainer(JSON_FAILED_REQUESTED_OBJECT);
                                 findListenerRunnable.setStillChecking(false);
                             }
                         }
@@ -166,7 +173,7 @@ public class QueueMatcher implements IQueueMatcher {
                     public void onErrorResponse(VolleyError error) {
                         Log.e("findSpeakerError", error.toString());
                         if(findListenerRunnable != null) {
-                            findListenerRunnable.setResponseContainer(new JSONObject());
+                            findListenerRunnable.setResponseContainer(JSON_FAILED_REQUESTED_OBJECT);
                             findListenerRunnable.setStillChecking(false);
                         }
                     }
@@ -219,14 +226,14 @@ public class QueueMatcher implements IQueueMatcher {
     public JSONObject getSpeakers() {
         try {
             if(findSpeakerRunnable == null || findSpeakerRunnable.isStillChecking())
-                return null;
+                return JSON_FAILED_REQUESTED_OBJECT;
 
             return findSpeakerRunnable.getResponseContainer();
         } finally {
             // after you get the speaker we put it on null so the data is consistent
             // you will know if there is new data or not at a further call of findSpeaker
             if(findSpeakerRunnable != null)
-                findSpeakerRunnable.setResponseContainer(null);
+                findSpeakerRunnable.setResponseContainer(JSON_FAILED_REQUESTED_OBJECT);
         }
     }
 
@@ -238,14 +245,14 @@ public class QueueMatcher implements IQueueMatcher {
     public JSONObject getListener() {
         try {
             if(findListenerRunnable == null || findListenerRunnable.isStillChecking())
-                return null;
+                return JSON_FAILED_REQUESTED_OBJECT;
 
             return findListenerRunnable.getResponseContainer();
         } finally {
             // after you get the speaker we put it on null so the data is consistent
             // you will know if there is new data or not at a further call of findListener
             if(findListenerRunnable != null)
-                findListenerRunnable.setResponseContainer(null);
+                findListenerRunnable.setResponseContainer(JSON_FAILED_REQUESTED_OBJECT);
         }
     }
 

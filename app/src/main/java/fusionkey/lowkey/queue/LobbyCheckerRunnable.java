@@ -25,15 +25,14 @@ public class LobbyCheckerRunnable implements Runnable {
     private String listener;
     private String callerSpeaker;
 
-    private boolean stillChecking;
-    private int i;
-    private JSONObject responseContainer;
+    private boolean stillChecking = false;
+    private int i = TIME_LOOPING_MILLISECONDS;
+    private JSONObject responseContainer = QueueMatcher.JSON_FAILED_REQUESTED_OBJECT;
 
     LobbyCheckerRunnable(String requestUrl, String listener, String callerSpeaker) {
         this.requestUrl = requestUrl;
         this.listener = listener;
         this.callerSpeaker = callerSpeaker;
-        this.stillChecking = false;
     }
 
     @Override
@@ -58,7 +57,7 @@ public class LobbyCheckerRunnable implements Runnable {
                 }
             }
 
-            if(responseContainer != null && !responseContainer.get("data").equals("")) {
+            if(responseContainer != null && !responseContainer.get(QueueMatcher.DATA_JSON_KEY).equals(QueueMatcher.RESPONSE_NO_DATA)) {
                 dataFound = true;
                 break;
             }
@@ -69,16 +68,16 @@ public class LobbyCheckerRunnable implements Runnable {
 
         } catch (InterruptedException e) {
             Log.e("InterruptedException: " + Thread.currentThread(), e.getStackTrace().toString());
-            responseContainer = new JSONObject();
+            responseContainer = QueueMatcher.JSON_FAILED_REQUESTED_OBJECT;
         } catch (JSONException e) {
             Log.e("JSONException: " + Thread.currentThread(), e.getStackTrace().toString());
-            responseContainer = new JSONObject();
+            responseContainer = QueueMatcher.JSON_FAILED_REQUESTED_OBJECT;
         } finally {
             stillChecking = false;
 
             // if the data was not found we have to make a cleanup
             if(!dataFound)
-                makeDeleteRequest("Queue not match");
+                makeDeleteRequest("LobbyChecker");
         }
     }
 
@@ -160,6 +159,7 @@ public class LobbyCheckerRunnable implements Runnable {
         };
 
         requestQueueSingleton.addToRequestQueue(request);
+        responseContainer = QueueMatcher.JSON_FAILED_REQUESTED_OBJECT;
     }
 
     private JsonRequest getRequest() {
@@ -179,7 +179,7 @@ public class LobbyCheckerRunnable implements Runnable {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.e("findSpeakerError", error.toString());
-                        responseContainer = new JSONObject();
+                        responseContainer = QueueMatcher.JSON_FAILED_REQUESTED_OBJECT;
                     }
                 });
     }
