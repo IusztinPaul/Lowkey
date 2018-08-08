@@ -116,6 +116,7 @@ public class LoadingAsyncTask extends AsyncTask<Void, Integer, JSONObject> {
         this.jsonResponseContainer = jsonObject;
 
         try {
+            // If there is no data or the request failed don't proceed else do whatever you want to.
             if (jsonObject.equals(QueueMatcher.JSON_FAILED_REQUESTED_OBJECT) || jsonObject.get(QueueMatcher.DATA_JSON_KEY).equals(QueueMatcher.RESPONSE_NO_DATA)) {
                 Log.e("LoadingAsyncTask : ", "The match was not made successfully");
             } else {
