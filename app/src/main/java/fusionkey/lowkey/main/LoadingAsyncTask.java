@@ -22,6 +22,7 @@ public class LoadingAsyncTask extends AsyncTask<Void, Integer, JSONObject> {
 
     private static final String FIND_LOBBY_TOAST = "The chat is starting!";
     private static final String EXIT_LOBBY_TOAST = "You have exited the loading screen!";
+    private static final String LOBBY_DELETED_TOAST = "There are no online listeners or the lobby was deleted";
 
     private IQueueMatcher queueMatcher;
     private ProgressBar progressBar;
@@ -61,7 +62,7 @@ public class LoadingAsyncTask extends AsyncTask<Void, Integer, JSONObject> {
             return QueueMatcherUtils.JSON_FAILED_REQUESTED_OBJECT;
         }
 
-        // Wait for lobby to get full.
+        // Wait for lobby to get full or to timeout.
         while (queueMatcher.isLoopCheckerAlive() && !isCancelled()) {
 
             int loopState = queueMatcher.getLoopState();
@@ -103,6 +104,7 @@ public class LoadingAsyncTask extends AsyncTask<Void, Integer, JSONObject> {
             // If there is no data or the request failed don't proceed else do whatever you want to.
             if (jsonObject.equals(QueueMatcherUtils.JSON_FAILED_REQUESTED_OBJECT) || jsonObject.get(QueueMatcherUtils.DATA_JSON_KEY).equals(QueueMatcherUtils.RESPONSE_NO_DATA)) {
                 Log.e("LoadingAsyncTask : ", "The match was not made successfully");
+                Toast.makeText(currentActivity, LOBBY_DELETED_TOAST, Toast.LENGTH_SHORT).show();
             } else {
                 Log.e("LoadingAsyncTask :", jsonObject.toString());
                 Intent intent = new Intent(currentActivity, ChatActivity.class);
