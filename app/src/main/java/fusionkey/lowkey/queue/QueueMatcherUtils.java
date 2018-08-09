@@ -28,6 +28,7 @@ abstract public class QueueMatcherUtils {
     public static final String STATUS_CODE_JSON_KEY = "statusCode";
     public static final String DELETE_INFO_JSON_KEY = "deleteInfoMessage";
     public static final String RESPONSE_NO_DATA = "";
+    public static final String RESPONSE_LOBBY_DELETED = "$lobby_deleted$";
 
     static final String USER_API_QUERY_STRING = "user";
     static final String LISTENER_API_QUERY_STRING = "listener";

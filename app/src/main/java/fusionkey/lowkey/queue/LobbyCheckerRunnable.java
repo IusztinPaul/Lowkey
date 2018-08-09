@@ -57,8 +57,18 @@ public class LobbyCheckerRunnable implements Runnable {
                 }
             }
 
-            if(responseContainer != null && !responseContainer.get(QueueMatcherUtils.DATA_JSON_KEY).equals(QueueMatcherUtils.RESPONSE_NO_DATA)) {
+            if(responseContainer != null
+                    && !responseContainer.get(QueueMatcherUtils.DATA_JSON_KEY).
+                    equals(QueueMatcherUtils.RESPONSE_NO_DATA)) {
                 dataFound = true;
+                break;
+            }
+
+            // If the listener exits the lobby all the speakers waiting for the listener
+            // have to be thrown out -> containers will be filled with JSON_FAILED_REQUESTED_OBJECT.
+            if(responseContainer != null
+                    && responseContainer.get(QueueMatcherUtils.DATA_JSON_KEY).
+                    equals(QueueMatcherUtils.RESPONSE_LOBBY_DELETED)) {
                 break;
             }
 
