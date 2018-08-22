@@ -33,7 +33,7 @@ public class LoadingAsyncTask extends AsyncTask<Void, Integer, JSONObject> {
         this.currentActivty = currentActivity;
         this.progressBar = progressBar;
         this.currentActivity = currentActivity;
-        //this.progressBar.setVisibility(View.GONE);
+        this.progressBar.setVisibility(View.GONE);
         this.findListener = findListener;
     }
 
@@ -115,9 +115,9 @@ public class LoadingAsyncTask extends AsyncTask<Void, Integer, JSONObject> {
     @Override
     protected void onPostExecute(JSONObject jsonObject) {
         super.onPostExecute(jsonObject);
-        //this.progressBar.setVisibility(View.GONE);
+        this.progressBar.setVisibility(View.GONE);
         this.jsonResponseContainer = jsonObject;
-/**
+
         if (jsonObject == null) {
             Log.e("container : ", "null");
             if(!findListener)
@@ -134,7 +134,7 @@ public class LoadingAsyncTask extends AsyncTask<Void, Integer, JSONObject> {
 
         }
 
-*/
+
     }
 
 
