@@ -52,7 +52,7 @@ public class Main2Activity extends AppCompatActivity {
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
 
-
+        tabLayout.setSelectedTabIndicatorHeight(0);
 
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
 

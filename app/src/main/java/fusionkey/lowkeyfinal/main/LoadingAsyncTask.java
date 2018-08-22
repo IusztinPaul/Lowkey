@@ -33,7 +33,7 @@ public class LoadingAsyncTask extends AsyncTask<Void, Integer, JSONObject> {
         this.currentActivty = currentActivity;
         this.progressBar = progressBar;
         this.currentActivity = currentActivity;
-        this.progressBar.setVisibility(View.GONE);
+        //this.progressBar.setVisibility(View.GONE);
         this.findListener = findListener;
     }
 
@@ -115,18 +115,26 @@ public class LoadingAsyncTask extends AsyncTask<Void, Integer, JSONObject> {
     @Override
     protected void onPostExecute(JSONObject jsonObject) {
         super.onPostExecute(jsonObject);
-        this.progressBar.setVisibility(View.GONE);
+        //this.progressBar.setVisibility(View.GONE);
         this.jsonResponseContainer = jsonObject;
-
+/**
         if (jsonObject == null) {
             Log.e("container : ", "null");
+            if(!findListener)
+            Toast.makeText(this.currentActivty, "There are no listeners in the queue", Toast.LENGTH_SHORT).show();
+            else
+                Toast.makeText(this.currentActivty, "There are no persons to help in the queue", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(currentActivity, Main2Activity.class);
+            currentActivity.startActivity(intent);
         } else {
             Log.e("container :", jsonObject.toString());
+            Toast.makeText(this.currentActivty, FIND_LOBBY_TOAST, Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(currentActivity, ChatActivity.class);
             currentActivity.startActivity(intent);
+
         }
 
-        Toast.makeText(this.currentActivty, FIND_LOBBY_TOAST, Toast.LENGTH_SHORT).show();
+*/
     }
 
 

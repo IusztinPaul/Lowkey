@@ -2,18 +2,31 @@ package fusionkey.lowkeyfinal.main;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.Toast;
+
+import java.util.ArrayList;
 
 import fusionkey.lowkeyfinal.entryActivity.EntryActivity;
 import fusionkey.lowkeyfinal.R;
+import fusionkey.lowkeyfinal.listAdapters.MenuAdapter;
 
 public class ProfileTab extends Fragment {
+
+    MenuAdapter adapter;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -27,8 +40,12 @@ public class ProfileTab extends Fragment {
             }
         });
 
+
+
+
         return rootView;
     }
+
 
     private void logOut(){
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext().getApplicationContext());

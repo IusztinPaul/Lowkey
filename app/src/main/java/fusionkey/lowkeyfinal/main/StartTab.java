@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -24,8 +25,8 @@ public class StartTab extends Fragment {
     ConstraintLayout green;
     ConstraintLayout redLayout;
     View rootView;
-    ImageView imag1;
-    ImageView imag2;
+    Button imag1;
+    Button imag2;
     @Override
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
@@ -33,31 +34,18 @@ public class StartTab extends Fragment {
 
         messages = (TextView) rootView.findViewById(R.id.messages);
         getStarted = (TextView) rootView.findViewById(R.id.getstarted);
-        green= (ConstraintLayout) rootView.findViewById(R.id.green);
-        redLayout = (ConstraintLayout) rootView.findViewById(R.id.red);
-        imag1 = (ImageView) rootView.findViewById(R.id.imageView6);
-        imag2 = (ImageView) rootView.findViewById(R.id.imageView7);
+        imag1 = (Button) rootView.findViewById(R.id.ChooseGreen);
+        imag2 = (Button) rootView.findViewById(R.id.ChooseRed);
         TextView goGreen = (TextView) rootView.findViewById(R.id.textView7);
         messages.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               // rootView = inflater.inflate(R.layout.activity_profile_tabmess,container,false);
-                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-                SharedPreferences.Editor editor = preferences.edit();
-                editor.putString("layout","messages");
-                editor.apply();
-
             }
         });
 
         getStarted.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-                SharedPreferences.Editor editor = preferences.edit();
-                editor.putString("layout","getStarted");
-                editor.apply();
-
             }
         });
 
@@ -80,14 +68,6 @@ public class StartTab extends Fragment {
             }
         });
         return rootView;
-    }
-    private int checkLayout(){
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        String layout = preferences.getString("layout", "");
-        if(layout.equals("messages")){
-            return 1;
-        }
-    return 0;
     }
 
 }
