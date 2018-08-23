@@ -12,27 +12,33 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import fusionkey.lowkey.ChatActivity;
+import fusionkey.lowkey.queue.IQueueMatcher;
 import fusionkey.lowkey.queue.LobbyCheckerRunnable;
-import fusionkey.lowkey.queue.QueueMatcher;
+import fusionkey.lowkey.queue.QueueMatcherListenerFinder;
+import fusionkey.lowkey.queue.QueueMatcherSpeakerFinder;
+import fusionkey.lowkey.queue.QueueMatcherUtils;
 
 public class LoadingAsyncTask extends AsyncTask<Void, Integer, JSONObject> {
 
-    public static final String FIND_LOBBY_TOAST = "The chat is starting!";
-    public static final String EXIT_LOBBY_TOAST = "You have exited the loading screen!";
+    private static final String FIND_LOBBY_TOAST = "The chat is starting!";
+    private static final String EXIT_LOBBY_TOAST = "You have exited the loading screen!";
+    private static final String LOBBY_DELETED_TOAST = "There are no online listeners or the lobby was deleted";
 
-    private QueueMatcher queueMatcher;
+    private IQueueMatcher queueMatcher;
     private ProgressBar progressBar;
-    private boolean findListener;
     private Activity currentActivity;
     private JSONObject jsonResponseContainer;
 
     LoadingAsyncTask(String currentUser, Activity currentActivity, ProgressBar progressBar, boolean findListener) {
-        this.queueMatcher = new QueueMatcher(currentUser, currentActivity);
+        if (findListener)
+            this.queueMatcher = new QueueMatcherListenerFinder(currentUser, currentActivity);
+        else
+            this.queueMatcher = new QueueMatcherSpeakerFinder(currentUser, currentActivity);
+
         this.currentActivity = currentActivity;
         this.progressBar = progressBar;
         this.currentActivity = currentActivity;
         this.progressBar.setVisibility(View.GONE);
-        this.findListener = findListener;
     }
 
     @Override
@@ -45,57 +51,36 @@ public class LoadingAsyncTask extends AsyncTask<Void, Integer, JSONObject> {
     @Override
     protected JSONObject doInBackground(Void... voids) {
 
-        if (findListener)
-            queueMatcher.findListener();
-        else
-            queueMatcher.findSpeakers();
+        // Start finding.
+        queueMatcher.find();
 
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
-
-            if (findListener)
-                queueMatcher.stopFindingListener();
-            else
-                queueMatcher.stopFindingSpeaker();
-
+            queueMatcher.stopFinding();
             e.printStackTrace();
-            return QueueMatcher.JSON_FAILED_REQUESTED_OBJECT;
+            return QueueMatcherUtils.JSON_FAILED_REQUESTED_OBJECT;
         }
 
-        if (findListener)
-            while (queueMatcher.isLoopCheckerAliveListener() && !isCancelled()) {
+        // Wait for lobby to get full or to timeout.
+        while (queueMatcher.isLoopCheckerAlive() && !isCancelled()) {
 
-                int loopState = queueMatcher.getLoopStateListener();
-                if(loopState < 0)
-                    loopState = 0;
-                publishProgress(loopState);
+            int loopState = queueMatcher.getLoopState();
+            if (loopState < 0)
+                loopState = 0;
+            publishProgress(loopState);
 
-                try {
-                    Thread.sleep(500);
-                } catch (InterruptedException e) {
-                    queueMatcher.stopFindingListener();
-                    e.printStackTrace();
-                    return QueueMatcher.JSON_FAILED_REQUESTED_OBJECT;
-                }
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                queueMatcher.stopFinding();
+                e.printStackTrace();
+                return QueueMatcherUtils.JSON_FAILED_REQUESTED_OBJECT;
             }
-        else
-            while (queueMatcher.isLoopCheckerAliveSpeaker() && !isCancelled()) {
-                publishProgress(queueMatcher.getLoopStateSpeaker());
+        }
 
-                try {
-                    Thread.sleep(500);
-                } catch (InterruptedException e) {
-                    queueMatcher.stopFindingSpeaker();
-                    e.printStackTrace();
-                    return QueueMatcher.JSON_FAILED_REQUESTED_OBJECT;
-                }
-            }
-
-        if (findListener)
-            return queueMatcher.getListener();
-        else
-            return queueMatcher.getSpeakers();
+        // Return the response container.
+        return queueMatcher.getContainer();
     }
 
     @Override
@@ -117,8 +102,9 @@ public class LoadingAsyncTask extends AsyncTask<Void, Integer, JSONObject> {
 
         try {
             // If there is no data or the request failed don't proceed else do whatever you want to.
-            if (jsonObject.equals(QueueMatcher.JSON_FAILED_REQUESTED_OBJECT) || jsonObject.get(QueueMatcher.DATA_JSON_KEY).equals(QueueMatcher.RESPONSE_NO_DATA)) {
+            if (jsonObject.equals(QueueMatcherUtils.JSON_FAILED_REQUESTED_OBJECT) || jsonObject.get(QueueMatcherUtils.DATA_JSON_KEY).equals(QueueMatcherUtils.RESPONSE_NO_DATA)) {
                 Log.e("LoadingAsyncTask : ", "The match was not made successfully");
+                Toast.makeText(currentActivity, LOBBY_DELETED_TOAST, Toast.LENGTH_SHORT).show();
             } else {
                 Log.e("LoadingAsyncTask :", jsonObject.toString());
                 Intent intent = new Intent(currentActivity, ChatActivity.class);
@@ -128,8 +114,6 @@ public class LoadingAsyncTask extends AsyncTask<Void, Integer, JSONObject> {
         } catch (JSONException e) {
             Log.e("LoadingAsyncTask", e.getMessage());
         }
-
-
     }
 
 

@@ -27,7 +27,7 @@ public class LobbyCheckerRunnable implements Runnable {
 
     private boolean stillChecking = false;
     private int i = TIME_LOOPING_MILLISECONDS;
-    private JSONObject responseContainer = QueueMatcher.JSON_FAILED_REQUESTED_OBJECT;
+    private JSONObject responseContainer = QueueMatcherUtils.JSON_FAILED_REQUESTED_OBJECT;
 
     LobbyCheckerRunnable(String requestUrl, String listener, String callerSpeaker) {
         this.requestUrl = requestUrl;
@@ -57,8 +57,18 @@ public class LobbyCheckerRunnable implements Runnable {
                 }
             }
 
-            if(responseContainer != null && !responseContainer.get(QueueMatcher.DATA_JSON_KEY).equals(QueueMatcher.RESPONSE_NO_DATA)) {
+            if(responseContainer != null
+                    && !responseContainer.get(QueueMatcherUtils.DATA_JSON_KEY).
+                    equals(QueueMatcherUtils.RESPONSE_NO_DATA)) {
                 dataFound = true;
+                break;
+            }
+
+            // If the listener exits the lobby all the speakers waiting for the listener
+            // have to be thrown out -> containers will be filled with JSON_FAILED_REQUESTED_OBJECT.
+            if(responseContainer != null
+                    && responseContainer.get(QueueMatcherUtils.DATA_JSON_KEY).
+                    equals(QueueMatcherUtils.RESPONSE_LOBBY_DELETED)) {
                 break;
             }
 
@@ -68,10 +78,10 @@ public class LobbyCheckerRunnable implements Runnable {
 
         } catch (InterruptedException e) {
             Log.e("InterruptedException: " + Thread.currentThread(), e.getStackTrace().toString());
-            responseContainer = QueueMatcher.JSON_FAILED_REQUESTED_OBJECT;
+            responseContainer = QueueMatcherUtils.JSON_FAILED_REQUESTED_OBJECT;
         } catch (JSONException e) {
             Log.e("JSONException: " + Thread.currentThread(), e.getStackTrace().toString());
-            responseContainer = QueueMatcher.JSON_FAILED_REQUESTED_OBJECT;
+            responseContainer = QueueMatcherUtils.JSON_FAILED_REQUESTED_OBJECT;
         } finally {
             stillChecking = false;
 
@@ -159,7 +169,7 @@ public class LobbyCheckerRunnable implements Runnable {
         };
 
         requestQueueSingleton.addToRequestQueue(request);
-        responseContainer = QueueMatcher.JSON_FAILED_REQUESTED_OBJECT;
+        responseContainer = QueueMatcherUtils.JSON_FAILED_REQUESTED_OBJECT;
     }
 
     private JsonRequest getRequest() {
@@ -179,7 +189,7 @@ public class LobbyCheckerRunnable implements Runnable {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.e("findSpeakerError", error.toString());
-                        responseContainer = QueueMatcher.JSON_FAILED_REQUESTED_OBJECT;
+                        responseContainer = QueueMatcherUtils.JSON_FAILED_REQUESTED_OBJECT;
                     }
                 });
     }
