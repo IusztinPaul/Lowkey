@@ -105,7 +105,7 @@ public class UserManager {
 
         // All the attributes have to be passed to the user.
         if(attributes.size() != UserAttributesEnum.values().length)
-            throw new UserAttributeException("You have to pass all 'UserAttributesEnum' attributes");
+            throw new UserAttributeException("You have to pass all " + UserAttributesEnum.class.getName() + " attributes");
 
         CognitoUserAttributes userAttributes = new CognitoUserAttributes();
         for(Map.Entry<UserAttributesEnum, String> entry : attributes.entrySet())
