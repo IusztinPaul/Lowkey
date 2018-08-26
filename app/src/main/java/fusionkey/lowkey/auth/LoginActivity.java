@@ -1,4 +1,4 @@
-package fusionkey.lowkey.login;
+package fusionkey.lowkey.auth;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -17,7 +17,6 @@ import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -29,13 +28,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
-import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.entryActivity.EntryActivity;
-import fusionkey.lowkey.login.utils.SuccessCallback;
-import fusionkey.lowkey.login.utils.UserAttributesEnum;
 import fusionkey.lowkey.main.Main2Activity;
 import fusionkey.lowkey.R;
 

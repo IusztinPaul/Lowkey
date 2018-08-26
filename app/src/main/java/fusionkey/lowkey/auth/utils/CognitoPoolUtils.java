@@ -1,4 +1,4 @@
-package fusionkey.lowkey.login.utils;
+package fusionkey.lowkey.auth.utils;
 
 import android.content.Context;
 

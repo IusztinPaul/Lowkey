@@ -1,4 +1,4 @@
-package fusionkey.lowkey.login.utils;
+package fusionkey.lowkey.auth.utils;
 
 public class UserAttributeException extends RuntimeException {
     public UserAttributeException(String message) {

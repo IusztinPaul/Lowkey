@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import fusionkey.lowkey.login.LoginActivity;
+import fusionkey.lowkey.auth.LoginActivity;
 import fusionkey.lowkey.R;
 
 public class EntryActivity extends AppCompatActivity {

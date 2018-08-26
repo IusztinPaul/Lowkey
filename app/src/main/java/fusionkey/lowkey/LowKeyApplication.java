@@ -2,7 +2,7 @@ package fusionkey.lowkey;
 
 import android.app.Application;
 
-import fusionkey.lowkey.login.utils.UserManager;
+import fusionkey.lowkey.auth.utils.UserManager;
 import fusionkey.lowkey.queue.RequestQueueSingleton;
 
 
