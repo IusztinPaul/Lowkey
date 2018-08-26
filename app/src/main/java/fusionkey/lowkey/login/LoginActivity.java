@@ -17,6 +17,7 @@ import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -28,10 +29,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
-
+import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.entryActivity.EntryActivity;
+import fusionkey.lowkey.login.utils.SuccessCallback;
+import fusionkey.lowkey.login.utils.UserAttributesEnum;
 import fusionkey.lowkey.main.Main2Activity;
 import fusionkey.lowkey.R;
 
@@ -71,7 +75,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        //
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
 
@@ -91,7 +94,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                attemptLogin();
+
+//                LowKeyApplication.loginManager.requestConfirmationCode(LoginActivity.this, new SuccessCallback() {
+//                    @Override
+//                    public void execute() {
+//                        Log.e("", "REQUEST SENT");
+//                    }
+//                });
             }
         });
 
@@ -109,19 +118,25 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mRegister.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i_register = new Intent(LoginActivity.this, Main2Activity.class);
-                startActivity(i_register);
+
+//                HashMap<UserAttributesEnum, String> attributes = new HashMap<>();
+//                attributes.put(UserAttributesEnum.ADDRESS, "Timsioara");
+//                attributes.put(UserAttributesEnum.USERNAME, "paulakapaul");
+//                attributes.put(UserAttributesEnum.GENDER, "male");
+//                attributes.put(UserAttributesEnum.BIRTH_DATE,"30/12/1994" );
+//                attributes.put(UserAttributesEnum.PHONE, "+0732509514");
+//
+//                LowKeyApplication.loginManager.register("paul.iusztin@safefleet.eu", "Ceaispus12",
+//                        attributes, LoginActivity.this);
+
             }
         });
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+
+
     }
-
-
-
-
-
 
 
 

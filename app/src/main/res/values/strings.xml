@@ -27,5 +27,8 @@
     <string name="action_settings2">About</string>
     <string name="or">OR</string>
     <string name="section_format">Hello World from section: %1$d</string>
-    <string name="problemo">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum ac lorem id ligula posuere iaculis at id velit. Nulla quis lectus nec nisi iaculis sodales malesuada vel risus. Aenean sagittis odio non es</string>
+    <string name="problemo">Ti s-a urcat barcelona la cap? Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum ac lorem id ligula posuere iaculis at id velit. Nulla quis lectus nec nisi iaculis sodales malesuada vel risus. Aenean sagittis odio non es</string>
+
+    <string name="login_failed">The username or password is invalid.</string>
+    <string name="register_validation_message">Check your email to validate your account.</string>
 </resources>
