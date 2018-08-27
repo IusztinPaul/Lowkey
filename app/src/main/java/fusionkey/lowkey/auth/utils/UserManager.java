@@ -48,7 +48,9 @@ public class UserManager {
         return instance;
     }
 
-    public void login(final String email, final String password, final Activity activityFrom, final Class<? extends Activity> activityTo) {
+    public void login(final String email, final String password,
+                      final Activity activityFrom, final Class<? extends Activity> activityTo,
+                      final AuthCallback onFailCallback) {
         // Prepare the user object.
         cognitoPoolUtils.setUser(email);
 
@@ -81,7 +83,9 @@ public class UserManager {
             }
             @Override
             public void onFailure(Exception exception) {
-                Toast.makeText(activityFrom, activityFrom.getResources().getString(R.string.error_incorrect_credentials), Toast.LENGTH_SHORT).show();
+                if(onFailCallback != null)
+                    onFailCallback.execute();
+
                 // It means that the login failed so the user object it's not valid.
                 cognitoPoolUtils.setUserToNull();
             }
