@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.entryActivity.EntryActivity;
 import fusionkey.lowkey.R;
 
@@ -31,10 +32,7 @@ public class ProfileTab extends Fragment {
     }
 
     private void logOut(){
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext().getApplicationContext());
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putString("loggedIn","false");
-        editor.apply();
+        LowKeyApplication.loginManager.logout(getContext());
         startActivity(new Intent(getContext().getApplicationContext(), EntryActivity.class));
     }
 }

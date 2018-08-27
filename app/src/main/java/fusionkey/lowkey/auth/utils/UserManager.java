@@ -31,6 +31,8 @@ import fusionkey.lowkey.R;
 
 public class UserManager {
 
+    public static final int PASSWORD_MIN_LENGTH = 6;
+
     private CognitoPoolUtils cognitoPoolUtils;
 
     private static UserManager instance;
@@ -79,8 +81,7 @@ public class UserManager {
             }
             @Override
             public void onFailure(Exception exception) {
-                Toast.makeText(activityFrom, exception.getMessage(), Toast.LENGTH_SHORT).show();
-
+                Toast.makeText(activityFrom, activityFrom.getResources().getString(R.string.error_incorrect_credentials), Toast.LENGTH_SHORT).show();
                 // It means that the login failed so the user object it's not valid.
                 cognitoPoolUtils.setUserToNull();
             }
@@ -89,10 +90,11 @@ public class UserManager {
         cognitoPoolUtils.getUser().getSessionInBackground(authenticationHandler);
     }
 
-    public boolean logout() {
+    public boolean logout(Context context) {
         try {
             cognitoPoolUtils.getUser().signOut();
             cognitoPoolUtils.setAllUserDataToNull();
+
             return true;
         } catch (NullPointerException e) {
             // The user has to be set up manually in the cognitoPoolUtils object. So if it wasn't
@@ -133,7 +135,7 @@ public class UserManager {
         cognitoPoolUtils.getUserPool().signUpInBackground(email, password, userAttributes, null, signUpCallback);
     }
 
-    public void confirmRegistrationWithCode(String confirmationCode, final Activity currentActivity, final SuccessCallback callback) {
+    public void confirmRegistrationWithCode(String confirmationCode, final Activity currentActivity, final AuthCallback callback) {
 
         GenericHandler confirmationCallback = new GenericHandler() {
             @Override
@@ -151,7 +153,7 @@ public class UserManager {
         cognitoPoolUtils.getUser().confirmSignUpInBackground(confirmationCode, false, confirmationCallback);
     }
 
-    public void requestConfirmationCode(final Activity currentActivity, final SuccessCallback callback) {
+    public void requestConfirmationCode(final Activity currentActivity, final AuthCallback callback) {
         VerificationHandler handler = new VerificationHandler() {
             @Override
             public void onSuccess(CognitoUserCodeDeliveryDetails verificationCodeDeliveryMedium) {
@@ -172,7 +174,7 @@ public class UserManager {
         return cognitoPoolUtils.getUser() != null;
     }
 
-    public void getUserAttributes(final Activity currentActivity, final SuccessCallback callback) {
+    public void getUserAttributes(final Activity currentActivity, final AuthCallback callback) {
         GetDetailsHandler handler = new GetDetailsHandler() {
             @Override
             public void onSuccess(final CognitoUserDetails list) {
@@ -190,7 +192,7 @@ public class UserManager {
         cognitoPoolUtils.getUser().getDetailsInBackground(handler);
     }
 
-    public void updateUserAttributes(HashMap<UserAttributesEnum, String> attributes, final Activity currentActivity, final SuccessCallback callback) {
+    public void updateUserAttributes(HashMap<UserAttributesEnum, String> attributes, final Activity currentActivity, final AuthCallback callback) {
 
         CognitoUserAttributes userAttributes = new CognitoUserAttributes();
         for(Map.Entry<UserAttributesEnum, String> entry : attributes.entrySet())
@@ -212,7 +214,7 @@ public class UserManager {
         cognitoPoolUtils.getUser().updateAttributesInBackground(userAttributes, handler);
     }
 
-    public void changeUserPassword(String oldPassword, String newPassword, final Activity currentActivity, final SuccessCallback callback) {
+    public void changeUserPassword(String oldPassword, String newPassword, final Activity currentActivity, final AuthCallback callback) {
         GenericHandler handler = new GenericHandler() {
             @Override
             public void onSuccess() {

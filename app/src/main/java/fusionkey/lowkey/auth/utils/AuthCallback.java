@@ -1,5 +1,5 @@
 package fusionkey.lowkey.auth.utils;
 
-public interface SuccessCallback {
+public interface AuthCallback {
     void execute();
 }

@@ -17,6 +17,7 @@ import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -29,7 +30,11 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import fusionkey.lowkey.LowKeyApplication;
+import fusionkey.lowkey.auth.utils.UserManager;
 import fusionkey.lowkey.entryActivity.EntryActivity;
 import fusionkey.lowkey.main.Main2Activity;
 import fusionkey.lowkey.R;
@@ -89,13 +94,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-
-//                LowKeyApplication.loginManager.requestConfirmationCode(LoginActivity.this, new SuccessCallback() {
-//                    @Override
-//                    public void execute() {
-//                        Log.e("", "REQUEST SENT");
-//                    }
-//                });
+                attemptLogin();
             }
         });
 
@@ -113,24 +112,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mRegister.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-
-//                HashMap<UserAttributesEnum, String> attributes = new HashMap<>();
-//                attributes.put(UserAttributesEnum.ADDRESS, "Timsioara");
-//                attributes.put(UserAttributesEnum.USERNAME, "paulakapaul");
-//                attributes.put(UserAttributesEnum.GENDER, "male");
-//                attributes.put(UserAttributesEnum.BIRTH_DATE,"30/12/1994" );
-//                attributes.put(UserAttributesEnum.PHONE, "+0732509514");
-//
-//                LowKeyApplication.loginManager.register("paul.iusztin@safefleet.eu", "Ceaispus12",
-//                        attributes, LoginActivity.this);
-
             }
         });
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
-
-
     }
 
 
@@ -141,10 +127,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * errors are presented and no actual login attempt is made.
      */
     private void attemptLogin() {
-        if (mAuthTask != null) {
-            return;
-        }
-
         // Reset errors.
         mEmailView.setError(null);
         mPasswordView.setError(null);
@@ -153,57 +135,19 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
 
-        boolean cancel = false;
-        View focusView = null;
-
-        // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
-            mPasswordView.setError(getString(R.string.error_invalid_password));
-            focusView = mPasswordView;
-            cancel = true;
+        if(TextUtils.isEmpty(email)) {
+            mEmailView.setError(getResources().getString(R.string.error_empty_email_field));
+            mEmailView.requestFocus();
+            return;
         }
 
-        // Check for a valid email address.
-        if (TextUtils.isEmpty(email)) {
-            mEmailView.setError(getString(R.string.error_field_required));
-            focusView = mEmailView;
-            cancel = true;
-        } else if (!isEmailValid(email)) {
-            mEmailView.setError(getString(R.string.error_invalid_email));
-            focusView = mEmailView;
-            cancel = true;
+        if(TextUtils.isEmpty(password)) {
+            mPasswordView.setError(getResources().getString(R.string.error_empty_password_field));
+            mPasswordView.requestFocus();
+            return;
         }
 
-        if (cancel) {
-            // There was an error; don't attempt login and focus the first
-            // form field with an error.
-            focusView.requestFocus();
-        } else {
-            // Show a progress spinner, and kick off a background task to
-            // perform the user login attempt.
-            showProgress(true);
-            mAuthTask = new UserLoginTask(email, password);
-            mAuthTask.execute((Void) null);
-
-
-            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.putString("loggedIn","true");
-            editor.apply();
-
-            Intent myIntent = new Intent(LoginActivity.this, Main2Activity.class);
-            LoginActivity.this.startActivity(myIntent);
-        }
-    }
-
-    private boolean isEmailValid(String email) {
-        //TODO: Replace this with your own logic
-        return email.contains("@");
-    }
-
-    private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
-        return password.length() > 4;
+        LowKeyApplication.loginManager.login(email, password, this, Main2Activity.class);
     }
 
     /**
