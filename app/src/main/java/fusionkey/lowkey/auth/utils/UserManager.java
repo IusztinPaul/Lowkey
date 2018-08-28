@@ -22,6 +22,8 @@ import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.GetDetail
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.SignUpHandler;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.UpdateAttributesHandler;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.VerificationHandler;
+import com.amazonaws.services.cognitoidentityprovider.AmazonCognitoIdentityProviderClient;
+import com.amazonaws.services.cognitoidentityprovider.model.UserType;
 
 import java.util.HashMap;
 import java.util.List;
@@ -49,7 +51,7 @@ public class UserManager {
     }
 
     public void login(final String email, final String password,
-                      final Activity activityFrom, final Class<? extends Activity> activityTo,
+                      final AuthCallback onSuccessCallback,
                       final AuthCallback onFailCallback) {
         // Prepare the user object.
         cognitoPoolUtils.setUser(email);
@@ -60,9 +62,9 @@ public class UserManager {
                 Log.e("onSuccess", userSession.toString());
                 cognitoPoolUtils.setUserSession(userSession);
 
-                // Proceed to the main activity if everything it's ok.
-                Intent myIntent = new Intent(activityFrom, activityTo);
-                activityFrom.startActivity(myIntent);
+                if(onSuccessCallback != null)
+                    onSuccessCallback.execute();
+
             }
             @Override
             public void getAuthenticationDetails(AuthenticationContinuation authenticationContinuation, String userId) {
@@ -240,5 +242,12 @@ public class UserManager {
 
     public String getIdToken() {
         return cognitoPoolUtils.getUserSession().getIdToken().getJWTToken();
+    }
+
+    /**
+     * Pass null to both values if you don't want any filtering.
+     */
+    public List<UserType> getUsers(UserAttributesEnum attribute, String value) {
+        return cognitoPoolUtils.getUsers(attribute, value);
     }
 }

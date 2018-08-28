@@ -100,6 +100,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mRegister.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
+                // TODO: Add register logic.
             }
         });
 
@@ -138,17 +139,25 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
 
         LowKeyApplication.loginManager.login(email, password,
-                this, Main2Activity.class, new AuthCallback() {
-            @Override
-            public void execute() {
-                mEmailView.setError(getResources().getString(R.string.invalid));
-                mPasswordView.setError(getResources().getString(R.string.invalid));
-                mEmailView.requestFocus();
-                Toast.makeText(LoginActivity.this, getResources().getString(R.string.error_incorrect_credentials), Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        showProgress(false);
+                new AuthCallback() {
+                    @Override
+                    public void execute() {
+                        //OnSuccess
+                        Intent myIntent = new Intent(LoginActivity.this, Main2Activity.class);
+                        LoginActivity.this.startActivity(myIntent);
+                        showProgress(false);
+                    }
+                }, new AuthCallback() {
+                    @Override
+                    public void execute() {
+                        //OnFail
+                        mEmailView.setError(getResources().getString(R.string.invalid));
+                        mPasswordView.setError(getResources().getString(R.string.invalid));
+                        mEmailView.requestFocus();
+                        Toast.makeText(LoginActivity.this, getResources().getString(R.string.error_incorrect_credentials), Toast.LENGTH_SHORT).show();
+                        showProgress(false);
+                    }
+                });
     }
 
     /**
