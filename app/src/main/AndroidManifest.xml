@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
 
     <application
         android:name=".LowKeyApplication"
@@ -13,10 +14,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".entryActivity.EntryActivity"
+        <activity
+            android:name=".entryActivity.EntryActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
-            >
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -24,10 +25,15 @@
             </intent-filter>
         </activity>
         <activity android:name=".auth.LoginActivity" />
-        <activity android:name=".main.Main2Activity"/>
+        <activity android:name=".main.Main2Activity" />
         <activity android:name=".Chat" />
+
         <activity android:name=".chat.ChatActivity"></activity>
         <activity android:name=".main.GetStarted"></activity>
+
+        
+        <activity android:name=".auth.RegisterActivity" />
+        <activity android:name=".auth.ConfirmCodeActivity"></activity>
 
     </application>
 

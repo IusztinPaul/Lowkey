@@ -26,10 +26,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.auth.utils.AuthCallback;
+import fusionkey.lowkey.auth.utils.UserAttributesEnum;
 import fusionkey.lowkey.entryActivity.EntryActivity;
 import fusionkey.lowkey.main.Main2Activity;
 import fusionkey.lowkey.R;
@@ -90,9 +92,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mBack.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                // TODO: maybe the stack trace of Activities can be popped here
-                Intent i_register = new Intent(LoginActivity.this, EntryActivity.class);
-                startActivity(i_register);
+                Intent intent = new Intent(LoginActivity.this, EntryActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
             }
         });
 
@@ -100,6 +102,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mRegister.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
+                Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -138,17 +142,26 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
 
         LowKeyApplication.loginManager.login(email, password,
-                this, Main2Activity.class, new AuthCallback() {
-            @Override
-            public void execute() {
-                mEmailView.setError(getResources().getString(R.string.invalid));
-                mPasswordView.setError(getResources().getString(R.string.invalid));
-                mEmailView.requestFocus();
-                Toast.makeText(LoginActivity.this, getResources().getString(R.string.error_incorrect_credentials), Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        showProgress(false);
+                new AuthCallback() {
+                    @Override
+                    public void execute() {
+                        //OnSuccess
+                        Intent myIntent = new Intent(LoginActivity.this, Main2Activity.class);
+                        myIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        LoginActivity.this.startActivity(myIntent);
+                        showProgress(false);
+                    }
+                }, new AuthCallback() {
+                    @Override
+                    public void execute() {
+                        //OnFail
+                        mEmailView.setError(getResources().getString(R.string.invalid));
+                        mPasswordView.setError(getResources().getString(R.string.invalid));
+                        mEmailView.requestFocus();
+                        Toast.makeText(LoginActivity.this, getResources().getString(R.string.error_incorrect_credentials), Toast.LENGTH_SHORT).show();
+                        showProgress(false);
+                    }
+                }, this, true);
     }
 
     /**

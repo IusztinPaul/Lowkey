@@ -5,7 +5,9 @@ public enum UserAttributesEnum {
     PHONE("phone_number"),
     ADDRESS("address"),
     GENDER("gender"),
-    BIRTH_DATE("birthdate")
+    BIRTH_DATE("birthdate"),
+    EMAIL("email"),
+    PASSWORD("password")
     ;
 
     private final String attribute;

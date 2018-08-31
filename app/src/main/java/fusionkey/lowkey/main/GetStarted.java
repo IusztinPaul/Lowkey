@@ -7,13 +7,16 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ProgressBar;
 
+import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.R;
 
 public class GetStarted extends AppCompatActivity {
     ProgressBar progressBar;
 
 
-    public static final String currentUser = "PAUL";
+
+    public static final String currentUser = LowKeyApplication.loginManager.getUser().toString();
+
 
 
     @Override
