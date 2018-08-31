@@ -124,8 +124,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mPasswordView.setError(null);
 
         // Store values at the time of the login attempt.
-        String email = mEmailView.getText().toString();
-        String password = mPasswordView.getText().toString();
+        final String email = mEmailView.getText().toString();
+        final String password = mPasswordView.getText().toString();
 
         if(TextUtils.isEmpty(email)) {
             mEmailView.setError(getResources().getString(R.string.error_empty_email_field));
@@ -161,7 +161,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                         Toast.makeText(LoginActivity.this, getResources().getString(R.string.error_incorrect_credentials), Toast.LENGTH_SHORT).show();
                         showProgress(false);
                     }
-                }, this, true);
+                }, true);
     }
 
     /**

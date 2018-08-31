@@ -11,10 +11,13 @@ public class LowKeyApplication extends Application {
     public static RequestQueueSingleton requestQueueSingleton;
     public static UserManager loginManager;
 
+    public static LowKeyApplication instance;
+
     @Override
     public void onCreate() {
         super.onCreate();
 
+        instance = this;
         requestQueueSingleton = RequestQueueSingleton.getInstance(this);
         loginManager = UserManager.getInstance(this);
     }
