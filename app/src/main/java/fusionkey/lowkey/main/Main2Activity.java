@@ -13,6 +13,7 @@ import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.view.Menu;
 
+import fusionkey.lowkey.auth.utils.UserManager;
 import fusionkey.lowkey.entryActivity.EntryActivity;
 import fusionkey.lowkey.R;
 
@@ -38,7 +39,6 @@ public class Main2Activity extends AppCompatActivity {
         setContentView(R.layout.activity_main2);
         // Determine if this is first start - and whether to show app intro
         // Determine if the user is logged in
-        notLogged(); //Goes to login
 
         //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         //setSupportActionBar(toolbar);
@@ -115,21 +115,4 @@ public class Main2Activity extends AppCompatActivity {
             return null;
         }
     }
-    private void notLogged(){
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        String log = preferences.getString("loggedIn", "");
-        if(!log.equals("true")){
-            startActivity(new Intent(Main2Activity.this, EntryActivity.class));
-        }
-    }
-    private void logOut(){
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putString("loggedIn","false");
-        editor.apply();
-        startActivity(new Intent(Main2Activity.this, EntryActivity.class));
-    }
-
-
-
 }

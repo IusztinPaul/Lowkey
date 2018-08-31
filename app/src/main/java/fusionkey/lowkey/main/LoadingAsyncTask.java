@@ -107,7 +107,7 @@ public class LoadingAsyncTask extends AsyncTask<Void, Integer, JSONObject> {
         try {
             // If there is no data or the request failed don't proceed else do whatever you want to.
             if (jsonObject.equals(QueueMatcherUtils.JSON_FAILED_REQUESTED_OBJECT) || jsonObject.get(QueueMatcherUtils.DATA_JSON_KEY).equals(QueueMatcherUtils.RESPONSE_NO_DATA)) {
-                Log.e("LoadingAsyncTask : ", "The match was not made successfully");
+                Log.e("LoadingAsyncTask", "The match was not made successfully");
                 Toast.makeText(currentActivity, LOBBY_DELETED_TOAST, Toast.LENGTH_SHORT).show();
                 this.cancel(true);
                 Intent intent = new Intent(currentActivity, Main2Activity.class);
@@ -115,17 +115,14 @@ public class LoadingAsyncTask extends AsyncTask<Void, Integer, JSONObject> {
 
             } else {
                 Log.e("LoadingAsyncTask :", jsonObject.toString());
-
-                    this.cancel(true);
-                    Intent intent = new Intent(currentActivity, ChatActivity.class);
+                this.cancel(true);
+                Intent intent = new Intent(currentActivity, ChatActivity.class);
                     intent.putExtra("Listener", currentUser);
                     if(!findListener)
                     intent.putExtra("User", jsonObject.getJSONObject("data").getString("speakers"));
                     else
                         intent.putExtra("User", jsonObject.getJSONObject("data").getString("listener"));
-
                 currentActivity.startActivity(intent);
-                    Toast.makeText(this.currentActivity, FIND_LOBBY_TOAST, Toast.LENGTH_SHORT).show();
 
 
             }

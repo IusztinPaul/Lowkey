@@ -2,7 +2,6 @@ package fusionkey.lowkey.main;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.media.Image;
 import android.preference.PreferenceManager;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
@@ -16,8 +15,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import fusionkey.lowkey.R;
-import fusionkey.lowkey.entryActivity.EntryActivity;
-import fusionkey.lowkey.login.LoginActivity;
 
 public class StartTab extends Fragment {
     TextView getStarted;

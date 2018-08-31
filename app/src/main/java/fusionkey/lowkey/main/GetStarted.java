@@ -8,13 +8,14 @@ import android.view.View;
 import android.widget.ProgressBar;
 
 import fusionkey.lowkey.R;
-import fusionkey.lowkey.entryActivity.EntryActivity;
-import fusionkey.lowkey.login.LoginActivity;
 
 public class GetStarted extends AppCompatActivity {
     ProgressBar progressBar;
 
+
     public static final String currentUser = "PAUL";
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -19,8 +19,10 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-import fusionkey.lowkey.R;
+import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.entryActivity.EntryActivity;
+import fusionkey.lowkey.R;
+
 
 public class ProfileTab extends Fragment {
 
@@ -45,10 +47,7 @@ public class ProfileTab extends Fragment {
 
 
     private void logOut(){
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext().getApplicationContext());
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putString("loggedIn","false");
-        editor.apply();
+        LowKeyApplication.loginManager.logout(getContext());
         startActivity(new Intent(getContext().getApplicationContext(), EntryActivity.class));
     }
 }
