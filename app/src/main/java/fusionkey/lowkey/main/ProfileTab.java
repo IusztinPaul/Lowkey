@@ -24,7 +24,7 @@ public class ProfileTab extends Fragment {
         logOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                LowKeyApplication.loginManager.logout(ProfileTab.this.getActivity());
+                LowKeyApplication.loginManager.logout();
             }
         });
 

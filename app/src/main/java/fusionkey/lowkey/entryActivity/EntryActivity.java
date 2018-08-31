@@ -28,6 +28,19 @@ public class EntryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_entry);
 
+        boolean isLogged = LowKeyApplication.loginManager.logInIfHasCredentials(this,
+                new AuthCallback() {
+                    @Override
+                    public void execute() {
+                        //TODO: Add ProgressBar.
+                        Intent myIntent = new Intent(EntryActivity.this, Main2Activity.class);
+                        myIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        EntryActivity.this.startActivity(myIntent);
+                    }
+                });
+        // If you are logged in just proceed.
+        if(isLogged) return;
+
         Button Glogin = (Button) findViewById(R.id.Gconnect);
         Button Alogin = (Button) findViewById(R.id.Aconnect);
 
@@ -68,23 +81,4 @@ public class EntryActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        LowKeyApplication.loginManager.getUser();
-
-        boolean a = LowKeyApplication.loginManager.logInIfHasCredentials(this,
-                new AuthCallback() {
-                    @Override
-                    public void execute() {
-                        //TODO: Add ProgressBar.
-                        Intent myIntent = new Intent(EntryActivity.this, Main2Activity.class);
-                        myIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        EntryActivity.this.startActivity(myIntent);
-                    }
-                });
-
-        Log.e("fsf", a + "");
-    }
 }

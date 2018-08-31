@@ -32,11 +32,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.R;
+import fusionkey.lowkey.auth.LoginActivity;
 
 public class UserManager {
 
     public static final int PASSWORD_MIN_LENGTH = 6;
+    public static final String USER_SHARED_PREFERENCES = "user_credentials";
 
     private CognitoPoolUtils cognitoPoolUtils;
 
@@ -56,7 +59,7 @@ public class UserManager {
     public void login(final String email, final String password,
                       final AuthCallback onSuccessCallback,
                       final AuthCallback onFailCallback,
-                      final Activity activity, final boolean cacheCredentials) {
+                      final boolean cacheCredentials) {
         // Prepare the user object.
         cognitoPoolUtils.setUser(email);
 
@@ -66,7 +69,7 @@ public class UserManager {
                 Log.e("onSuccess", userSession.toString());
                 cognitoPoolUtils.setUserSession(userSession);
                 if(cacheCredentials)
-                    cacheCredentials(email, password, activity);
+                    cacheCredentials(email, password);
 
                 if(onSuccessCallback != null)
                     onSuccessCallback.execute();
@@ -103,46 +106,50 @@ public class UserManager {
     }
 
     private boolean isLoggedIn(Activity activity) {
-        SharedPreferences sharedPref = activity.getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences sharedPref =
+                LowKeyApplication.instance.getSharedPreferences(USER_SHARED_PREFERENCES, Context.MODE_PRIVATE);
         String email = sharedPref.getString(UserAttributesEnum.EMAIL.toString(), null);
         return email != null;
     }
 
     public boolean logInIfHasCredentials(Activity activity, AuthCallback onSuccessCallback) {
         if(isLoggedIn(activity)) {
-            SharedPreferences sharedPref = activity.getPreferences(Context.MODE_PRIVATE);
+            SharedPreferences sharedPref =
+                    LowKeyApplication.instance.getSharedPreferences(USER_SHARED_PREFERENCES, Context.MODE_PRIVATE);
             String email = sharedPref.getString(UserAttributesEnum.EMAIL.toString(), null);
             String password = sharedPref.getString(UserAttributesEnum.PASSWORD.toString(), null);
 
             if(email != null && password != null)
-                login(email, password, onSuccessCallback, null, activity, false);
+                login(email, password, onSuccessCallback, null, false);
 
             return true;
         }
         return false;
     }
 
-    private void cacheCredentials(String email, String password, Activity activity) {
-        SharedPreferences sharedPref = activity.getPreferences(Context.MODE_PRIVATE);
+    private void cacheCredentials(String email, String password) {
+        SharedPreferences sharedPref =
+                LowKeyApplication.instance.getSharedPreferences(USER_SHARED_PREFERENCES, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString(UserAttributesEnum.EMAIL.toString(), email);
         editor.putString(UserAttributesEnum.PASSWORD.toString(), password);
-        editor.commit();
+        editor.apply();
     }
 
-    private void clearCredentials(Activity activity) {
-        SharedPreferences sharedPref = activity.getPreferences(Context.MODE_PRIVATE);
+    private void clearCredentials() {
+        SharedPreferences sharedPref =
+                LowKeyApplication.instance.getSharedPreferences(USER_SHARED_PREFERENCES, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString(UserAttributesEnum.EMAIL.toString(), null);
         editor.putString(UserAttributesEnum.PASSWORD.toString(), null);
-        editor.commit();
+        editor.apply();
     }
 
-    public boolean logout(Activity activity) {
+    public boolean logout() {
         try {
             cognitoPoolUtils.getUser().signOut();
             cognitoPoolUtils.setAllUserDataToNull();
-            clearCredentials(activity);
+            clearCredentials();
             return true;
         } catch (NullPointerException e) {
             // The user has to be set up manually in the cognitoPoolUtils object. So if it wasn't
