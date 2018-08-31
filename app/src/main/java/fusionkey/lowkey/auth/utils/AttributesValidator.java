@@ -27,4 +27,5 @@ public class AttributesValidator {
 
         return hasLength && hasLowerCase && hasUpperCase && hasDigit;
     }
+
 }

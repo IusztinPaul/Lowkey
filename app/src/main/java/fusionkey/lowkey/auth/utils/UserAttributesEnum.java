@@ -6,7 +6,8 @@ public enum UserAttributesEnum {
     ADDRESS("address"),
     GENDER("gender"),
     BIRTH_DATE("birthdate"),
-    EMAIL("email")
+    EMAIL("email"),
+    PASSWORD("password")
     ;
 
     private final String attribute;

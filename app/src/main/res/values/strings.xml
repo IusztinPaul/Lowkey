@@ -34,4 +34,16 @@
 
     <string name="login_failed">The username or password is invalid.</string>
     <string name="register_validation_message">Check your email to validate your account.</string>
+    <!-- Register -->
+    <string name="register_email">Enter email</string>
+    <string name="register_username">Enter username</string>
+    <string name="register_password">Enter password</string>
+    <string name="register_password2">Validate password</string>
+    <string name="register_btn">Continue</string>
+    <string name="register_invalid_email">Invalid email</string>
+    <string name="register_invalid_password_error">Invalid password</string>
+    <string name="register_invalid_password_toast">The password must contain small letters, big letters and numbers and be at least 6 letters long</string>
+    <string name="register_passwords_not_match">Passwords do not match</string>
+    <string name="register_username_empty">Username empty</string>
+    <string name="register_account_created">Account created successfully</string>
 </resources>
