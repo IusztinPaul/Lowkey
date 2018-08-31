@@ -31,7 +31,7 @@
     <string name="or">OR</string>
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="problemo">Ti s-a urcat barcelona la cap? Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum ac lorem id ligula posuere iaculis at id velit. Nulla quis lectus nec nisi iaculis sodales malesuada vel risus. Aenean sagittis odio non es</string>
-
+    <string name="field_empty">Field empty</string>
     <string name="login_failed">The username or password is invalid.</string>
     <string name="register_validation_message">Check your email to validate your account.</string>
     <!-- Register -->
@@ -46,4 +46,9 @@
     <string name="register_passwords_not_match">Passwords do not match</string>
     <string name="register_username_empty">Username empty</string>
     <string name="register_account_created">Account created successfully</string>
+    <!-- Confirm Code -->
+    <string name="confirm_email">Enter email</string>
+    <string name="confirm_btn_continue">Continue</string>
+    <string name="confirm_code">Enter code</string>
+    <string name="confirm_btn_validate">Validate</string>
 </resources>

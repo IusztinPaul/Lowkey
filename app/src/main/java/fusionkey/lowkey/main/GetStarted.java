@@ -13,11 +13,7 @@ import fusionkey.lowkey.R;
 public class GetStarted extends AppCompatActivity {
     ProgressBar progressBar;
 
-
-
     public static final String currentUser = LowKeyApplication.loginManager.getUser().toString();
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

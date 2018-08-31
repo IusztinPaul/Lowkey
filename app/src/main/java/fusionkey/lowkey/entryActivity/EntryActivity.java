@@ -39,7 +39,7 @@ public class EntryActivity extends AppCompatActivity {
                     }
                 });
         // If you are logged in just proceed.
-        if(isLogged) return;
+       if(isLogged) return;
 
         Button Glogin = (Button) findViewById(R.id.Gconnect);
         Button Alogin = (Button) findViewById(R.id.Aconnect);

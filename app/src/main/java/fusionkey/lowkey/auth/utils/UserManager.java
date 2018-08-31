@@ -207,13 +207,13 @@ public class UserManager {
         cognitoPoolUtils.getUserPool().signUpInBackground(email, password, userAttributes, null, signUpCallback);
     }
 
-    public void confirmRegistrationWithCode(String confirmationCode, final Activity currentActivity, final AuthCallback callback) {
+    public void confirmRegistrationWithCode(String confirmationCode, final Activity currentActivity, final AuthCallback onSuccessCallback) {
 
         GenericHandler confirmationCallback = new GenericHandler() {
             @Override
             public void onSuccess() {
-                if(callback != null)
-                    callback.execute();
+                if(onSuccessCallback != null)
+                    onSuccessCallback.execute();
             }
             @Override
             public void onFailure(Exception exception) {
@@ -246,7 +246,7 @@ public class UserManager {
         return cognitoPoolUtils.getUser() != null;
     }
 
-    public void getUserAttributes(final Activity currentActivity, final AuthCallback callback) {
+    public void requestUserDetails(final Activity currentActivity, final AuthCallback callback) {
         GetDetailsHandler handler = new GetDetailsHandler() {
             @Override
             public void onSuccess(final CognitoUserDetails list) {
@@ -327,5 +327,9 @@ public class UserManager {
 
     public CognitoUserSession getSession() {
         return cognitoPoolUtils.getUserSession();
+    }
+
+    public void setUser(String userId) {
+        cognitoPoolUtils.setUser(userId);
     }
 }
