@@ -50,7 +50,7 @@ public class QueueMatcherListenerFinder extends QueueMatcherUtils implements IQu
                 new Response.Listener<JSONObject>() {
 
                     @Override
-                    public void onResponse(JSONObject response) {
+                    public void onResponse(final JSONObject response) {
                         Log.e("findListener", response.toString());
 
                         try {
@@ -66,7 +66,7 @@ public class QueueMatcherListenerFinder extends QueueMatcherUtils implements IQu
                                 currentActivity.runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        findRunnable = new LobbyCheckerRunnable(url, listener, currentUser);
+                                        findRunnable = new LobbyCheckerRunnable(url, listener, currentUser,response);
                                         new Thread(findRunnable).start();
                                     }
                                 });
@@ -122,7 +122,9 @@ public class QueueMatcherListenerFinder extends QueueMatcherUtils implements IQu
                 findRunnable.setResponseContainer(JSON_FAILED_REQUESTED_OBJECT);
         }
     }
-
+    public JSONObject getUsefullContainer(){
+        return findRunnable.getUsefullResponseContainer();
+    }
     /**
      * This method removes the lobby of the listener and ads a flag that the listener from the queue
      * it's deprecated. So no more lobbies will be created for that listener.

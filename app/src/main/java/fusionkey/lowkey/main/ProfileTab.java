@@ -19,18 +19,10 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-<<<<<<< HEAD:app/src/main/java/fusionkey/lowkeyfinal/main/ProfileTab.java
-import fusionkey.lowkeyfinal.entryActivity.EntryActivity;
-import fusionkey.lowkeyfinal.R;
-import fusionkey.lowkeyfinal.listAdapters.MenuAdapter;
-=======
-import fusionkey.lowkey.entryActivity.EntryActivity;
 import fusionkey.lowkey.R;
->>>>>>> 744897878c20e10adb81e5de530428651923e1b7:app/src/main/java/fusionkey/lowkey/main/ProfileTab.java
+import fusionkey.lowkey.entryActivity.EntryActivity;
 
 public class ProfileTab extends Fragment {
-
-    MenuAdapter adapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

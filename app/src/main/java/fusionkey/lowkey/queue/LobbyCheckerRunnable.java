@@ -24,15 +24,33 @@ public class LobbyCheckerRunnable implements Runnable {
     private String requestUrl;
     private String listener;
     private String callerSpeaker;
-
+    private JSONObject usefullResponseContainer;
     private boolean stillChecking = false;
     private int i = TIME_LOOPING_MILLISECONDS;
     private JSONObject responseContainer = QueueMatcherUtils.JSON_FAILED_REQUESTED_OBJECT;
+
 
     LobbyCheckerRunnable(String requestUrl, String listener, String callerSpeaker) {
         this.requestUrl = requestUrl;
         this.listener = listener;
         this.callerSpeaker = callerSpeaker;
+    }
+
+    /**
+     *
+     * @author Sandru sebastian
+     * <p1> Am mai facut inca un constructor pentru LobbyCheckerRunnable ca sa pasez response-ul din
+     * FindListener </p1>
+     * <p2> Motivul pentru care am facut asta a fost ca responseul pe care LobbyCheckerRunnable nu imi era folositor
+     * pentru a mapa Queue-ul cu chatul :) </p2>
+     *
+     *
+     */
+    LobbyCheckerRunnable(String requestUrl, String listener, String callerSpeaker, JSONObject usefullResponseContainer) {
+        this.requestUrl = requestUrl;
+        this.listener = listener;
+        this.callerSpeaker = callerSpeaker;
+        this.usefullResponseContainer = usefullResponseContainer;
     }
 
     @Override
@@ -98,10 +116,14 @@ public class LobbyCheckerRunnable implements Runnable {
     JSONObject getResponseContainer() {
         return responseContainer;
     }
-
+    JSONObject getUsefullResponseContainer(){
+        return usefullResponseContainer;
+    }
     synchronized void setResponseContainer(JSONObject responseContainer) {
         this.responseContainer = responseContainer;
     }
+
+
 
     synchronized void setStillChecking(boolean stillChecking) {
         this.stillChecking = stillChecking;

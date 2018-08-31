@@ -8,7 +8,7 @@ public class User {
     // personalisation
     private String photo;
     private String bio;
-    private String gender; // let's abuse the guy - woman psychology
+    private String gender; // let's abuse the guy - woman psychology ... - AAA PAUL,WUT ?
 
     //score ( let's make a level system that will encourage the users)
     private int score;

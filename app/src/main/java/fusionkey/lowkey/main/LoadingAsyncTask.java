@@ -11,7 +11,7 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import fusionkey.lowkey.ChatActivity;
+import fusionkey.lowkey.chat.ChatActivity;
 import fusionkey.lowkey.queue.IQueueMatcher;
 import fusionkey.lowkey.queue.LobbyCheckerRunnable;
 import fusionkey.lowkey.queue.QueueMatcherListenerFinder;
@@ -24,17 +24,21 @@ public class LoadingAsyncTask extends AsyncTask<Void, Integer, JSONObject> {
     private static final String EXIT_LOBBY_TOAST = "You have exited the loading screen!";
     private static final String LOBBY_DELETED_TOAST = "There are no online listeners or the lobby was deleted";
 
+    private boolean findListener;
+
     private IQueueMatcher queueMatcher;
     private ProgressBar progressBar;
     private Activity currentActivity;
+    private String currentUser;
     private JSONObject jsonResponseContainer;
 
     LoadingAsyncTask(String currentUser, Activity currentActivity, ProgressBar progressBar, boolean findListener) {
+        this.findListener=findListener;
         if (findListener)
             this.queueMatcher = new QueueMatcherListenerFinder(currentUser, currentActivity);
         else
             this.queueMatcher = new QueueMatcherSpeakerFinder(currentUser, currentActivity);
-
+        this.currentUser=currentUser;
         this.currentActivity = currentActivity;
         this.progressBar = progressBar;
         this.currentActivity = currentActivity;
@@ -105,11 +109,25 @@ public class LoadingAsyncTask extends AsyncTask<Void, Integer, JSONObject> {
             if (jsonObject.equals(QueueMatcherUtils.JSON_FAILED_REQUESTED_OBJECT) || jsonObject.get(QueueMatcherUtils.DATA_JSON_KEY).equals(QueueMatcherUtils.RESPONSE_NO_DATA)) {
                 Log.e("LoadingAsyncTask : ", "The match was not made successfully");
                 Toast.makeText(currentActivity, LOBBY_DELETED_TOAST, Toast.LENGTH_SHORT).show();
+                this.cancel(true);
+                Intent intent = new Intent(currentActivity, Main2Activity.class);
+                currentActivity.startActivity(intent);
+
             } else {
                 Log.e("LoadingAsyncTask :", jsonObject.toString());
-                Intent intent = new Intent(currentActivity, ChatActivity.class);
+
+                    this.cancel(true);
+                    Intent intent = new Intent(currentActivity, ChatActivity.class);
+                    intent.putExtra("Listener", currentUser);
+                    if(!findListener)
+                    intent.putExtra("User", jsonObject.getJSONObject("data").getString("speakers"));
+                    else
+                        intent.putExtra("User", jsonObject.getJSONObject("data").getString("listener"));
+
                 currentActivity.startActivity(intent);
-                Toast.makeText(this.currentActivity, FIND_LOBBY_TOAST, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this.currentActivity, FIND_LOBBY_TOAST, Toast.LENGTH_SHORT).show();
+
+
             }
         } catch (JSONException e) {
             Log.e("LoadingAsyncTask", e.getMessage());

@@ -20,8 +20,8 @@ import android.view.ViewGroup;
 
 import java.util.ArrayList;
 
+import fusionkey.lowkey.chat.ChatActivity;
 import fusionkey.lowkey.listAdapters.ChatTabAdapter;
-import fusionkey.lowkey.Chat;
 import fusionkey.lowkey.models.NewsFeedMessage;
 import fusionkey.lowkey.R;
 
@@ -87,7 +87,7 @@ public class NewsFeedTab extends Fragment{
                     adapter.removeItem(position);
                 } else {
                     //removeView();
-                    Intent intent = new Intent(getContext(), Chat.class);
+                    Intent intent = new Intent(getContext(), ChatActivity.class);
                     startActivity(intent);
                     adapter.removeItem(position);
                 }

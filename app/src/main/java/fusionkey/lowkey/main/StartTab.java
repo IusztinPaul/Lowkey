@@ -53,7 +53,7 @@ public class StartTab extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getContext(), GetStarted.class);
-                intent.putExtra("Listener",true);
+                intent.putExtra("Listener",false);
                 startActivity(intent);
 
             }
@@ -62,7 +62,7 @@ public class StartTab extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getContext(), GetStarted.class);
-                intent.putExtra("Listener",false);
+                intent.putExtra("Listener",true);
                 startActivity(intent);
 
             }
