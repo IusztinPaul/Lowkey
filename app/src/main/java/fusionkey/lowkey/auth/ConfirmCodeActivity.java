@@ -52,6 +52,7 @@ public class ConfirmCodeActivity extends AppCompatActivity {
     }
 
     private void setupFirstStep() {
+        llFirstStep.setVisibility(View.VISIBLE);
         etEmail = findViewById(R.id.etEmail);
         btnContinue = findViewById(R.id.btnContinue);
         llSecondStep.setVisibility(View.GONE);
@@ -73,6 +74,7 @@ public class ConfirmCodeActivity extends AppCompatActivity {
     }
 
     private void setupSecondStep() {
+        llSecondStep.setVisibility(View.VISIBLE);
         etCode = findViewById(R.id.etCode);
         btnFinish = findViewById(R.id.btnFinish);
         llFirstStep.setVisibility(View.GONE);
