@@ -123,6 +123,7 @@ public class LoadingAsyncTask extends AsyncTask<Void, Integer, JSONObject> {
                     else
                         intent.putExtra("User", jsonObject.getJSONObject("data").getString("listener"));
                 currentActivity.startActivity(intent);
+                    Toast.makeText(this.currentActivity, FIND_LOBBY_TOAST, Toast.LENGTH_SHORT).show();
 
 
             }
