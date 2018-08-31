@@ -89,11 +89,8 @@ public class RegisterActivity extends AppCompatActivity {
                 new AuthCallback() {
                     @Override
                     public void execute() {
-                        Intent intent = new Intent(RegisterActivity.this, Main2Activity.class);
+                        Intent intent = new Intent(RegisterActivity.this, ConfirmCodeActivity.class);
                         startActivity(intent);
-                        Toast.makeText(RegisterActivity.this,
-                                RegisterActivity.this.getResources().getString(R.string.register_account_created),
-                                Toast.LENGTH_SHORT).show();
                     }
                 });
     }

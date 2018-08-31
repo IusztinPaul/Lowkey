@@ -40,6 +40,7 @@ public class UserManager {
 
     public static final int PASSWORD_MIN_LENGTH = 6;
     public static final String USER_SHARED_PREFERENCES = "user_credentials";
+    public static final String PASSWORD_SHARED_PREFERENCES = "password";
 
     private CognitoPoolUtils cognitoPoolUtils;
 
@@ -117,7 +118,7 @@ public class UserManager {
             SharedPreferences sharedPref =
                     LowKeyApplication.instance.getSharedPreferences(USER_SHARED_PREFERENCES, Context.MODE_PRIVATE);
             String email = sharedPref.getString(UserAttributesEnum.EMAIL.toString(), null);
-            String password = sharedPref.getString(UserAttributesEnum.PASSWORD.toString(), null);
+            String password = sharedPref.getString(PASSWORD_SHARED_PREFERENCES, null);
 
             if(email != null && password != null)
                 login(email, password, onSuccessCallback, null, false);
@@ -132,7 +133,7 @@ public class UserManager {
                 LowKeyApplication.instance.getSharedPreferences(USER_SHARED_PREFERENCES, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString(UserAttributesEnum.EMAIL.toString(), email);
-        editor.putString(UserAttributesEnum.PASSWORD.toString(), password);
+        editor.putString(PASSWORD_SHARED_PREFERENCES, password);
         editor.apply();
     }
 
@@ -141,7 +142,7 @@ public class UserManager {
                 LowKeyApplication.instance.getSharedPreferences(USER_SHARED_PREFERENCES, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString(UserAttributesEnum.EMAIL.toString(), null);
-        editor.putString(UserAttributesEnum.PASSWORD.toString(), null);
+        editor.putString(PASSWORD_SHARED_PREFERENCES, null);
         editor.apply();
     }
 

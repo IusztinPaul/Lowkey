@@ -39,14 +39,18 @@ public class ProfileTab extends Fragment {
             }
         });
 
-
-
-
         return rootView;
     }
 
 
 
+
+
+
+    private void logOut(){
+        LowKeyApplication.loginManager.logout();
+        startActivity(new Intent(getContext().getApplicationContext(), EntryActivity.class));
+    }
 
 
 }
