@@ -11,7 +11,7 @@ import fusionkey.lowkey.R;
 
 public class GetStarted extends AppCompatActivity {
     ProgressBar progressBar;
-    public static final String currentUser = "USER11";
+    public static final String currentUser = "USER43fsfsdf";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
