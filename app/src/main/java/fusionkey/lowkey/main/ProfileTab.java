@@ -44,7 +44,7 @@ public class ProfileTab extends Fragment {
 
     private void logOut(){
         LowKeyApplication.loginManager.logout();
-        startActivity(new Intent(getContext().getApplicationContext(), EntryActivity.class));
+        getActivity().startActivity(new Intent(getContext().getApplicationContext(), EntryActivity.class));
     }
 
 

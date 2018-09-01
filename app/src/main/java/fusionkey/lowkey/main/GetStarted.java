@@ -15,9 +15,8 @@ public class GetStarted extends AppCompatActivity {
 
 
 
+
     public static final String currentUser = "sefullabani";
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

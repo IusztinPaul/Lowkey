@@ -90,6 +90,7 @@ public class RegisterActivity extends AppCompatActivity {
                     @Override
                     public void execute() {
                         Intent intent = new Intent(RegisterActivity.this, ConfirmCodeActivity.class);
+                        intent.putExtra(ConfirmCodeActivity.STEP ,2);
                         startActivity(intent);
                     }
                 });
