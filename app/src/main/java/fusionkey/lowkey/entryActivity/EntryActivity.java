@@ -15,6 +15,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 
 import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.auth.ConfirmCodeActivity;
+import fusionkey.lowkey.auth.ForgotPasswordActivity;
 import fusionkey.lowkey.auth.LoginActivity;
 import fusionkey.lowkey.R;
 import fusionkey.lowkey.auth.utils.AuthCallback;
@@ -76,6 +77,7 @@ public class EntryActivity extends AppCompatActivity {
                 if(account != null) {
                     Intent intent = new Intent(EntryActivity.this, Main2Activity.class);
                     startActivity(intent);
+
                 }
             }
         });

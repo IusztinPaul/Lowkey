@@ -51,4 +51,10 @@
     <string name="confirm_btn_continue">Continue</string>
     <string name="confirm_code">Enter code</string>
     <string name="confirm_btn_validate">Validate</string>
+    <string name="confirm_btn_login">Click here to confirm your account!</string>
+    <!-- Forgot password -->
+    <string name="forgot_successfully_message">Your password has been changed successfully!</string>
+    <string name="forgot_code">Enter code</string>
+    <string name="forgot_btn_validate">Validate</string>
+    <string name="forgot_btn_login">Forgot your password. Click here!</string>
 </resources>

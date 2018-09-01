@@ -15,8 +15,10 @@ import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUserSession
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.continuations.AuthenticationContinuation;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.continuations.AuthenticationDetails;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.continuations.ChallengeContinuation;
+import com.amazonaws.mobileconnectors.cognitoidentityprovider.continuations.ForgotPasswordContinuation;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.continuations.MultiFactorAuthenticationContinuation;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.AuthenticationHandler;
+import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.ForgotPasswordHandler;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.GenericHandler;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.GetDetailsHandler;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.SignUpHandler;
@@ -24,7 +26,6 @@ import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.UpdateAtt
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.VerificationHandler;
 import com.amazonaws.services.cognitoidentityprovider.model.UserType;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -34,7 +35,6 @@ import java.util.Set;
 
 import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.R;
-import fusionkey.lowkey.auth.LoginActivity;
 
 public class UserManager {
 
@@ -300,6 +300,39 @@ public class UserManager {
             }
         };
         cognitoPoolUtils.getUser().changePasswordInBackground(oldPassword, newPassword, handler);
+    }
+
+    public void requestPasswordForgot(final CodeHandler codeHandler,
+                                      final AuthCallback onSuccessCallback,
+                                      final Activity activity) {
+        if(codeHandler != null) {
+            final ForgotPasswordHandler handler = new ForgotPasswordHandler() {
+                @Override
+                public void onSuccess() {
+                    Log.e("onSuccess", "Success");
+                    if(onSuccessCallback != null)
+                        onSuccessCallback.execute();
+                }
+
+                @Override
+                public void getResetCode(final ForgotPasswordContinuation continuation) {
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            // This handler has to set up the code and new password.
+                            codeHandler.handle(continuation);
+                            continuation.continueTask();
+                        }
+                    }).start();
+                }
+
+                public void onFailure(Exception exception) {
+                    Log.e("onFailureForgotPass", exception.getMessage());
+                    Toast.makeText(activity, exception.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            };
+            cognitoPoolUtils.getUser().forgotPasswordInBackground(handler);
+        }
     }
 
     public String getAccessToken() {

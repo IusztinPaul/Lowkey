@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 
 import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.R;
+import fusionkey.lowkey.auth.utils.AttributesValidator;
 import fusionkey.lowkey.auth.utils.AuthCallback;
 import fusionkey.lowkey.main.Main2Activity;
 
@@ -53,9 +54,10 @@ public class ConfirmCodeActivity extends AppCompatActivity {
 
     private void setupFirstStep() {
         llFirstStep.setVisibility(View.VISIBLE);
+        llSecondStep.setVisibility(View.GONE);
+
         etEmail = findViewById(R.id.etEmail);
         btnContinue = findViewById(R.id.btnContinue);
-        llSecondStep.setVisibility(View.GONE);
 
         btnContinue.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,6 +69,13 @@ public class ConfirmCodeActivity extends AppCompatActivity {
                     etEmail.requestFocus();
                     return;
                 }
+
+                if(!AttributesValidator.isEmailValid(email)) {
+                    etEmail.setError(ConfirmCodeActivity.this.getResources().getString(R.string.error_invalid_email));
+                    etEmail.requestFocus();
+                    return;
+                }
+
                 LowKeyApplication.loginManager.setUser(email);
                 createLayout(2);
             }
@@ -75,9 +84,10 @@ public class ConfirmCodeActivity extends AppCompatActivity {
 
     private void setupSecondStep() {
         llSecondStep.setVisibility(View.VISIBLE);
+        llFirstStep.setVisibility(View.GONE);
+
         etCode = findViewById(R.id.etCode);
         btnFinish = findViewById(R.id.btnFinish);
-        llFirstStep.setVisibility(View.GONE);
 
         btnFinish.setOnClickListener(new View.OnClickListener() {
             @Override
