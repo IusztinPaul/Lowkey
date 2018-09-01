@@ -61,7 +61,9 @@ public class StartTab extends Fragment {
                 Intent intent = new Intent(getContext(), Main2Activity.class);
                 intent.putExtra("Listener", false);
                 intent.putExtra("Mapping", "ON");
+                getActivity().overridePendingTransition(0,0);
                 startActivity(intent);
+                getActivity().overridePendingTransition(0,0);
                 //  final LoadingAsyncTask loadingAsyncTask = new LoadingAsyncTask(currentUser,getActivity(),progressBar,false);
                 //  loadingAsyncTask.execute();
                 // searchCard.setVisibility(rootView.VISIBLE);
@@ -73,8 +75,9 @@ public class StartTab extends Fragment {
                 Intent intent = new Intent(getContext(), Main2Activity.class);
                 intent.putExtra("Listener", true);
                 intent.putExtra("Mapping", "ON");
+                getActivity().overridePendingTransition(0,0);
                 startActivity(intent);
-
+                getActivity().overridePendingTransition(0,0);
                 // final LoadingAsyncTask loadingAsyncTask = new LoadingAsyncTask(currentUser,getActivity(),progressBar,true);
                 //   loadingAsyncTask.execute();
                 // searchCard.setVisibility(View.VISIBLE);

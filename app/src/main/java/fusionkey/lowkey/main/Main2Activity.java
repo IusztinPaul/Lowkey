@@ -22,7 +22,7 @@ import fusionkey.lowkey.entryActivity.EntryActivity;
 import fusionkey.lowkey.R;
 
 public class Main2Activity extends AppCompatActivity {
-    public static final String currentUser = "sefulladdfdbani";
+    public static final String currentUser = "SebastianDev";
    static public boolean SEARCH_STATE;
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -84,6 +84,7 @@ public class Main2Activity extends AppCompatActivity {
                         loadingAsyncTask.cancel(true);
                        searchCard.setVisibility(View.INVISIBLE);
                        SEARCH_STATE=false;
+
                     }
                 });
 

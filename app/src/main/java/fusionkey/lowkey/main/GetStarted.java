@@ -35,8 +35,10 @@ public class GetStarted extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 loadingAsyncTask.cancel(true);
+
                 Intent intent = new Intent(GetStarted.this, Main2Activity.class);
                 startActivity(intent);
+
             }
         });
 
