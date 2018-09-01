@@ -85,6 +85,10 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                     return;
                 }
 
+                Toast.makeText(ForgotPasswordActivity.this,
+                        getResources().getString(R.string.forgot_check_email_message),
+                        Toast.LENGTH_SHORT).show();
+
                 LowKeyApplication.loginManager.setUser(email);
                 createLayout(2);
             }
@@ -105,7 +109,6 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                 validateCode();
             }
         });
-
 
         LowKeyApplication.loginManager.requestPasswordForgot(new CodeHandler() {
             @Override
