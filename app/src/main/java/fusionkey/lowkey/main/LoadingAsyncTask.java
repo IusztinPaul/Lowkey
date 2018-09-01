@@ -110,8 +110,7 @@ public class LoadingAsyncTask extends AsyncTask<Void, Integer, JSONObject> {
                 Log.e("LoadingAsyncTask", "The match was not made successfully");
                 Toast.makeText(currentActivity, LOBBY_DELETED_TOAST, Toast.LENGTH_SHORT).show();
                 this.cancel(true);
-                Intent intent = new Intent(currentActivity, Main2Activity.class);
-                currentActivity.startActivity(intent);
+
 
             } else {
                 Log.e("LoadingAsyncTask :", jsonObject.toString());

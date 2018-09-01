@@ -15,7 +15,7 @@ public class GetStarted extends AppCompatActivity {
 
 
 
-    public static final String currentUser = LowKeyApplication.loginManager.getUser().toString();
+    public static final String currentUser = "sefullabani";
 
 
 

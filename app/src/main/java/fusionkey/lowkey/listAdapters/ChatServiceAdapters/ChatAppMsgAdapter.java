@@ -38,6 +38,7 @@ public class ChatAppMsgAdapter extends RecyclerView.Adapter<ChatAppMsgViewHolder
             // Remove left linearlayout.The value should be GONE, can not be INVISIBLE
             // Otherwise each iteview's distance is too big.
             holder.rightMsgLayout.setVisibility(LinearLayout.GONE);
+            holder.leftMsgLayoutLAST.setVisibility(LinearLayout.GONE);
         }
         // If the message is a sent message.
         else if(msgDto.MSG_TYPE_SENT.equals(msgDto.getMsgType()))
@@ -49,6 +50,15 @@ public class ChatAppMsgAdapter extends RecyclerView.Adapter<ChatAppMsgViewHolder
             // Remove left linearlayout.The value should be GONE, can not be INVISIBLE
             // Otherwise each iteview's distance is too big.
             holder.leftMsgLayout.setVisibility(LinearLayout.GONE);
+            holder.leftMsgLayoutLAST.setVisibility(LinearLayout.GONE);
+        }
+        else if(msgDto.MSG_TYPE_RECEIVED_LAST.equals(msgDto.getMsgType()))
+        {
+            holder.leftMsgLayoutLAST.setVisibility(LinearLayout.VISIBLE);
+            holder.lastLeftMsg.setText(msgDto.getContent());
+            holder.lastLeftDate.setText(msgDto.getDate());
+            holder.leftMsgLayout.setVisibility(LinearLayout.GONE);
+            holder.rightMsgLayout.setVisibility(LinearLayout.GONE);
         }
     }
 

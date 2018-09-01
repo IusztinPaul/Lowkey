@@ -11,14 +11,19 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.view.Menu;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import fusionkey.lowkey.auth.utils.UserManager;
 import fusionkey.lowkey.entryActivity.EntryActivity;
 import fusionkey.lowkey.R;
 
 public class Main2Activity extends AppCompatActivity {
-
+    public static final String currentUser = "sefulladdfdbani";
+   static public boolean SEARCH_STATE;
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -32,7 +37,9 @@ public class Main2Activity extends AppCompatActivity {
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
-
+    ProgressBar progressBar;
+    CardView searchCard;
+    ImageView imageView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,6 +64,37 @@ public class Main2Activity extends AppCompatActivity {
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
 
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
+
+
+        progressBar = (ProgressBar) findViewById(R.id.loadingBar);
+        searchCard = (CardView) findViewById(R.id.searchCard);
+        imageView = findViewById(R.id.imageView8);
+        Intent intent = getIntent();
+        Boolean listenerState = intent.getBooleanExtra("Listener",true);
+        String mapping = intent.getStringExtra("Mapping");
+        if(mapping != null && listenerState != null) {
+            if (mapping.equals("ON") && !listenerState) {
+                searchCard.setVisibility(View.VISIBLE);
+                final LoadingAsyncTask loadingAsyncTask = new LoadingAsyncTask(currentUser, this, progressBar, false);
+                loadingAsyncTask.execute();
+                SEARCH_STATE=true;
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        loadingAsyncTask.cancel(true);
+                       searchCard.setVisibility(View.INVISIBLE);
+                       SEARCH_STATE=false;
+                    }
+                });
+
+            } else if (mapping.equals("ON") && listenerState) {
+
+                final LoadingAsyncTask loadingAsyncTask = new LoadingAsyncTask(currentUser, this, progressBar, true);
+                loadingAsyncTask.execute();
+
+
+            }
+        }
     }
 
 
