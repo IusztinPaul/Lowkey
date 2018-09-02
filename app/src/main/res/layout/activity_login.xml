@@ -22,12 +22,14 @@
         android:id="@+id/login_form"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:elevation="10dp"
         tools:layout_editor_absoluteX="121dp"
         tools:layout_editor_absoluteY="16dp">
 
         <LinearLayout
             android:id="@+id/email_login_form"
             android:layout_width="match_parent"
+
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
@@ -59,14 +61,16 @@
             <ImageView
                 android:id="@+id/login_logo"
                 android:layout_width="300dp"
-                android:src="@drawable/firebase"
                 android:layout_height="200dp"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="10dp" />
+                android:layout_marginBottom="10dp"
+                android:src="@drawable/firebase" />
 
-            <android.support.design.widget.TextInputLayout
+            <com.github.florent37.materialtextfield.MaterialTextField
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                app:mtf_image="@drawable/selprofile"
+                app:mtf_labelColor="#666">
 
                 <AutoCompleteTextView
                     android:id="@+id/email"
@@ -80,11 +84,13 @@
                     android:singleLine="true"
                     android:textColor="@android:color/black" />
 
-            </android.support.design.widget.TextInputLayout>
+            </com.github.florent37.materialtextfield.MaterialTextField>
 
-            <android.support.design.widget.TextInputLayout
+            <com.github.florent37.materialtextfield.MaterialTextField
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                app:mtf_image="@drawable/selprofile"
+                app:mtf_labelColor="#666">
 
                 <EditText
                     android:id="@+id/password"
@@ -100,17 +106,17 @@
                     android:paddingBottom="15dp"
                     android:singleLine="true"
                     android:textColor="@android:color/black" />
-            </android.support.design.widget.TextInputLayout>
+            </com.github.florent37.materialtextfield.MaterialTextField>
 
             <Button
                 android:id="@+id/email_sign_in_button"
                 style="?android:textAppearanceSmall"
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
-                android:backgroundTint="@color/lightGreen"
-                android:layout_marginTop="16dp"
                 android:layout_gravity="center"
+                android:layout_marginTop="16dp"
                 android:background="@drawable/roundedbutton"
+                android:backgroundTint="@color/lightGreen"
                 android:elevation="15dp"
                 android:text="@string/sign"
                 android:textColor="@android:color/white"
