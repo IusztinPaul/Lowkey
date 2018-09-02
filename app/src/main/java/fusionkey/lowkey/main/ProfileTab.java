@@ -35,7 +35,7 @@ public class ProfileTab extends Fragment {
         logOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                LowKeyApplication.loginManager.logout();
+                logOut();
             }
         });
 
@@ -46,5 +46,6 @@ public class ProfileTab extends Fragment {
         LowKeyApplication.loginManager.logout();
         getActivity().startActivity(new Intent(getContext().getApplicationContext(), EntryActivity.class));
     }
+
 
 }

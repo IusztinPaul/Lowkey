@@ -13,7 +13,10 @@ import fusionkey.lowkey.R;
 public class GetStarted extends AppCompatActivity {
     ProgressBar progressBar;
 
-    public static final String currentUser = LowKeyApplication.loginManager.getUser().toString();
+
+
+
+    public static final String currentUser = "sefullabani";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,8 +34,10 @@ public class GetStarted extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 loadingAsyncTask.cancel(true);
+
                 Intent intent = new Intent(GetStarted.this, Main2Activity.class);
                 startActivity(intent);
+
             }
         });
 
