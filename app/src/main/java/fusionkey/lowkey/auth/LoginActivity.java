@@ -105,14 +105,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
         });
 
-        mRegister = (TextView) findViewById(R.id.Sign_up);
-        mRegister.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
-                startActivity(intent);
-            }
-        });
+
 
 
         tvForgotPassword.setOnClickListener(new OnClickListener() {
