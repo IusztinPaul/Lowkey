@@ -31,7 +31,8 @@
         <activity android:name=".main.GetStarted" />
         <activity android:name=".auth.RegisterActivity" />
         <activity android:name=".auth.ConfirmCodeActivity" />
-        <activity android:name=".auth.ForgotPasswordActivity"></activity>
+        <activity android:name=".auth.ForgotPasswordActivity" />
+        <activity android:name=".main.profile.EditUserActivity"></activity>
     </application>
 
 </manifest>
