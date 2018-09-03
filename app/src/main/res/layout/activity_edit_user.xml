@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".main.profile.EditUserActivity">
+
+    <com.github.florent37.materialtextfield.MaterialTextField
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        app:mtf_image="@drawable/selprofile"
+        app:mtf_labelColor="#FFF">
+
+        <EditText
+            android:id="@+id/etEmail"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:hint="@string/confirm_email"
+            android:inputType="textEmailAddress"
+            android:maxLines="1"
+            android:paddingBottom="15dp"
+            android:singleLine="true"
+            android:textColor="@android:color/black" />
+    </com.github.florent37.materialtextfield.MaterialTextField>
+
+</LinearLayout>
