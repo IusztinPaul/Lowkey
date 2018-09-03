@@ -17,7 +17,10 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
+import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUserPool;
+
 import fusionkey.lowkey.LowKeyApplication;
+import fusionkey.lowkey.auth.utils.CognitoPoolUtils;
 import fusionkey.lowkey.auth.utils.UserManager;
 import fusionkey.lowkey.entryActivity.EntryActivity;
 import fusionkey.lowkey.R;
