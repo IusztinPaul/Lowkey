@@ -6,6 +6,7 @@ public class MessageTO {
 
     public final static String MSG_TYPE_RECEIVED = "MSG_TYPE_RECEIVED";
 
+    public final static String MSG_TYPE_RECEIVED_LAST = "MSG_TYPE_RECEIVED_LAST";
 
     private String sender;
     private String receiver;

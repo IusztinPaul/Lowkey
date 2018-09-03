@@ -18,6 +18,7 @@ import fusionkey.lowkey.auth.ConfirmCodeActivity;
 import fusionkey.lowkey.auth.ForgotPasswordActivity;
 import fusionkey.lowkey.auth.LoginActivity;
 import fusionkey.lowkey.R;
+import fusionkey.lowkey.auth.RegisterActivity;
 import fusionkey.lowkey.auth.utils.AuthCallback;
 import fusionkey.lowkey.main.Main2Activity;
 
@@ -45,6 +46,17 @@ public class EntryActivity extends AppCompatActivity {
 
         Button Glogin = (Button) findViewById(R.id.Gconnect);
         Button Alogin = (Button) findViewById(R.id.Aconnect);
+        Button Slogin = (Button) findViewById(R.id.reg);
+
+        Slogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                overridePendingTransition(0,0);
+                Intent intent = new Intent(EntryActivity.this, RegisterActivity.class);
+                startActivity(intent);
+                overridePendingTransition(0,0);
+            }
+        });
 
         Glogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -56,8 +68,10 @@ public class EntryActivity extends AppCompatActivity {
         Alogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                overridePendingTransition(0,0);
                 Intent intent = new Intent(EntryActivity.this, LoginActivity.class);
                 startActivity(intent);
+                overridePendingTransition(0,0);
             }
         });
 

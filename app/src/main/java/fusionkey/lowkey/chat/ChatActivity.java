@@ -69,12 +69,16 @@ public class ChatActivity extends AppCompatActivity {
 
         //Object that makes request and updates the UI if the user is/isn't connected/writting
         final InChatRunnable inChatRunnable = new InChatRunnable(isWritting,chatRoom);
+
         new Timer().scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
                 inChatRunnable.run();
+
             }
         },0,500);
+
+
 
         //Following lines set your writting-flag true/false if you're writting
         final Handler handler = new Handler();
@@ -140,6 +144,7 @@ public class ChatActivity extends AppCompatActivity {
                 chatAsyncTask.cancel(true);
                 chatAsyncTask.cancel(true);
                 Intent intent = new Intent(ChatActivity.this, Main2Activity.class);
+
                 startActivity(intent);
             }
         });

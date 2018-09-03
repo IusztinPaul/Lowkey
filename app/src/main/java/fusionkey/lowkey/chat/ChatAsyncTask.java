@@ -68,9 +68,17 @@ public class ChatAsyncTask extends AsyncTask<Void,String,JSONObject> {
                         SimpleDateFormat jdf = new SimpleDateFormat("HH:mm");
                         jdf.setTimeZone(TimeZone.getDefault());
                         String java_date = jdf.format(date);
-                        MessageTO msgDto = new MessageTO(msgJson.getString("from"),msgJson.getString("to"), msgJson.getString("message"),java_date, MessageTO.MSG_TYPE_RECEIVED);
-                        list.add(msgDto);
-                        publishProgress();
+                        if((list.get(list.size()-1).getMsgType()).equals(MessageTO.MSG_TYPE_RECEIVED) || (list.get(list.size()-1).getMsgType()).equals(MessageTO.MSG_TYPE_RECEIVED_LAST)) {
+                            MessageTO msgDto = new MessageTO(msgJson.getString("from"), msgJson.getString("to"), msgJson.getString("message"), java_date, MessageTO.MSG_TYPE_RECEIVED_LAST);
+                            list.add(msgDto);
+                            publishProgress();
+                        }
+                        else {
+                            MessageTO msgDto = new MessageTO(msgJson.getString("from"), msgJson.getString("to"), msgJson.getString("message"), java_date, MessageTO.MSG_TYPE_RECEIVED);
+                            list.add(msgDto);
+                            publishProgress();
+                        }
+
                     }catch(JSONException e){
                         Log.e("getMsg" + "Error", "The response has no data");
 
