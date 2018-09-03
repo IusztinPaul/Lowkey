@@ -117,7 +117,7 @@ abstract class AbstractChat {
                     public void onResponse(JSONObject response) {
                         Log.e(service, response.toString());
                         try {
-                            if (!response.get(DATA_JSON_KEY).equals(RESPONSE_NO_DATA))
+                            if (response.get(DATA_JSON_KEY).equals(RESPONSE_NO_DATA))
                                 Log.e(method+":"+service+"->"+"Error", "The response has no data");
                         } catch (JSONException e) {
                             Log.e("JSONException", e.toString());
