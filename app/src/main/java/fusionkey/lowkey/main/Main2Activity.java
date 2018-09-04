@@ -18,12 +18,14 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import fusionkey.lowkey.LowKeyApplication;
+import fusionkey.lowkey.auth.utils.UserAttributesEnum;
 import fusionkey.lowkey.auth.utils.UserManager;
 import fusionkey.lowkey.entryActivity.EntryActivity;
 import fusionkey.lowkey.R;
 
 public class Main2Activity extends AppCompatActivity {
-    public static final String currentUser = "SebastianDevfsdfs";
+    public static final String currentUser = "pdfldf";
+
    static public boolean SEARCH_STATE;
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide

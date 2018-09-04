@@ -72,6 +72,9 @@ public class UserManager {
                 if(cacheCredentials)
                     cacheCredentials(email, password);
 
+                // On every login populate the user details.
+                requestUserDetails(null, null);
+
                 if(onSuccessCallback != null)
                     onSuccessCallback.execute();
 
@@ -258,7 +261,8 @@ public class UserManager {
 
             @Override
             public void onFailure(final Exception exception) {
-                Toast.makeText(currentActivity, exception.getMessage(), Toast.LENGTH_SHORT).show();
+                if(currentActivity != null)
+                    Toast.makeText(currentActivity, exception.getMessage(), Toast.LENGTH_SHORT).show();
             }
         };
         cognitoPoolUtils.getUser().getDetailsInBackground(handler);
