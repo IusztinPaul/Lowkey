@@ -94,5 +94,9 @@ public class EntryActivity extends AppCompatActivity {
             }
         });
     }
+    @Override
+    public void onBackPressed(){
+
+    }
 
 }

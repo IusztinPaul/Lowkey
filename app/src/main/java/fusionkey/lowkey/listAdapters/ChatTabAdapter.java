@@ -43,15 +43,15 @@ public class ChatTabAdapter extends RecyclerView.Adapter<ChatTabViewHolder> {
         NewsFeedMessage msgDto = this.mMessages.get(position);
 
         // If the message is a received message.
-            // Show received message in left linearlayout.
-            holder.leftMsgLayout.setVisibility(LinearLayout.VISIBLE);
-            holder.name.setText(msgDto.getUser());
-            holder.lastmsg.setText(msgDto.getContent());
-            holder.date.setText(msgDto.getDate());
-            holder.answers.setText(msgDto.getAnswers());
+        // Show received message in left linearlayout.
+        holder.leftMsgLayout.setVisibility(LinearLayout.VISIBLE);
+        holder.name.setText(msgDto.getUser());
+        holder.lastmsg.setText(msgDto.getContent());
+        holder.date.setText(msgDto.getDate());
+        holder.answers.setText(msgDto.getAnswers());
 
-            // Remove left linearlayout.The value should be GONE, can not be INVISIBLE
-            // Otherwise each iteview's distance is too big.
+        // Remove left linearlayout.The value should be GONE, can not be INVISIBLE
+        // Otherwise each iteview's distance is too big.
 
 
     }

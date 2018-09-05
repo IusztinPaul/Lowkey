@@ -2,7 +2,9 @@ package fusionkey.lowkey.main;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -109,19 +111,21 @@ public class LoadingAsyncTask extends AsyncTask<Void, Integer, JSONObject> {
             if (jsonObject.equals(QueueMatcherUtils.JSON_FAILED_REQUESTED_OBJECT) || jsonObject.get(QueueMatcherUtils.DATA_JSON_KEY).equals(QueueMatcherUtils.RESPONSE_NO_DATA)) {
                 Log.e("LoadingAsyncTask", "The match was not made successfully");
                 Toast.makeText(currentActivity, LOBBY_DELETED_TOAST, Toast.LENGTH_SHORT).show();
-                this.cancel(true);
-
+                saveState("step",0);
+                Main2Activity.searchCard.setVisibility(View.GONE);
             } else {
                 Log.e("LoadingAsyncTask :", jsonObject.toString());
-                this.cancel(true);
                 Intent intent = new Intent(currentActivity, ChatActivity.class);
-                    intent.putExtra("Listener", currentUser);
+                intent.putExtra("Listener", currentUser);
                     if(!findListener)
-                    intent.putExtra("User", jsonObject.getJSONObject("data").getString("speakers"));
+                        intent.putExtra("User", jsonObject.getJSONObject("data").getString("speakers"));
                     else
                         intent.putExtra("User", jsonObject.getJSONObject("data").getString("listener"));
-                currentActivity.startActivity(intent);
-                    Toast.makeText(this.currentActivity, FIND_LOBBY_TOAST, Toast.LENGTH_SHORT).show();
+                saveState("step",0);
+                Main2Activity.searchCard.setVisibility(View.GONE);
+                    currentActivity.startActivity(intent);
+                Toast.makeText(this.currentActivity, FIND_LOBBY_TOAST, Toast.LENGTH_SHORT).show();
+
 
 
             }
@@ -129,7 +133,16 @@ public class LoadingAsyncTask extends AsyncTask<Void, Integer, JSONObject> {
             Log.e("LoadingAsyncTask", e.getMessage());
         }
     }
-
+    private void saveState(String key,int step){
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(currentActivity.getApplicationContext());
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt(key, step);
+        editor.apply();
+    }
+    private int loadState(){
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(currentActivity.getApplicationContext());
+        return (sharedPreferences.getInt("step", 0));
+    }
 
     public JSONObject getJsonResponseContainer() {
         return jsonResponseContainer;

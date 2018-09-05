@@ -1,6 +1,8 @@
 package fusionkey.lowkey.main;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
 
@@ -14,11 +16,11 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-
 import fusionkey.lowkey.R;
 
 public class Main2Activity extends AppCompatActivity {
-    public static final String currentUser = "paul";
+
+    public static String currentUser="ERRER";
     static public boolean SEARCH_STATE;
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -34,7 +36,8 @@ public class Main2Activity extends AppCompatActivity {
      */
     private ViewPager mViewPager;
     ProgressBar progressBar;
-    CardView searchCard;
+    SharedPreferences sharedPreferences;
+    static CardView searchCard;
     ImageView imageView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,29 +45,77 @@ public class Main2Activity extends AppCompatActivity {
         setContentView(R.layout.activity_main2);
         // Determine if this is first start - and whether to show app intro
         // Determine if the user is logged in
-
         //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         //setSupportActionBar(toolbar);
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-
+        /**
+         * @To-DO Tried to get the user Atributes
+         */
+        //Map<String,String> userDetails = UserManager.getInstance(getApplicationContext()).getUserDetails().getAttributes().getAttributes();
+        // String currentUser = userDetails.get("username");
+        /**
+         * @return the EMAIL
+         */
+        // currentUser = UserManager.getInstance(this).getUser().getUserId();
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
-
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
-
         tabLayout.setSelectedTabIndicatorHeight(0);
-
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
-
-
         progressBar = (ProgressBar) findViewById(R.id.loadingBar);
         searchCard = (CardView) findViewById(R.id.searchCard);
         imageView = findViewById(R.id.imageView8);
+
+        if(loadState()==1)
+            searchForHelp();
+        if(loadState()==2)
+            helpOthers();
+        else
+            doNothing();
+
+    }
+
+    private void searchForHelp(){
+        final LoadingAsyncTask loadingAsyncTask = new LoadingAsyncTask(currentUser, this, progressBar, true);
+        loadingAsyncTask.execute();
+        saveState("step",0);
+    }
+
+    private void helpOthers(){
+        searchCard.setVisibility(View.VISIBLE);
+        final LoadingAsyncTask loadingAsyncTask = new LoadingAsyncTask(currentUser, this, progressBar, false);
+        loadingAsyncTask.execute();
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                loadingAsyncTask.cancel(true);
+                saveState("step",0);
+                doNothing();
+            }
+        });
+    }
+
+    private void doNothing(){
+        searchCard.setVisibility(View.GONE);
+    }
+
+    private void saveState(String key,int step){
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt(key, step);
+        editor.apply();
+    }
+    private int loadState(){
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        int i = sharedPreferences.getInt("step", 0);
+        return i;
+    }
+
+    private void goQueue(){
         Intent intent = getIntent();
         Boolean listenerState = intent.getBooleanExtra("Listener",true);
         String mapping = intent.getStringExtra("Mapping");
@@ -78,8 +129,8 @@ public class Main2Activity extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
                         loadingAsyncTask.cancel(true);
-                       searchCard.setVisibility(View.INVISIBLE);
-                       SEARCH_STATE=false;
+                        searchCard.setVisibility(View.INVISIBLE);
+                        SEARCH_STATE=false;
 
                     }
                 });
@@ -88,8 +139,6 @@ public class Main2Activity extends AppCompatActivity {
 
                 final LoadingAsyncTask loadingAsyncTask = new LoadingAsyncTask(currentUser, this, progressBar, true);
                 loadingAsyncTask.execute();
-
-
             }
         }
     }
@@ -154,4 +203,5 @@ public class Main2Activity extends AppCompatActivity {
             return null;
         }
     }
+
 }

@@ -1,5 +1,6 @@
 package fusionkey.lowkey.main;
 
+import android.arch.persistence.room.Room;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -10,6 +11,8 @@ import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,8 +25,15 @@ import android.widget.TextView;
 
 import org.w3c.dom.Text;
 
+import java.util.ArrayList;
+
 import fusionkey.lowkey.R;
+import fusionkey.lowkey.ROOMdatabase.AppDatabase;
+import fusionkey.lowkey.ROOMdatabase.MessagesActivity;
+import fusionkey.lowkey.ROOMdatabase.UserDao;
+import fusionkey.lowkey.listAdapters.ChatTabAdapters.ChatTabAdapter;
 import fusionkey.lowkey.listAdapters.PagerAdapter.SampleAdapter;
+import fusionkey.lowkey.models.UserD;
 
 public class StartTab extends Fragment {
     private LinearLayout servicesLayout;
@@ -89,5 +99,44 @@ public class StartTab extends Fragment {
         gst.setTextColor(Color.GRAY);
         servicesLayout.setVisibility(View.GONE);
         messagesLayout.setVisibility(View.VISIBLE);
+
+        RecyclerView msgRecyclerView = (RecyclerView) rootView.findViewById(R.id.chatlist);
+        // Set RecyclerView layout manager.
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
+        msgRecyclerView.setLayoutManager(linearLayoutManager);
+
+        ArrayList<UserD> userList = new ArrayList<UserD>();
+        AppDatabase database = Room.databaseBuilder(getActivity(), AppDatabase.class, "user-database")
+                .allowMainThreadQueries()   //Allows room to do operation on main thread
+                .build();
+        UserDao userDAO = database.userDao();
+        userList = (ArrayList)userDAO.getAll();
+        database.close();
+        final ChatTabAdapter adapter = new ChatTabAdapter(userList);
+        msgRecyclerView.setAdapter(adapter);
+        adapter.setListener(new ChatTabAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(UserD item) {
+                Intent intent = new Intent(getContext(), MessagesActivity.class);
+                intent.putExtra("username", item.getUsername());
+                getActivity().overridePendingTransition(0,0);
+                startActivity(intent);
+                getActivity().overridePendingTransition(0,0);
+            }
+
+            @Override
+            public boolean onLongClick(UserD item,int position) {
+                AppDatabase database = Room.databaseBuilder(getActivity(), AppDatabase.class, "user-database")
+                        .allowMainThreadQueries()   //Allows room to do operation on main thread
+                        .build();
+                UserDao userDAO = database.userDao();
+                UserD user = new UserD();
+                user = userDAO.findByName(item.getUsername());
+                userDAO.delete(user);
+                database.close();
+                adapter.deleteItem(position);
+                return true;
+            }
+        });
     }
 }
