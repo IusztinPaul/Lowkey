@@ -1,5 +1,6 @@
 package fusionkey.lowkey.ROOMdatabase;
 
+import android.app.Activity;
 import android.arch.persistence.room.Room;
 import android.content.Intent;
 import android.os.Bundle;
@@ -63,5 +64,10 @@ public class MessagesActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
+    @Override
+    public void onBackPressed(){
+        Intent intent = new Intent(MessagesActivity.this, Main2Activity.class);
+        startActivity(intent);
     }
 }

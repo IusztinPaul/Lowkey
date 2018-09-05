@@ -28,7 +28,6 @@
         <activity android:name=".main.Main2Activity" />
         <activity android:name=".Chat" />
         <activity android:name=".chat.ChatActivity" />
-        <activity android:name=".main.GetStarted" />
         <activity android:name=".auth.RegisterActivity" />
         <activity android:name=".auth.ConfirmCodeActivity" />
         <activity android:name=".auth.ForgotPasswordActivity" />

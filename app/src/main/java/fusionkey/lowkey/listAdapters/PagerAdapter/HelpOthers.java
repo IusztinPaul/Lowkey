@@ -1,7 +1,9 @@
 package fusionkey.lowkey.listAdapters.PagerAdapter;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,7 +15,7 @@ import fusionkey.lowkey.main.Main2Activity;
 
 public class HelpOthers extends Fragment {
     private static final String KEY_POSITION="position";
-
+    SharedPreferences sharedPreferences;
     static HelpOthers newInstance(int position) {
         HelpOthers frag=new HelpOthers();
         Bundle args=new Bundle();
@@ -36,17 +38,26 @@ public class HelpOthers extends Fragment {
         imag1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getContext(), Main2Activity.class);
-                intent.putExtra("Listener", false);
-                intent.putExtra("Mapping", "ON");
-                getActivity().overridePendingTransition(0,0);
-                startActivity(intent);
-                getActivity().overridePendingTransition(0,0);
-                //  final LoadingAsyncTask loadingAsyncTask = new LoadingAsyncTask(currentUser,getActivity(),progressBar,false);
-                //  loadingAsyncTask.execute();
-                // searchCard.setVisibility(rootView.VISIBLE);
+                if(loadState()==0) {
+                    Intent intent = new Intent(getContext(), Main2Activity.class);
+                    saveState("step", 2);
+                    getActivity().overridePendingTransition(0, 0);
+                    startActivity(intent);
+                    getActivity().overridePendingTransition(0, 0);
+                }
             }
         });
         return(result);
+    }
+
+    private void saveState(String key,int step){
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt(key, step);
+        editor.apply();
+    }
+    private int loadState(){
+         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
+        return (sharedPreferences.getInt("step", 0));
     }
 }
