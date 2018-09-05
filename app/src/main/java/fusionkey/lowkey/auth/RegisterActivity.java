@@ -16,7 +16,6 @@ import fusionkey.lowkey.R;
 import fusionkey.lowkey.auth.utils.AttributesValidator;
 import fusionkey.lowkey.auth.utils.AuthCallback;
 import fusionkey.lowkey.auth.utils.UserAttributesEnum;
-import fusionkey.lowkey.main.Main2Activity;
 
 public class RegisterActivity extends AppCompatActivity {
     //TODO: Add TextView with password indications(what should contain)
@@ -85,7 +84,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         HashMap<UserAttributesEnum, String> attributes = new HashMap<>();
         attributes.put(UserAttributesEnum.USERNAME, username);
-        LowKeyApplication.loginManager.register(email, password, attributes, this,
+        LowKeyApplication.userManager.register(email, password, attributes, this,
                 new AuthCallback() {
                     @Override
                     public void execute() {

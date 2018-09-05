@@ -58,4 +58,10 @@
     <string name="forgot_btn_validate">Validate</string>
     <string name="forgot_btn_login">Forgot your password. Click here!</string>
     <string name="forgot_check_email_message">Check your email to see your code.</string>
+    <!-- Edit profile -->
+    <string name="edit_username">Username</string>
+    <string name="edit_name">Name</string>
+    <string name="edit_phone">Phone(ex. +40732509516)</string>
+    <string name="edit_btn_save">Save</string>
+    <string name="edit_success_message">You have changed your account successfully!</string>
 </resources>

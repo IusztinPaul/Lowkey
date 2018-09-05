@@ -26,6 +26,7 @@ import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.UpdateAtt
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.VerificationHandler;
 import com.amazonaws.services.cognitoidentityprovider.model.UserType;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -51,7 +52,7 @@ public class UserManager {
     }
 
     public static UserManager getInstance(Context context) {
-        if(instance == null)
+        if (instance == null)
             instance = new UserManager(context);
 
         return instance;
@@ -69,16 +70,17 @@ public class UserManager {
             public void onSuccess(CognitoUserSession userSession, CognitoDevice newDevice) {
                 Log.e("onSuccess", userSession.toString());
                 cognitoPoolUtils.setUserSession(userSession);
-                if(cacheCredentials)
+                if (cacheCredentials)
                     cacheCredentials(email, password);
 
                 // On every login populate the user details.
                 requestUserDetails(null, null);
 
-                if(onSuccessCallback != null)
+                if (onSuccessCallback != null)
                     onSuccessCallback.execute();
 
             }
+
             @Override
             public void getAuthenticationDetails(AuthenticationContinuation authenticationContinuation, String userId) {
                 // The API needs user sign-in credentials to continue
@@ -88,17 +90,20 @@ public class UserManager {
                 Log.e("getAuthenticationDeta", "Validating auth details.");
                 authenticationContinuation.continueTask();
             }
+
             @Override
             public void getMFACode(MultiFactorAuthenticationContinuation multiFactorAuthenticationContinuation) {
                 multiFactorAuthenticationContinuation.continueTask();
             }
+
             @Override
             public void authenticationChallenge(ChallengeContinuation continuation) {
                 continuation.continueTask();
             }
+
             @Override
             public void onFailure(Exception exception) {
-                if(onFailCallback != null)
+                if (onFailCallback != null)
                     onFailCallback.execute();
 
                 // It means that the login failed so the user object it's not valid.
@@ -117,13 +122,13 @@ public class UserManager {
     }
 
     public boolean logInIfHasCredentials(Activity activity, AuthCallback onSuccessCallback) {
-        if(isLoggedIn(activity)) {
+        if (isLoggedIn(activity)) {
             SharedPreferences sharedPref =
                     LowKeyApplication.instance.getSharedPreferences(USER_SHARED_PREFERENCES, Context.MODE_PRIVATE);
             String email = sharedPref.getString(UserAttributesEnum.EMAIL.toString(), null);
             String password = sharedPref.getString(PASSWORD_SHARED_PREFERENCES, null);
 
-            if(email != null && password != null)
+            if (email != null && password != null)
                 login(email, password, onSuccessCallback, null, false);
 
             return true;
@@ -163,9 +168,9 @@ public class UserManager {
     }
 
     /**
-     * @param email: userId
-     * @param password: password
-     * @param attributes: Set to 'null' if no user attributes are required.
+     * @param email:           userId
+     * @param password:        password
+     * @param attributes:      Set to 'null' if no user attributes are required.
      * @param currentActivity: for Toasts
      */
     public void register(String email, String password, HashMap<UserAttributesEnum, String> attributes,
@@ -174,14 +179,14 @@ public class UserManager {
 
         // Add an empty string to the attributes that were not added -> AWS does not like them empty.
         Set<UserAttributesEnum> allAttributes = new HashSet<>(Arrays.asList(UserAttributesEnum.values()));
-        if(attributes != null)
+        if (attributes != null)
             allAttributes.removeAll(attributes.keySet());
-        for(UserAttributesEnum attribute : allAttributes)
+        for (UserAttributesEnum attribute : allAttributes)
             userAttributes.addAttribute(attribute.toString(), "");
 
         // Now add the attributes that have a actual value.
-        if(attributes != null)
-            for(Map.Entry<UserAttributesEnum, String> entry : attributes.entrySet())
+        if (attributes != null)
+            for (Map.Entry<UserAttributesEnum, String> entry : attributes.entrySet())
                 userAttributes.addAttribute(entry.getKey().toString(), entry.getValue());
 
         SignUpHandler signUpCallback = new SignUpHandler() {
@@ -190,13 +195,13 @@ public class UserManager {
             public void onSuccess(CognitoUser cognitoUser, boolean userConfirmed, CognitoUserCodeDeliveryDetails cognitoUserCodeDeliveryDetails) {
                 cognitoPoolUtils.setUser(cognitoUser);
 
-                if(!userConfirmed) {
+                if (!userConfirmed) {
                     Toast.makeText(currentActivity,
                             currentActivity.getResources().getString(R.string.register_validation_message),
                             Toast.LENGTH_SHORT).show();
                 }
 
-                if(onSuccessCallback != null)
+                if (onSuccessCallback != null)
                     onSuccessCallback.execute();
             }
 
@@ -215,9 +220,10 @@ public class UserManager {
         GenericHandler confirmationCallback = new GenericHandler() {
             @Override
             public void onSuccess() {
-                if(onSuccessCallback != null)
+                if (onSuccessCallback != null)
                     onSuccessCallback.execute();
             }
+
             @Override
             public void onFailure(Exception exception) {
                 Toast.makeText(currentActivity, exception.getMessage(), Toast.LENGTH_SHORT).show();
@@ -232,7 +238,7 @@ public class UserManager {
         VerificationHandler handler = new VerificationHandler() {
             @Override
             public void onSuccess(CognitoUserCodeDeliveryDetails verificationCodeDeliveryMedium) {
-                if(callback != null)
+                if (callback != null)
                     callback.execute();
             }
 
@@ -253,7 +259,7 @@ public class UserManager {
         GetDetailsHandler handler = new GetDetailsHandler() {
             @Override
             public void onSuccess(final CognitoUserDetails list) {
-                if(callback != null)
+                if (callback != null)
                     callback.execute();
 
                 cognitoPoolUtils.setUserDetails(list);
@@ -261,40 +267,68 @@ public class UserManager {
 
             @Override
             public void onFailure(final Exception exception) {
-                if(currentActivity != null)
+                if (currentActivity != null)
                     Toast.makeText(currentActivity, exception.getMessage(), Toast.LENGTH_SHORT).show();
             }
         };
         cognitoPoolUtils.getUser().getDetailsInBackground(handler);
     }
 
-    public void updateUserAttributes(HashMap<UserAttributesEnum, String> attributes, final Activity currentActivity, final AuthCallback callback) {
+    public void updateUserAttributes(HashMap<UserAttributesEnum, String> attributes,
+                                     final Activity currentActivity, final AuthCallback callback) {
 
         CognitoUserAttributes userAttributes = new CognitoUserAttributes();
-        for(Map.Entry<UserAttributesEnum, String> entry : attributes.entrySet())
+        for (Map.Entry<UserAttributesEnum, String> entry : attributes.entrySet())
             userAttributes.addAttribute(entry.getKey().toString(), entry.getValue());
 
         UpdateAttributesHandler handler = new UpdateAttributesHandler() {
             @Override
             public void onSuccess(List<CognitoUserCodeDeliveryDetails> attributesVerificationList) {
-                if(callback != null)
+                if (callback != null)
                     callback.execute();
             }
 
             @Override
             public void onFailure(Exception exception) {
-                Toast.makeText(currentActivity, exception.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.e("updateAttributes", exception.getMessage());
+                if (currentActivity != null)
+                    Toast.makeText(currentActivity, exception.getMessage(), Toast.LENGTH_SHORT).show();
             }
         };
 
         cognitoPoolUtils.getUser().updateAttributesInBackground(userAttributes, handler);
     }
 
+    public void deleteUserAttributes(List<UserAttributesEnum> attributes,
+                                     final Activity currentActivity, final AuthCallback callback) {
+
+        List<String> attributesToString = new ArrayList<>();
+        for (UserAttributesEnum attribute : attributes)
+            attributesToString.add(attribute.toString());
+
+        GenericHandler handler = new GenericHandler() {
+            @Override
+            public void onSuccess() {
+                if (callback != null)
+                    callback.execute();
+            }
+
+            @Override
+            public void onFailure(Exception exception) {
+                Log.e("deleteAttributes", exception.getMessage());
+                if (currentActivity != null)
+                    Toast.makeText(currentActivity, exception.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        };
+
+        cognitoPoolUtils.getUser().deleteAttributesInBackground(attributesToString, handler);
+    }
+
     public void changeUserPassword(String oldPassword, String newPassword, final Activity currentActivity, final AuthCallback callback) {
         GenericHandler handler = new GenericHandler() {
             @Override
             public void onSuccess() {
-                if(callback != null)
+                if (callback != null)
                     callback.execute();
             }
 
@@ -309,12 +343,12 @@ public class UserManager {
     public void requestPasswordForgot(final CodeHandler codeHandler,
                                       final AuthCallback onSuccessCallback,
                                       final Activity activity) {
-        if(codeHandler != null) {
+        if (codeHandler != null) {
             final ForgotPasswordHandler handler = new ForgotPasswordHandler() {
                 @Override
                 public void onSuccess() {
                     Log.e("onSuccess", "Success");
-                    if(onSuccessCallback != null)
+                    if (onSuccessCallback != null)
                         onSuccessCallback.execute();
                 }
 

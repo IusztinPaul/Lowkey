@@ -1,8 +1,6 @@
 package fusionkey.lowkey.main;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
 
@@ -17,16 +15,11 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
-import fusionkey.lowkey.LowKeyApplication;
-import fusionkey.lowkey.auth.utils.UserAttributesEnum;
-import fusionkey.lowkey.auth.utils.UserManager;
-import fusionkey.lowkey.entryActivity.EntryActivity;
 import fusionkey.lowkey.R;
 
 public class Main2Activity extends AppCompatActivity {
-    public static final String currentUser = "pdfldf";
-
-   static public boolean SEARCH_STATE;
+    public static final String currentUser = "paul";
+    static public boolean SEARCH_STATE;
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -101,6 +94,10 @@ public class Main2Activity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onBackPressed(){
+
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

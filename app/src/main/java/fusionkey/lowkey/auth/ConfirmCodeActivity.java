@@ -76,7 +76,7 @@ public class ConfirmCodeActivity extends AppCompatActivity {
                     return;
                 }
 
-                LowKeyApplication.loginManager.setUser(email);
+                LowKeyApplication.userManager.setUser(email);
                 createLayout(2);
             }
         });
@@ -100,7 +100,7 @@ public class ConfirmCodeActivity extends AppCompatActivity {
                     return;
                 }
 
-                LowKeyApplication.loginManager.confirmRegistrationWithCode(code, ConfirmCodeActivity.this,
+                LowKeyApplication.userManager.confirmRegistrationWithCode(code, ConfirmCodeActivity.this,
                         new AuthCallback() {
                             @Override
                             public void execute() {
