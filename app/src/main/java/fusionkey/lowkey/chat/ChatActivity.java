@@ -1,5 +1,6 @@
 package fusionkey.lowkey.chat;
 
+import android.arch.persistence.room.Room;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -26,10 +27,14 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import fusionkey.lowkey.R;
+import fusionkey.lowkey.ROOMdatabase.AppDatabase;
+import fusionkey.lowkey.ROOMdatabase.UserDao;
 import fusionkey.lowkey.chat.Runnables.InChatRunnable;
 import fusionkey.lowkey.listAdapters.ChatServiceAdapters.ChatAppMsgAdapter;
 import fusionkey.lowkey.main.Main2Activity;
 import fusionkey.lowkey.models.MessageTO;
+import fusionkey.lowkey.models.UserD;
+
 /**
  * @author Sandru Sebastian
  * @version 1.0
@@ -42,6 +47,10 @@ public class ChatActivity extends AppCompatActivity {
 
     final long delay = 1000;
     long last_text_edit=0;
+    ChatAsyncTask chatAsyncTask;
+    Timer t;
+    String listenerRequest;
+    ArrayList<MessageTO> msgDtoList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,10 +61,10 @@ public class ChatActivity extends AppCompatActivity {
         final TextView isWritting = (TextView) findViewById(R.id.isWritting);
         final String listener = getIntent().getStringExtra("Listener");
         final String user = getIntent().getStringExtra("User");
-        final String listenerRequest = listener.replace("[", "").replace("]", "").replace("\"","");
+        listenerRequest = listener.replace("[", "").replace("]", "").replace("\"","");
         final String userRequest = user.replace("[", "").replace("]", "").replace("\"","");
         final ChatRoom chatRoom = new ChatRoom(userRequest,listenerRequest); //C - D
-        final List<MessageTO> msgDtoList = new ArrayList<MessageTO>();
+        msgDtoList = new ArrayList<MessageTO>();
         final RecyclerView msgRecyclerView = (RecyclerView)findViewById(R.id.reyclerview_message_list);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         msgRecyclerView.setLayoutManager(linearLayoutManager);
@@ -64,17 +73,22 @@ public class ChatActivity extends AppCompatActivity {
         Log.e("INFO","LISTENER : " + listenerRequest + " & USER : " + userRequest);
 
 
-        final ChatAsyncTask chatAsyncTask = new ChatAsyncTask(chatRoom,msgRecyclerView,chatAppMsgAdapter,msgDtoList);
+        chatAsyncTask = new ChatAsyncTask(chatRoom,msgRecyclerView,chatAppMsgAdapter,msgDtoList);
         chatAsyncTask.execute();
 
         //Object that makes request and updates the UI if the user is/isn't connected/writting
         final InChatRunnable inChatRunnable = new InChatRunnable(isWritting,chatRoom);
-
-        new Timer().scheduleAtFixedRate(new TimerTask() {
+        t = new Timer();
+        t.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
                 inChatRunnable.run();
 
+            }
+
+            @Override
+            public boolean cancel() {
+                return super.cancel();
             }
         },0,500);
 
@@ -142,14 +156,47 @@ public class ChatActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 chatAsyncTask.cancel(true);
-                chatAsyncTask.cancel(true);
-                Intent intent = new Intent(ChatActivity.this, Main2Activity.class);
+                t.cancel();
+                UserD userD = new UserD(listenerRequest,msgDtoList.get(msgDtoList.size()-1).getContent(),msgDtoList);
+                AppDatabase database = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "user-database")
+                        .allowMainThreadQueries()   //Allows room to do operation on main thread
+                        .build();
+                UserDao userDAO = database.userDao();
 
+                UserD userF = userDAO.findByName(listenerRequest);
+                if(userF != null){
+                    userF.addMessages(msgDtoList);
+                    userDAO.update(userF);
+                }else {
+                    userDAO.insertAll(userD);
+                }
+                database.close();
+                Intent intent = new Intent(ChatActivity.this, Main2Activity.class);
                 startActivity(intent);
             }
         });
 
 
+    }
+    @Override
+    public void onBackPressed(){
+        chatAsyncTask.cancel(true);
+        t.cancel();
+        UserD userD = new UserD(listenerRequest,msgDtoList.get(msgDtoList.size()-1).getContent(),msgDtoList);
+        AppDatabase database = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "user-database")
+                .allowMainThreadQueries()   //Allows room to do operation on main thread
+                .build();
+        UserDao userDAO = database.userDao();
+
+        UserD userF = userDAO.findByName(listenerRequest);
+        if(userF != null){
+            userF.addMessages(msgDtoList);
+            userDAO.update(userF);
+        }else {
+            userDAO.insertAll(userD);
+        }
+        database.close();
+        super.onBackPressed();
     }
 
 

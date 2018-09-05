@@ -19,6 +19,10 @@ import android.widget.ProgressBar;
 
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUserPool;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
 import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.auth.utils.CognitoPoolUtils;
 import fusionkey.lowkey.auth.utils.UserManager;
@@ -26,8 +30,9 @@ import fusionkey.lowkey.entryActivity.EntryActivity;
 import fusionkey.lowkey.R;
 
 public class Main2Activity extends AppCompatActivity {
-    public static final String currentUser = "Afasf";
-   static public boolean SEARCH_STATE;
+
+    public static String currentUser="Ssebi";
+    static public boolean SEARCH_STATE;
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -57,6 +62,10 @@ public class Main2Activity extends AppCompatActivity {
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
+        //Map<String,String> userDetails = UserManager.getInstance(getApplicationContext()).getUserDetails().getAttributes().getAttributes();
+       // String currentUser = userDetails.get("username");
+
+        // currentUser = UserManager.getInstance(this).getUser().getUserId();
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
@@ -68,7 +77,6 @@ public class Main2Activity extends AppCompatActivity {
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
 
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
-
 
         progressBar = (ProgressBar) findViewById(R.id.loadingBar);
         searchCard = (CardView) findViewById(R.id.searchCard);
@@ -162,4 +170,5 @@ public class Main2Activity extends AppCompatActivity {
             return null;
         }
     }
+
 }

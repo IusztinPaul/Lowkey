@@ -106,6 +106,7 @@
     <LinearLayout
         android:id="@+id/msgs"
         android:layout_width="0dp"
+        android:background="@android:color/transparent"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginLeft="8dp"
@@ -119,9 +120,10 @@
         app:layout_constraintTop_toBottomOf="@+id/cardView3">
 
         <android.support.v7.widget.RecyclerView
+            android:id="@+id/chatlist"
             android:layout_width="match_parent"
-            tools:listitem="@layout/msg_chat_item"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            tools:listitem="@layout/msg_chat_item" />
     </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>
