@@ -20,6 +20,12 @@
       "Region": "eu-central-1"
     }
   },
+  "S3TransferUtility": {
+    "Default": {
+      "Bucket": "lowkey-userfiles-mobilehub-1217601830",
+      "Region": "eu-central-1"
+    }
+  },
   "DynamoDBObjectMapper": {
     "Default": {
       "Region": "eu-central-1"
@@ -34,6 +40,12 @@
   "PinpointTargeting": {
     "Default": {
       "Region": "us-east-1"
+    }
+  },
+  "UserFileManager": {
+    "Default": {
+      "Bucket": "lowkey-userfiles-mobilehub-1217601830",
+      "Region": "eu-central-1"
     }
   },
   "GoogleSignIn": {

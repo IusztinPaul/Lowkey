@@ -117,6 +117,9 @@ public class EditUserActivity extends AppCompatActivity {
             BitmapDataObject bitmapDataObject = new BitmapDataObject(newImage);
             bitmapDataObject.serialize();
             attributesToUpdate.put(UserAttributesEnum.PICTURE, bitmapDataObject.getSerializedImage());
+
+            new PhotoTransferer().upload(bitmapDataObject.getSerializedImage(),
+                    LowKeyApplication.userManager.getUser().getUserId(), true);
         }
 
        if(!TextUtils.isEmpty(username))

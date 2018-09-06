@@ -32,17 +32,15 @@ dependencies {
     implementation 'com.flaviofaria:kenburnsview:1.0.7'
     implementation 'com.github.florent37:materialleanback:1.0.2'
     implementation 'com.nineoldandroids:library:2.4.0'
-    // Mobile Client for initializing the SDK
-    implementation('com.amazonaws:aws-android-sdk-mobile-client:2.6.+@aar') { transitive = true }
-    // Cognito UserPools for SignIn
-    implementation('com.amazonaws:aws-android-sdk-auth-userpools:2.6.+@aar') { transitive = true }
-
     // Mobile Client for initializing the SDK.
     implementation('com.amazonaws:aws-android-sdk-mobile-client:2.6.+@aar') { transitive = true }
     // Cognito UserPools for SignIn.
     implementation('com.amazonaws:aws-android-sdk-auth-userpools:2.6.+@aar') { transitive = true }
     // Google.
     implementation 'com.google.android.gms:play-services-auth:16.0.0'
+    // S3
+    implementation 'com.amazonaws:aws-android-sdk-s3:2.6.+'
+
     implementation 'com.android.support:support-v4:26.1.0'
     implementation 'com.android.support:support-vector-drawable:26.1.0'
     testImplementation 'junit:junit:4.12'
