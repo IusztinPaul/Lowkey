@@ -94,7 +94,7 @@ public class EditUserActivity extends AppCompatActivity {
                         newImage = bitmap;
                         ivProfile.setImageBitmap(bitmap);
                     } catch (IOException e) {
-                        Log.i("TAG", "Some exception " + e);
+                        Log.i("GalleryRequest", e.getMessage());
                     }
                     break;
             }
@@ -154,41 +154,45 @@ public class EditUserActivity extends AppCompatActivity {
     }
 
     private void populateUI() {
-        Map<String, String> attributes = LowKeyApplication.userManager.getUserDetails().getAttributes().getAttributes();
+        try {
+            Map<String, String> attributes = LowKeyApplication.userManager.getUserDetails().getAttributes().getAttributes();
 
-        String username = attributes.get(UserAttributesEnum.USERNAME.toString()),
-               name = attributes.get(UserAttributesEnum.NAME.toString()),
-               phone = attributes.get(UserAttributesEnum.PHONE.toString()),
-               gender = attributes.get(UserAttributesEnum.GENDER.toString()),
-               birth = attributes.get(UserAttributesEnum.BIRTH_DATE.toString()),
-               photo = attributes.get(UserAttributesEnum.PICTURE.toString()) ;
+            String username = attributes.get(UserAttributesEnum.USERNAME.toString()),
+                    name = attributes.get(UserAttributesEnum.NAME.toString()),
+                    phone = attributes.get(UserAttributesEnum.PHONE.toString()),
+                    gender = attributes.get(UserAttributesEnum.GENDER.toString()),
+                    birth = attributes.get(UserAttributesEnum.BIRTH_DATE.toString()),
+                    photo = attributes.get(UserAttributesEnum.PICTURE.toString());
 
-        // Get spinner default position.
-        ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.
-                createFromResource(this, R.array.genderArray, android.R.layout.simple_spinner_item);
-        int gender_spinner_pos = spinnerAdapter.getPosition(gender != null ? gender : spinnerAdapter.getItem(0));
+            // Get spinner default position.
+            ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.
+                    createFromResource(this, R.array.genderArray, android.R.layout.simple_spinner_item);
+            int gender_spinner_pos = spinnerAdapter.getPosition(gender != null ? gender : spinnerAdapter.getItem(0));
 
-        etUsername.setText(username != null ? username : "");
-        etName.setText(name != null ? name : "");
-        etPhone.setText(phone != null ? phone : "");
-        spinnerGender.setSelection(gender_spinner_pos, true);
+            etUsername.setText(username != null ? username : "");
+            etName.setText(name != null ? name : "");
+            etPhone.setText(phone != null ? phone : "");
+            spinnerGender.setSelection(gender_spinner_pos, true);
 
-        if(birth != null) {
-            try {
-                String[] date = birth.split(BIRTH_DATE_SEPARATOR);
-                dpBirth.init(Integer.parseInt(date[2]),
-                        Integer.parseInt(date[1]),
-                        Integer.parseInt(date[0]),
-                        null);
-            } catch (Exception e) {
-                Log.e("Birth date", e.getMessage());
+            if (birth != null) {
+                try {
+                    String[] date = birth.split(BIRTH_DATE_SEPARATOR);
+                    dpBirth.init(Integer.parseInt(date[2]),
+                            Integer.parseInt(date[1]),
+                            Integer.parseInt(date[0]),
+                            null);
+                } catch (Exception e) {
+                    Log.e("Birth date", e.getMessage());
+                }
             }
-        }
 
-        if(photo != null) {
-            BitmapDataObject bitmapDataObject = new BitmapDataObject(photo);
-            bitmapDataObject.unserialize();
-            ivProfile.setImageBitmap(bitmapDataObject.getCurrentImage());
+            if (photo != null) {
+                BitmapDataObject bitmapDataObject = new BitmapDataObject(photo);
+                bitmapDataObject.unserialize();
+                ivProfile.setImageBitmap(bitmapDataObject.getCurrentImage());
+            }
+        } catch (NullPointerException e) {
+            Log.e("NullPointerExp", "User details not loaded yet");
         }
     }
 

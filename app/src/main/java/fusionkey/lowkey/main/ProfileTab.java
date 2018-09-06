@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.entryActivity.EntryActivity;
 import fusionkey.lowkey.R;
+import fusionkey.lowkey.main.profile.ChangePasswordActivity;
 import fusionkey.lowkey.main.profile.EditUserActivity;
 
 

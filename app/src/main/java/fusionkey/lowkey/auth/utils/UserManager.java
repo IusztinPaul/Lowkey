@@ -324,17 +324,20 @@ public class UserManager {
         cognitoPoolUtils.getUser().deleteAttributesInBackground(attributesToString, handler);
     }
 
-    public void changeUserPassword(String oldPassword, String newPassword, final Activity currentActivity, final AuthCallback callback) {
+    public void changeUserPassword(String oldPassword, String newPassword,
+                                   final AuthCallback onFailCallback, final AuthCallback onSuccessCallback) {
         GenericHandler handler = new GenericHandler() {
             @Override
             public void onSuccess() {
-                if (callback != null)
-                    callback.execute();
+                if (onSuccessCallback != null)
+                    onSuccessCallback.execute();
             }
 
             @Override
             public void onFailure(final Exception exception) {
-                Toast.makeText(currentActivity, exception.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.e("changePassword", exception.getMessage());
+                if(onFailCallback != null)
+                    onFailCallback.execute();
             }
         };
         cognitoPoolUtils.getUser().changePasswordInBackground(oldPassword, newPassword, handler);

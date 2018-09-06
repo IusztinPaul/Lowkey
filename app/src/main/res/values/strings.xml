@@ -64,4 +64,14 @@
     <string name="edit_phone">Phone(ex. +40732509516)</string>
     <string name="edit_btn_save">Save</string>
     <string name="edit_success_message">You have changed your account successfully!</string>
+    <!-- Change password -->
+    <string name="forgot_p_old_pass">Old password</string>
+    <string name="forgot_p_new_pass1">New password</string>
+    <string name="forgot_p_new_pass2">Validate password</string>
+    <string name="forgot_p_btn">Save</string>
+    <string name="forgot_p_old_new_pass_equal_toast">New password cannot be the same with old password.</string>
+    <string name="forgot_p_old_new_pass_equal_error">The same</string>
+    <string name="forgot_p_old_pass_wrong_toast">Your old password does not match!</string>
+    <string name="forgot_p_old_pass_wrong_error">Not matching old password</string>
+    <string name="forgot_p_on_success_message_">Password changed successfully!</string>
 </resources>
