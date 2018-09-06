@@ -12,22 +12,11 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.Toast;
-
-import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUserPool;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
-import fusionkey.lowkey.LowKeyApplication;
-import fusionkey.lowkey.auth.utils.CognitoPoolUtils;
-import fusionkey.lowkey.auth.utils.UserManager;
-import fusionkey.lowkey.entryActivity.EntryActivity;
 import fusionkey.lowkey.R;
 
 public class Main2Activity extends AppCompatActivity {
@@ -89,7 +78,6 @@ public class Main2Activity extends AppCompatActivity {
             helpOthers();
         else
             doNothing();
-
     }
 
     private void searchForHelp(){

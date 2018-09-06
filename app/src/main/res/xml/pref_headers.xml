@@ -3,6 +3,17 @@
     <!-- These settings headers are only used on tablets. -->
 
     <header
+        android:fragment="fusionkey.lowkey.main.settings.SettingsActivity$AboutPreferenceFragment"
+        android:icon="@drawable/ic_info_black_24dp"
+        android:title="About" />
+
+    <header
+        android:fragment="fusionkey.lowkey.main.settings.SettingsActivity$LicensePreferenceFragment"
+        android:icon="@drawable/ic_info_black_24dp"
+        android:title="License" />
+
+
+    <header
         android:fragment="fusionkey.lowkey.main.settings.SettingsActivity$GeneralPreferenceFragment"
         android:icon="@drawable/ic_info_black_24dp"
         android:title="@string/pref_header_general" />

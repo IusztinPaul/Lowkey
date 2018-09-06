@@ -81,7 +81,7 @@ public class ConfirmCodeActivity extends AppCompatActivity {
                     return;
                 }
 
-                LowKeyApplication.loginManager.setUser(email);
+                LowKeyApplication.userManager.setUser(email);
                 createLayout(2);
             } else Toast.makeText(ConfirmCodeActivity.this, "Check if you're connected to the Internet", Toast.LENGTH_SHORT).show();
             }
@@ -107,7 +107,7 @@ public class ConfirmCodeActivity extends AppCompatActivity {
                     return;
                 }
 
-                LowKeyApplication.loginManager.confirmRegistrationWithCode(code, ConfirmCodeActivity.this,
+                LowKeyApplication.userManager.confirmRegistrationWithCode(code, ConfirmCodeActivity.this,
                         new AuthCallback() {
                             @Override
                             public void execute() {

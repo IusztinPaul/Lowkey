@@ -17,7 +17,6 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -30,12 +29,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.auth.utils.AuthCallback;
-import fusionkey.lowkey.auth.utils.UserAttributesEnum;
 import fusionkey.lowkey.entryActivity.EntryActivity;
 import fusionkey.lowkey.main.Main2Activity;
 import fusionkey.lowkey.R;
@@ -160,29 +157,44 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             return;
         }
 
-            LowKeyApplication.loginManager.login(email, password,
-                    new AuthCallback() {
-                        @Override
-                        public void execute() {
-                            //OnSuccess
-                            Intent myIntent = new Intent(LoginActivity.this, Main2Activity.class);
-                            myIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            LoginActivity.this.startActivity(myIntent);
-                            showProgress(false);
-                        }
-                    }, new AuthCallback() {
-                        @Override
-                        public void execute() {
-                            //OnFail
-                            mEmailView.setError(getResources().getString(R.string.invalid));
-                            mPasswordView.setError(getResources().getString(R.string.invalid));
-                            mEmailView.requestFocus();
-                            Toast.makeText(LoginActivity.this, getResources().getString(R.string.error_incorrect_credentials), Toast.LENGTH_SHORT).show();
-                            showProgress(false);
-                        }
-                    }, true);
 
+        LowKeyApplication.userManager.login(email, password,
+                new AuthCallback() {
+                    @Override
+                    public void execute() {
+                        //OnSuccess
+                        Intent myIntent = new Intent(LoginActivity.this, Main2Activity.class);
+                        myIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        LoginActivity.this.startActivity(myIntent);
+                        showProgress(false);
+                    }
+                }, new AuthCallback() {
+                    @Override
+                    public void execute() {
+                        //OnFail
+                        mEmailView.setError(getResources().getString(R.string.invalid));
+                        mPasswordView.setError(getResources().getString(R.string.invalid));
+                        mEmailView.requestFocus();
+                        Toast.makeText(LoginActivity.this, getResources().getString(R.string.error_incorrect_credentials), Toast.LENGTH_SHORT).show();
+                        showProgress(false);
+                    }
+                }, true);
     }
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
+
+
+
+
+
+
+
+
     /**
      * Shows the progress UI and hides the login form.
      */
@@ -271,12 +283,5 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         int ADDRESS = 0;
         int IS_PRIMARY = 1;
-    }
-
-    private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 }

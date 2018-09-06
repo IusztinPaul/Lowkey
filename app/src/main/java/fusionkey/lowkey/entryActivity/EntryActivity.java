@@ -3,7 +3,6 @@ package fusionkey.lowkey.entryActivity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -14,13 +13,12 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 
 import fusionkey.lowkey.LowKeyApplication;
-import fusionkey.lowkey.auth.ConfirmCodeActivity;
-import fusionkey.lowkey.auth.ForgotPasswordActivity;
 import fusionkey.lowkey.auth.LoginActivity;
 import fusionkey.lowkey.R;
 import fusionkey.lowkey.auth.RegisterActivity;
 import fusionkey.lowkey.auth.utils.AuthCallback;
 import fusionkey.lowkey.main.Main2Activity;
+import fusionkey.lowkey.main.profile.EditUserActivity;
 
 public class EntryActivity extends AppCompatActivity {
 
@@ -31,7 +29,7 @@ public class EntryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_entry);
 
-        boolean isLogged = LowKeyApplication.loginManager.logInIfHasCredentials(this,
+        boolean isLogged = LowKeyApplication.userManager.logInIfHasCredentials(this,
                 new AuthCallback() {
                     @Override
                     public void execute() {

@@ -9,7 +9,7 @@ import fusionkey.lowkey.queue.RequestQueueSingleton;
 public class LowKeyApplication extends Application {
 
     public static RequestQueueSingleton requestQueueSingleton;
-    public static UserManager loginManager;
+    public static UserManager userManager;
 
     public static LowKeyApplication instance;
 
@@ -19,7 +19,7 @@ public class LowKeyApplication extends Application {
 
         instance = this;
         requestQueueSingleton = RequestQueueSingleton.getInstance(this);
-        loginManager = UserManager.getInstance(this);
+        userManager = UserManager.getInstance(this);
     }
 
 }

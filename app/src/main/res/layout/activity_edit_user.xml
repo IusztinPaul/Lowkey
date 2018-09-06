@@ -1,30 +1,121 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".main.profile.EditUserActivity">
 
-    <com.github.florent37.materialtextfield.MaterialTextField
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
-        app:mtf_image="@drawable/selprofile"
-        app:mtf_labelColor="#FFF">
+        android:layout_height="match_parent">
 
-        <EditText
-            android:id="@+id/etEmail"
-            android:layout_width="300dp"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:hint="@string/confirm_email"
-            android:inputType="textEmailAddress"
-            android:maxLines="1"
-            android:paddingBottom="15dp"
-            android:singleLine="true"
-            android:textColor="@android:color/black" />
-    </com.github.florent37.materialtextfield.MaterialTextField>
+            android:orientation="vertical">
 
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/ivProfile"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_gravity="center"
+                android:layout_marginEnd="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:elevation="15dp"
+                android:src="@drawable/fff"
+                 />
+
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                >
+
+                <EditText
+                    android:id="@+id/etUsername"
+                    android:layout_width="300dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:hint="@string/edit_username"
+                    android:inputType="textEmailAddress"
+                    android:maxLines="1"
+                    android:paddingBottom="15dp"
+                    android:singleLine="true"
+                    android:textColor="@android:color/black" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                >
+
+                <EditText
+                    android:id="@+id/etName"
+                    android:layout_width="300dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:hint="@string/edit_name"
+                    android:inputType="textEmailAddress"
+                    android:maxLines="1"
+                    android:paddingBottom="15dp"
+                    android:singleLine="true"
+                    android:textColor="@android:color/black" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+               >
+
+                <EditText
+                    android:id="@+id/etPhone"
+                    android:layout_width="300dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:hint="@string/edit_phone"
+                    android:inputType="phone"
+                    android:maxLines="1"
+                    android:paddingBottom="15dp"
+                    android:singleLine="true"
+                    android:textColor="@android:color/black" />
+            </android.support.design.widget.TextInputLayout>
+
+            <Spinner
+                android:id="@+id/spinnerGender"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content" />
+
+            <DatePicker
+                android:id="@+id/dpBirth"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:datePickerMode="spinner"
+                android:calendarViewShown="false" />
+
+            <Button
+                android:id="@+id/btnSave"
+                style="?android:textAppearanceSmall"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="50dp"
+                android:background="@drawable/roundedbutton"
+                android:backgroundTint="@android:color/white"
+                android:elevation="15dp"
+                android:text="@string/edit_btn_save"
+                android:textColor="@android:color/black"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>
