@@ -1,6 +1,9 @@
 package fusionkey.lowkey.auth;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -8,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.R;
@@ -62,6 +66,7 @@ public class ConfirmCodeActivity extends AppCompatActivity {
         btnContinue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(isNetworkAvailable()){
                 etEmail.setError(null);
                 String email = etEmail.getText().toString();
                 if(TextUtils.isEmpty(email)) {
@@ -78,6 +83,7 @@ public class ConfirmCodeActivity extends AppCompatActivity {
 
                 LowKeyApplication.loginManager.setUser(email);
                 createLayout(2);
+            } else Toast.makeText(ConfirmCodeActivity.this, "Check if you're connected to the Internet", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -92,6 +98,7 @@ public class ConfirmCodeActivity extends AppCompatActivity {
         btnFinish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(isNetworkAvailable()){
                 etCode.setError(null);
                 String code = etCode.getText().toString();
                 if(TextUtils.isEmpty(code)) {
@@ -108,7 +115,17 @@ public class ConfirmCodeActivity extends AppCompatActivity {
                                 startActivity(intent);
                             }
                         });
+
+
             }
+            else Toast.makeText(ConfirmCodeActivity.this, "Check if you're connected to the Internet", Toast.LENGTH_SHORT).show();
+                }
         });
+    }
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 }

@@ -1,6 +1,9 @@
 package fusionkey.lowkey.auth;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -68,6 +71,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         etEmail = findViewById(R.id.etEmail);
         btnContinue = findViewById(R.id.btnContinue);
 
+        if(isNetworkAvailable()){
         btnContinue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -92,7 +96,9 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                 LowKeyApplication.loginManager.setUser(email);
                 createLayout(2);
             }
-        });
+        });}
+    else Toast.makeText(ForgotPasswordActivity.this, "Check if you're connected to the Internet", Toast.LENGTH_SHORT).show();
+
     }
 
     private void setupSecondStep() {
@@ -103,10 +109,14 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         etPass = findViewById(R.id.etPassword);
         etPass2 = findViewById(R.id.etPassword2);
         btnFinish = findViewById(R.id.btnFinish);
+
         btnFinish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(isNetworkAvailable())
                 validateCode();
+                else Toast.makeText(ForgotPasswordActivity.this, "Check if you're connected to the Internet", Toast.LENGTH_SHORT).show();
+
             }
         });
 
@@ -166,5 +176,11 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         this.code = code;
         this.password = password;
         proceedToCode = true;
+    }
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 }

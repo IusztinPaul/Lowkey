@@ -5,6 +5,8 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.lang.ref.WeakReference;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -26,14 +28,14 @@ import fusionkey.lowkey.queue.QueueMatcherUtils;
 public class ChatAsyncTask extends AsyncTask<Void,String,JSONObject> {
 
     private ChatRoom chatRoom;
-    private RecyclerView recyclerView;
+    private WeakReference<RecyclerView> recyclerView;
     private List<MessageTO> list;
     private ChatAppMsgAdapter chatAppMsgAdapter;
 
     public ChatAsyncTask(ChatRoom chatRoom, RecyclerView recyclerView, ChatAppMsgAdapter chatAppMsgAdapter, List<MessageTO> list){
         this.chatRoom=chatRoom;
         this.chatAppMsgAdapter=chatAppMsgAdapter;
-        this.recyclerView=recyclerView;
+        this.recyclerView=new WeakReference<>(recyclerView);
         this.list=list;
 
     }
@@ -109,7 +111,7 @@ public class ChatAsyncTask extends AsyncTask<Void,String,JSONObject> {
         int newMsgPosition = list.size() - 1;
 
         chatAppMsgAdapter.notifyItemInserted(newMsgPosition);
-        recyclerView.scrollToPosition(newMsgPosition);
+        recyclerView.get().scrollToPosition(newMsgPosition);
     }
 
     @Override

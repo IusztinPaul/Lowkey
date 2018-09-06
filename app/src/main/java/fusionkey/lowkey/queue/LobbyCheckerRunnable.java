@@ -152,7 +152,6 @@ public class LobbyCheckerRunnable implements Runnable {
     void makeSpeakerDeleteRequest() {
         if(listener == null || callerSpeaker == null)
             return;
-
         makeDeleteRequest("deleteSpeaker");
     }
 

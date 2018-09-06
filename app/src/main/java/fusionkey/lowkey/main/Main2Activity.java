@@ -31,8 +31,8 @@ import fusionkey.lowkey.entryActivity.EntryActivity;
 import fusionkey.lowkey.R;
 
 public class Main2Activity extends AppCompatActivity {
-
-    public static String currentUser="ERRER";
+    private LoadingAsyncTask loadingAsyncTask;
+    public static String currentUser="SebastianDevTeam";
     static public boolean SEARCH_STATE;
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -46,10 +46,11 @@ public class Main2Activity extends AppCompatActivity {
     /**
      * The {@link ViewPager} that will host the section contents.
      */
+
     private ViewPager mViewPager;
     ProgressBar progressBar;
     SharedPreferences sharedPreferences;
-    static CardView searchCard;
+    private CardView searchCard;
     ImageView imageView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,14 +93,15 @@ public class Main2Activity extends AppCompatActivity {
     }
 
     private void searchForHelp(){
-        final LoadingAsyncTask loadingAsyncTask = new LoadingAsyncTask(currentUser, this, progressBar, true);
+        loadingAsyncTask = new LoadingAsyncTask(currentUser, this, progressBar, true,searchCard);
         loadingAsyncTask.execute();
         saveState("step",0);
     }
 
     private void helpOthers(){
         searchCard.setVisibility(View.VISIBLE);
-        final LoadingAsyncTask loadingAsyncTask = new LoadingAsyncTask(currentUser, this, progressBar, false);
+        loadingAsyncTask = new LoadingAsyncTask(currentUser, this, progressBar, false,searchCard);
+
         loadingAsyncTask.execute();
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -127,36 +129,18 @@ public class Main2Activity extends AppCompatActivity {
         return i;
     }
 
-    private void goQueue(){
-        Intent intent = getIntent();
-        Boolean listenerState = intent.getBooleanExtra("Listener",true);
-        String mapping = intent.getStringExtra("Mapping");
-        if(mapping != null && listenerState != null) {
-            if (mapping.equals("ON") && !listenerState) {
-                searchCard.setVisibility(View.VISIBLE);
-                final LoadingAsyncTask loadingAsyncTask = new LoadingAsyncTask(currentUser, this, progressBar, false);
-                loadingAsyncTask.execute();
-                SEARCH_STATE=true;
-                imageView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        loadingAsyncTask.cancel(true);
-                        searchCard.setVisibility(View.INVISIBLE);
-                        SEARCH_STATE=false;
-
-                    }
-                });
-
-            } else if (mapping.equals("ON") && listenerState) {
-
-                final LoadingAsyncTask loadingAsyncTask = new LoadingAsyncTask(currentUser, this, progressBar, true);
-                loadingAsyncTask.execute();
-            }
-        }
-    }
 
     @Override
     public void onBackPressed(){
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        if(loadingAsyncTask!=null)
+        loadingAsyncTask.cancel(true);
+        searchCard=null;
+        super.onDestroy();
 
     }
 

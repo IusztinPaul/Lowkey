@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
+import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -12,6 +13,8 @@ import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.lang.ref.WeakReference;
 
 import fusionkey.lowkey.chat.ChatActivity;
 import fusionkey.lowkey.queue.IQueueMatcher;
@@ -29,28 +32,29 @@ public class LoadingAsyncTask extends AsyncTask<Void, Integer, JSONObject> {
     private boolean findListener;
 
     private IQueueMatcher queueMatcher;
-    private ProgressBar progressBar;
-    private Activity currentActivity;
+    private WeakReference<ProgressBar> progressBar;
+    private WeakReference<Activity> currentActivity;
+    private WeakReference<CardView> searchCard;
     private String currentUser;
     private JSONObject jsonResponseContainer;
 
-    LoadingAsyncTask(String currentUser, Activity currentActivity, ProgressBar progressBar, boolean findListener) {
+    LoadingAsyncTask(String currentUser, Activity currentActivity, ProgressBar progressBar, boolean findListener,CardView searchCard) {
         this.findListener=findListener;
         if (findListener)
             this.queueMatcher = new QueueMatcherListenerFinder(currentUser, currentActivity);
         else
             this.queueMatcher = new QueueMatcherSpeakerFinder(currentUser, currentActivity);
         this.currentUser=currentUser;
-        this.currentActivity = currentActivity;
-        this.progressBar = progressBar;
-        this.currentActivity = currentActivity;
-        this.progressBar.setVisibility(View.GONE);
+        this.searchCard = new WeakReference<>(searchCard);
+        this.currentActivity = new WeakReference<>(currentActivity);
+        this.progressBar = new WeakReference<>(progressBar);
+        this.progressBar.get().setVisibility(View.GONE);
     }
 
     @Override
     protected void onPreExecute() {
-        this.progressBar.setVisibility(View.VISIBLE);
-        this.progressBar.setMax(LobbyCheckerRunnable.TIME_LOOPING_MILLISECONDS);
+        this.progressBar.get().setVisibility(View.VISIBLE);
+        this.progressBar.get().setMax(LobbyCheckerRunnable.TIME_LOOPING_MILLISECONDS);
         super.onPreExecute();
     }
 
@@ -92,39 +96,39 @@ public class LoadingAsyncTask extends AsyncTask<Void, Integer, JSONObject> {
     @Override
     protected void onProgressUpdate(Integer... values) {
         super.onProgressUpdate(values);
-        progressBar.setProgress(values[0]);
+        progressBar.get().setProgress(values[0]);
     }
 
     @Override
     protected void onCancelled(JSONObject jsonObject) {
-        Toast.makeText(this.currentActivity, EXIT_LOBBY_TOAST, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this.currentActivity.get(), EXIT_LOBBY_TOAST, Toast.LENGTH_SHORT).show();
     }
 
     @Override
     protected void onPostExecute(JSONObject jsonObject) {
         super.onPostExecute(jsonObject);
-        this.progressBar.setVisibility(View.GONE);
+        this.progressBar.get().setVisibility(View.GONE);
         this.jsonResponseContainer = jsonObject;
 
         try {
             // If there is no data or the request failed don't proceed else do whatever you want to.
             if (jsonObject.equals(QueueMatcherUtils.JSON_FAILED_REQUESTED_OBJECT) || jsonObject.get(QueueMatcherUtils.DATA_JSON_KEY).equals(QueueMatcherUtils.RESPONSE_NO_DATA)) {
                 Log.e("LoadingAsyncTask", "The match was not made successfully");
-                Toast.makeText(currentActivity, LOBBY_DELETED_TOAST, Toast.LENGTH_SHORT).show();
+                Toast.makeText(currentActivity.get(), LOBBY_DELETED_TOAST, Toast.LENGTH_SHORT).show();
                 saveState("step",0);
-                Main2Activity.searchCard.setVisibility(View.GONE);
+                searchCard.get().setVisibility(View.GONE);
             } else {
                 Log.e("LoadingAsyncTask :", jsonObject.toString());
-                Intent intent = new Intent(currentActivity, ChatActivity.class);
+                Intent intent = new Intent(currentActivity.get(), ChatActivity.class);
                 intent.putExtra("Listener", currentUser);
                     if(!findListener)
                         intent.putExtra("User", jsonObject.getJSONObject("data").getString("speakers"));
                     else
                         intent.putExtra("User", jsonObject.getJSONObject("data").getString("listener"));
                 saveState("step",0);
-                Main2Activity.searchCard.setVisibility(View.GONE);
-                    currentActivity.startActivity(intent);
-                Toast.makeText(this.currentActivity, FIND_LOBBY_TOAST, Toast.LENGTH_SHORT).show();
+               searchCard.get().setVisibility(View.GONE);
+                    currentActivity.get().startActivity(intent);
+                Toast.makeText(this.currentActivity.get(), FIND_LOBBY_TOAST, Toast.LENGTH_SHORT).show();
 
 
 
@@ -134,13 +138,13 @@ public class LoadingAsyncTask extends AsyncTask<Void, Integer, JSONObject> {
         }
     }
     private void saveState(String key,int step){
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(currentActivity.getApplicationContext());
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(currentActivity.get().getApplicationContext());
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putInt(key, step);
         editor.apply();
     }
     private int loadState(){
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(currentActivity.getApplicationContext());
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(currentActivity.get().getApplicationContext());
         return (sharedPreferences.getInt("step", 0));
     }
 

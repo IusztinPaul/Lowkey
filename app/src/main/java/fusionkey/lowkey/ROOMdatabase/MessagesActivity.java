@@ -67,7 +67,6 @@ public class MessagesActivity extends AppCompatActivity {
     }
     @Override
     public void onBackPressed(){
-        Intent intent = new Intent(MessagesActivity.this, Main2Activity.class);
-        startActivity(intent);
+        super.onBackPressed();
     }
 }

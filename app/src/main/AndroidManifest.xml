@@ -32,7 +32,10 @@
         <activity android:name=".auth.ConfirmCodeActivity" />
         <activity android:name=".auth.ForgotPasswordActivity" />
         <activity android:name=".ROOMdatabase.MessagesActivity" />
-        <activity android:name=".main.profile.EditUserActivity"></activity>
+        <activity android:name=".main.profile.EditUserActivity" />
+        <activity
+            android:name=".main.settings.SettingsActivity"
+            android:label="@string/title_activity_settings"></activity>
     </application>
 
 </manifest>

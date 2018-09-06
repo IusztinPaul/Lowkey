@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -12,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import fusionkey.lowkey.R;
 import fusionkey.lowkey.main.Main2Activity;
@@ -42,6 +45,7 @@ public class GetHelp extends Fragment {
         imag2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(isNetworkAvailable()){
                 if(loadState()==0) {
                     Intent intent = new Intent(getContext(), Main2Activity.class);
                     saveState("step", 1);
@@ -53,6 +57,7 @@ public class GetHelp extends Fragment {
                 // final LoadingAsyncTask loadingAsyncTask = new LoadingAsyncTask(currentUser,getActivity(),progressBar,true);
                 //   loadingAsyncTask.execute();
                 // searchCard.setVisibility(View.VISIBLE);
+            } else Toast.makeText(getActivity(), "Check if you're connected to the Internet", Toast.LENGTH_SHORT).show();
             }
         });
         return(result);
@@ -66,5 +71,11 @@ public class GetHelp extends Fragment {
     private int loadState(){
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
         return (sharedPreferences.getInt("step", 0));
+    }
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 }

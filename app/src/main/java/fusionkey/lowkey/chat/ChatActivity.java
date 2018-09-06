@@ -50,6 +50,7 @@ public class ChatActivity extends AppCompatActivity {
     ChatAsyncTask chatAsyncTask;
     Timer t;
     String listenerRequest;
+    String userRequest;
     ArrayList<MessageTO> msgDtoList;
 
     @Override
@@ -62,7 +63,7 @@ public class ChatActivity extends AppCompatActivity {
         final String listener = getIntent().getStringExtra("Listener");
         final String user = getIntent().getStringExtra("User");
         listenerRequest = listener.replace("[", "").replace("]", "").replace("\"","");
-        final String userRequest = user.replace("[", "").replace("]", "").replace("\"","");
+        userRequest = user.replace("[", "").replace("]", "").replace("\"","");
         final ChatRoom chatRoom = new ChatRoom(userRequest,listenerRequest); //C - D
         msgDtoList = new ArrayList<MessageTO>();
         final RecyclerView msgRecyclerView = (RecyclerView)findViewById(R.id.reyclerview_message_list);
@@ -157,20 +158,22 @@ public class ChatActivity extends AppCompatActivity {
             public void onClick(View v) {
                 chatAsyncTask.cancel(true);
                 t.cancel();
-                UserD userD = new UserD(listenerRequest,msgDtoList.get(msgDtoList.size()-1).getContent(),msgDtoList);
-                AppDatabase database = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "user-database")
-                        .allowMainThreadQueries()   //Allows room to do operation on main thread
-                        .build();
-                UserDao userDAO = database.userDao();
+                if(msgDtoList!=null) {
+                    UserD userD = new UserD(userRequest, msgDtoList.get(msgDtoList.size() - 1).getContent(), msgDtoList);
+                    AppDatabase database = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "user-database")
+                            .allowMainThreadQueries()   //Allows room to do operation on main thread
+                            .build();
+                    UserDao userDAO = database.userDao();
 
-                UserD userF = userDAO.findByName(listenerRequest);
-                if(userF != null){
-                    userF.addMessages(msgDtoList);
-                    userDAO.update(userF);
-                }else {
-                    userDAO.insertAll(userD);
+                    UserD userF = userDAO.findByName(userRequest);
+                    if (userF != null) {
+                        userF.addMessages(msgDtoList);
+                        userDAO.update(userF);
+                    } else {
+                        userDAO.insertAll(userD);
+                    }
+                    database.close();
                 }
-                database.close();
                 Intent intent = new Intent(ChatActivity.this, Main2Activity.class);
                 startActivity(intent);
             }
@@ -182,20 +185,22 @@ public class ChatActivity extends AppCompatActivity {
     public void onBackPressed(){
         chatAsyncTask.cancel(true);
         t.cancel();
-        UserD userD = new UserD(listenerRequest,msgDtoList.get(msgDtoList.size()-1).getContent(),msgDtoList);
-        AppDatabase database = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "user-database")
-                .allowMainThreadQueries()   //Allows room to do operation on main thread
-                .build();
-        UserDao userDAO = database.userDao();
+        if(msgDtoList!=null) {
+            UserD userD = new UserD(userRequest, msgDtoList.get(msgDtoList.size() - 1).getContent(), msgDtoList);
+            AppDatabase database = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "user-database")
+                    .allowMainThreadQueries()   //Allows room to do operation on main thread
+                    .build();
+            UserDao userDAO = database.userDao();
 
-        UserD userF = userDAO.findByName(listenerRequest);
-        if(userF != null){
-            userF.addMessages(msgDtoList);
-            userDAO.update(userF);
-        }else {
-            userDAO.insertAll(userD);
+            UserD userF = userDAO.findByName(userRequest);
+            if (userF != null) {
+                userF.addMessages(msgDtoList);
+                userDAO.update(userF);
+            } else {
+                userDAO.insertAll(userD);
+            }
+            database.close();
         }
-        database.close();
         super.onBackPressed();
     }
 

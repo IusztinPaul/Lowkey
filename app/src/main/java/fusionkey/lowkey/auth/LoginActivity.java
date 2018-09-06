@@ -4,10 +4,13 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.LoaderManager.LoaderCallbacks;
+import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -91,7 +94,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(isNetworkAvailable())
                 attemptLogin();
+                else Toast.makeText(LoginActivity.this, "Check if you're connected to the Internet", Toast.LENGTH_SHORT).show();
+
             }
         });
 
@@ -104,8 +110,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 startActivity(intent);
             }
         });
-
-
 
 
         tvForgotPassword.setOnClickListener(new OnClickListener() {
@@ -142,43 +146,43 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         final String email = mEmailView.getText().toString();
         final String password = mPasswordView.getText().toString();
 
-        if(TextUtils.isEmpty(email)) {
+        if (TextUtils.isEmpty(email)) {
             mEmailView.setError(getResources().getString(R.string.error_empty_email_field));
             mEmailView.requestFocus();
             showProgress(false);
             return;
         }
 
-        if(TextUtils.isEmpty(password)) {
+        if (TextUtils.isEmpty(password)) {
             mPasswordView.setError(getResources().getString(R.string.error_empty_password_field));
             mPasswordView.requestFocus();
             showProgress(false);
             return;
         }
 
-        LowKeyApplication.loginManager.login(email, password,
-                new AuthCallback() {
-                    @Override
-                    public void execute() {
-                        //OnSuccess
-                        Intent myIntent = new Intent(LoginActivity.this, Main2Activity.class);
-                        myIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        LoginActivity.this.startActivity(myIntent);
-                        showProgress(false);
-                    }
-                }, new AuthCallback() {
-                    @Override
-                    public void execute() {
-                        //OnFail
-                        mEmailView.setError(getResources().getString(R.string.invalid));
-                        mPasswordView.setError(getResources().getString(R.string.invalid));
-                        mEmailView.requestFocus();
-                        Toast.makeText(LoginActivity.this, getResources().getString(R.string.error_incorrect_credentials), Toast.LENGTH_SHORT).show();
-                        showProgress(false);
-                    }
-                }, true);
-    }
+            LowKeyApplication.loginManager.login(email, password,
+                    new AuthCallback() {
+                        @Override
+                        public void execute() {
+                            //OnSuccess
+                            Intent myIntent = new Intent(LoginActivity.this, Main2Activity.class);
+                            myIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            LoginActivity.this.startActivity(myIntent);
+                            showProgress(false);
+                        }
+                    }, new AuthCallback() {
+                        @Override
+                        public void execute() {
+                            //OnFail
+                            mEmailView.setError(getResources().getString(R.string.invalid));
+                            mPasswordView.setError(getResources().getString(R.string.invalid));
+                            mEmailView.requestFocus();
+                            Toast.makeText(LoginActivity.this, getResources().getString(R.string.error_incorrect_credentials), Toast.LENGTH_SHORT).show();
+                            showProgress(false);
+                        }
+                    }, true);
 
+    }
     /**
      * Shows the progress UI and hides the login form.
      */
@@ -268,5 +272,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         int ADDRESS = 0;
         int IS_PRIMARY = 1;
     }
-}
 
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+}

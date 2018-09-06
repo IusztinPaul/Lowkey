@@ -1,6 +1,9 @@
 package fusionkey.lowkey.auth;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -37,11 +40,13 @@ public class RegisterActivity extends AppCompatActivity {
         etPass = findViewById(R.id.etPassword);
         etPass2 = findViewById(R.id.etPassword2);
         Button btnRegister = findViewById(R.id.btn_register);
-
         btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(isNetworkAvailable())
                 attemptRegister();
+                else Toast.makeText(RegisterActivity.this, "Check if you're connected to the Internet", Toast.LENGTH_SHORT).show();
+
             }
         });
     }
@@ -94,5 +99,11 @@ public class RegisterActivity extends AppCompatActivity {
                         startActivity(intent);
                     }
                 });
+    }
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 }
