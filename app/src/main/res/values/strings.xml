@@ -137,6 +137,7 @@
     <string name="edit_phone">Phone(ex. +40732509516)</string>
     <string name="edit_btn_save">Save</string>
     <string name="edit_success_message">You have changed your account successfully!</string>
+    <string name="edit_fail_message">There were problems while updating your profile!</string>
     <!-- Change password -->
     <string name="forgot_p_old_pass">Old password</string>
     <string name="forgot_p_new_pass1">New password</string>

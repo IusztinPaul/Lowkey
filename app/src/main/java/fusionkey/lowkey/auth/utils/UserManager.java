@@ -275,7 +275,8 @@ public class UserManager {
     }
 
     public void updateUserAttributes(HashMap<UserAttributesEnum, String> attributes,
-                                     final Activity currentActivity, final AuthCallback callback) {
+                                     final Activity currentActivity,
+                                     final AuthCallback successCallback, final  AuthCallback failCallback) {
 
         CognitoUserAttributes userAttributes = new CognitoUserAttributes();
         for (Map.Entry<UserAttributesEnum, String> entry : attributes.entrySet())
@@ -284,8 +285,8 @@ public class UserManager {
         UpdateAttributesHandler handler = new UpdateAttributesHandler() {
             @Override
             public void onSuccess(List<CognitoUserCodeDeliveryDetails> attributesVerificationList) {
-                if (callback != null)
-                    callback.execute();
+                if (successCallback != null)
+                    successCallback.execute();
             }
 
             @Override
@@ -293,6 +294,9 @@ public class UserManager {
                 Log.e("updateAttributes", exception.getMessage());
                 if (currentActivity != null)
                     Toast.makeText(currentActivity, exception.getMessage(), Toast.LENGTH_SHORT).show();
+
+                if(failCallback != null)
+                    failCallback.execute();
             }
         };
 

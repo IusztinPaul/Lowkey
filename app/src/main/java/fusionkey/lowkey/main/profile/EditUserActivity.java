@@ -15,6 +15,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -31,12 +33,16 @@ import fusionkey.lowkey.auth.utils.AttributesValidator;
 import fusionkey.lowkey.auth.utils.AuthCallback;
 import fusionkey.lowkey.auth.utils.UserAttributesEnum;
 import fusionkey.lowkey.main.Main2Activity;
-import fusionkey.lowkey.models.BitmapDataObject;
+import fusionkey.lowkey.main.utils.Callback;
+import fusionkey.lowkey.main.utils.ProfilePhotoUploader;
 
 public class EditUserActivity extends AppCompatActivity {
 
     private final String BIRTH_DATE_SEPARATOR = "/";
     private final int GALLERY_REQUEST = 1;
+
+    private ScrollView svForm;
+    private ProgressBar pBar;
 
     private CircleImageView ivProfile;
     private EditText etUsername;
@@ -51,6 +57,9 @@ public class EditUserActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_user);
+
+        svForm = findViewById(R.id.svForm);
+        pBar = findViewById(R.id.pBar);
 
         ivProfile = findViewById(R.id.ivProfile);
         ivProfile.setOnClickListener(new View.OnClickListener() {
@@ -84,13 +93,12 @@ public class EditUserActivity extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == Activity.RESULT_OK)
-            switch (requestCode){
+        if (resultCode == Activity.RESULT_OK)
+            switch (requestCode) {
                 case GALLERY_REQUEST:
                     Uri selectedImage = data.getData();
                     try {
                         Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
-                        bitmap = Bitmap.createScaledBitmap(bitmap, 25, 25, true);
                         newImage = bitmap;
                         ivProfile.setImageBitmap(bitmap);
                     } catch (IOException e) {
@@ -104,6 +112,7 @@ public class EditUserActivity extends AppCompatActivity {
         etUsername.setError(null);
         etName.setError(null);
         etPhone.setError(null);
+        switchView(true);
 
         HashMap<UserAttributesEnum, String> attributesToUpdate = new HashMap<>();
 
@@ -113,50 +122,74 @@ public class EditUserActivity extends AppCompatActivity {
                 gender = spinnerGender.getSelectedItem().toString(),
                 birth = getFormattedDate(dpBirth);
 
-        if(newImage != null) {
-            BitmapDataObject bitmapDataObject = new BitmapDataObject(newImage);
-            bitmapDataObject.serialize();
-            attributesToUpdate.put(UserAttributesEnum.PICTURE, bitmapDataObject.getSerializedImage());
 
-            new PhotoTransferer().upload(bitmapDataObject.getSerializedImage(),
-                    LowKeyApplication.userManager.getUser().getUserId(), true);
+        if (!TextUtils.isEmpty(username))
+            attributesToUpdate.put(UserAttributesEnum.USERNAME, username);
+
+        if (!TextUtils.isEmpty(name))
+            attributesToUpdate.put(UserAttributesEnum.NAME, name);
+
+        if (AttributesValidator.isPhoneValid(phone))
+            attributesToUpdate.put(UserAttributesEnum.PHONE, phone);
+        else if (!TextUtils.isEmpty(phone)) {
+            etPhone.requestFocus();
+            etPhone.setError(getApplicationContext().getResources().getString(R.string.invalid));
+            return;
         }
 
-       if(!TextUtils.isEmpty(username))
-           attributesToUpdate.put(UserAttributesEnum.USERNAME, username);
-
-       if(!TextUtils.isEmpty(name))
-           attributesToUpdate.put(UserAttributesEnum.NAME, name);
-
-       if(AttributesValidator.isPhoneValid(phone))
-           attributesToUpdate.put(UserAttributesEnum.PHONE, phone);
-       else if(!TextUtils.isEmpty(phone)) {
-           etPhone.requestFocus();
-           etPhone.setError(getApplicationContext().getResources().getString(R.string.invalid));
-           return;
-       }
-
-       attributesToUpdate.put(UserAttributesEnum.GENDER, gender);
-       attributesToUpdate.put(UserAttributesEnum.BIRTH_DATE, birth);
+        attributesToUpdate.put(UserAttributesEnum.GENDER, gender);
+        attributesToUpdate.put(UserAttributesEnum.BIRTH_DATE, birth);
 
         LowKeyApplication.userManager.updateUserAttributes(attributesToUpdate, this, new AuthCallback() {
             @Override
             public void execute() {
-                Toast.makeText(EditUserActivity.this,
-                        EditUserActivity.this.getResources().getString(R.string.edit_success_message),
-                        Toast.LENGTH_SHORT).show();
-
-                Intent intent = new Intent(EditUserActivity.this, Main2Activity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
-
-                // Reload the user details locally.
-                LowKeyApplication.userManager.requestUserDetails(EditUserActivity.this, null);
+                if (newImage != null) {
+                    new ProfilePhotoUploader(newImage).upload(
+                            LowKeyApplication.userManager.getUser().getUserId(),
+                            new Callback() {
+                                @Override
+                                public void handle() {
+                                    // TODO: Also cache image.
+                                    onSuccessLogic();
+                                }
+                            },
+                            new Callback() {
+                                @Override
+                                public void handle() {
+                                    Toast.makeText(EditUserActivity.this,
+                                            EditUserActivity.this.getResources().getString(R.string.edit_fail_message),
+                                            Toast.LENGTH_SHORT).show();
+                                    switchView(false);
+                                }
+                            }
+                    );
+                } else {
+                    onSuccessLogic();
+                }
+            }
+        }, new AuthCallback() {
+            @Override
+            public void execute() {
+                switchView(false);
             }
         });
     }
 
+    private void onSuccessLogic() {
+        Toast.makeText(EditUserActivity.this,
+                EditUserActivity.this.getResources().getString(R.string.edit_success_message),
+                Toast.LENGTH_SHORT).show();
+
+        Intent intent = new Intent(EditUserActivity.this, Main2Activity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+
+        // Reload the user details locally.
+        LowKeyApplication.userManager.requestUserDetails(EditUserActivity.this, null);
+    }
+
     private void populateUI() {
+        switchView(true);
         try {
             Map<String, String> attributes = LowKeyApplication.userManager.getUserDetails().getAttributes().getAttributes();
 
@@ -164,8 +197,7 @@ public class EditUserActivity extends AppCompatActivity {
                     name = attributes.get(UserAttributesEnum.NAME.toString()),
                     phone = attributes.get(UserAttributesEnum.PHONE.toString()),
                     gender = attributes.get(UserAttributesEnum.GENDER.toString()),
-                    birth = attributes.get(UserAttributesEnum.BIRTH_DATE.toString()),
-                    photo = attributes.get(UserAttributesEnum.PICTURE.toString());
+                    birth = attributes.get(UserAttributesEnum.BIRTH_DATE.toString());
 
             // Get spinner default position.
             ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.
@@ -189,11 +221,20 @@ public class EditUserActivity extends AppCompatActivity {
                 }
             }
 
-            if (photo != null) {
-                BitmapDataObject bitmapDataObject = new BitmapDataObject(photo);
-                bitmapDataObject.unserialize();
-                ivProfile.setImageBitmap(bitmapDataObject.getCurrentImage());
-            }
+            // Try to get profile photo from S3.
+            // TODO: Also ask for cached image.
+            final ProfilePhotoUploader profilePhotoUploader = new ProfilePhotoUploader();
+            profilePhotoUploader.download(
+                    LowKeyApplication.userManager.getUser().getUserId(),
+                    new Callback() {
+                        @Override
+                        public void handle() {
+                            ivProfile.setImageBitmap(profilePhotoUploader.getPhoto());
+                            switchView(false);
+                        }
+                    }
+            );
+
         } catch (NullPointerException e) {
             Log.e("NullPointerExp", "User details not loaded yet");
         }
@@ -202,7 +243,7 @@ public class EditUserActivity extends AppCompatActivity {
     private String getFormattedDate(@NonNull DatePicker datePicker) {
         int day = datePicker.getDayOfMonth();
         int month = datePicker.getMonth();
-        int year =  datePicker.getYear();
+        int year = datePicker.getYear();
 
         Calendar calendar = Calendar.getInstance();
         calendar.set(year, month, day);
@@ -215,6 +256,11 @@ public class EditUserActivity extends AppCompatActivity {
         Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
         photoPickerIntent.setType("image/*");
         startActivityForResult(photoPickerIntent, GALLERY_REQUEST);
+    }
+
+    private void switchView(boolean loading) {
+        pBar.setVisibility(loading ? View.VISIBLE : View.GONE);
+        svForm.setVisibility(loading ? View.GONE : View.VISIBLE);
     }
 
 }
