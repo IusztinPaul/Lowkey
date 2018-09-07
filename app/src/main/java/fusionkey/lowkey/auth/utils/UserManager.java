@@ -219,7 +219,6 @@ public class UserManager {
         GenericHandler confirmationCallback = new GenericHandler() {
             @Override
             public void onSuccess() {
-                requestUserDetails(null, null);
                 if (onSuccessCallback != null)
                     onSuccessCallback.execute();
             }

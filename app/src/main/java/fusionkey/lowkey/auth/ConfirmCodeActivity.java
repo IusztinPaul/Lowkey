@@ -17,6 +17,7 @@ import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.R;
 import fusionkey.lowkey.auth.utils.AttributesValidator;
 import fusionkey.lowkey.auth.utils.AuthCallback;
+import fusionkey.lowkey.entryActivity.EntryActivity;
 
 public class ConfirmCodeActivity extends AppCompatActivity {
 
@@ -110,7 +111,7 @@ public class ConfirmCodeActivity extends AppCompatActivity {
                         new AuthCallback() {
                             @Override
                             public void execute() {
-                                Intent intent = new Intent(ConfirmCodeActivity.this, LoadUserDataActivity.class);
+                                Intent intent = new Intent(ConfirmCodeActivity.this, EntryActivity.class);
                                 startActivity(intent);
                             }
                         });
