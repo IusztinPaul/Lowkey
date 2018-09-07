@@ -22,8 +22,8 @@ public class ProfilePhotoUploader extends PhotoUploader {
     }
 
     @Override
-    public void download(String fileName, Callback successCallback) {
+    public void download(String fileName, Callback successCallback, Callback failCallback) {
         String path = PROFILE_NAME_FOLDER + fileName;
-        super.download(path, successCallback);
+        super.download(path, successCallback, failCallback);
     }
 }

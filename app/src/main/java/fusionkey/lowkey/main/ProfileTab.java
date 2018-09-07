@@ -22,6 +22,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.auth.ConfirmCodeActivity;
 import fusionkey.lowkey.entryActivity.EntryActivity;
@@ -71,6 +72,10 @@ public class ProfileTab extends Fragment {
                 startActivity(intent);
             }
         });
+
+        final CircleImageView circleImageView = rootView.findViewById(R.id.circleImageView);
+        if(LowKeyApplication.profilePhoto != null)
+            circleImageView.setImageBitmap(LowKeyApplication.profilePhoto);
 
         return rootView;
     }

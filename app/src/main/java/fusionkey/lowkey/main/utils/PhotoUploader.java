@@ -93,7 +93,8 @@ public class PhotoUploader implements IS3Uploader{
     }
 
     @Override
-    public void download(String path,final Callback successCallback) {
+    public void download(String path,final Callback successCallback,
+                            final Callback failCallback) {
         final File file = new File(LowKeyApplication.instance.getApplicationContext().getFilesDir(), PHOTO_NAME_FILE);
 
         TransferUtility transferUtility =
@@ -137,6 +138,8 @@ public class PhotoUploader implements IS3Uploader{
             @Override
             public void onError(int id, Exception ex) {
                Log.e("downloadError", ex.getMessage());
+               if(failCallback != null)
+                   failCallback.handle();
             }
         });
     }

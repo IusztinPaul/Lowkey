@@ -17,6 +17,8 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+
+import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.R;
 
 public class Main2Activity extends AppCompatActivity {
@@ -71,6 +73,7 @@ public class Main2Activity extends AppCompatActivity {
         progressBar = (ProgressBar) findViewById(R.id.loadingBar);
         searchCard = (CardView) findViewById(R.id.searchCard);
         imageView = findViewById(R.id.imageView8);
+
 
         if(loadState()==1)
             searchForHelp();

@@ -149,7 +149,7 @@ public class EditUserActivity extends AppCompatActivity {
                             new Callback() {
                                 @Override
                                 public void handle() {
-                                    // TODO: Also cache image.
+                                    LowKeyApplication.profilePhoto = newImage;
                                     onSuccessLogic();
                                 }
                             },
@@ -222,21 +222,33 @@ public class EditUserActivity extends AppCompatActivity {
             }
 
             // Try to get profile photo from S3.
-            // TODO: Also ask for cached image.
-            final ProfilePhotoUploader profilePhotoUploader = new ProfilePhotoUploader();
-            profilePhotoUploader.download(
-                    LowKeyApplication.userManager.getUser().getUserId(),
-                    new Callback() {
-                        @Override
-                        public void handle() {
-                            ivProfile.setImageBitmap(profilePhotoUploader.getPhoto());
-                            switchView(false);
+            if(LowKeyApplication.profilePhoto != null) {
+                ivProfile.setImageBitmap(LowKeyApplication.profilePhoto);
+                switchView(false);
+            }
+            else {
+                final ProfilePhotoUploader profilePhotoUploader = new ProfilePhotoUploader();
+                profilePhotoUploader.download(
+                        LowKeyApplication.userManager.getUser().getUserId(),
+                        new Callback() {
+                            @Override
+                            public void handle() {
+                                ivProfile.setImageBitmap(profilePhotoUploader.getPhoto());
+                                switchView(false);
+                            }
+                        },
+                        new Callback() {
+                            @Override
+                            public void handle() {
+                                switchView(false);
+                            }
                         }
-                    }
-            );
+                );
+            }
 
         } catch (NullPointerException e) {
             Log.e("NullPointerExp", "User details not loaded yet");
+            switchView(false);
         }
     }
 

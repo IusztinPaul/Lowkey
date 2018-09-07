@@ -14,6 +14,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 
 import fusionkey.lowkey.LowKeyApplication;
+import fusionkey.lowkey.auth.LoadUserDataActivity;
 import fusionkey.lowkey.auth.LoginActivity;
 import fusionkey.lowkey.R;
 import fusionkey.lowkey.auth.RegisterActivity;
@@ -35,7 +36,7 @@ public class EntryActivity extends AppCompatActivity {
                     @Override
                     public void execute() {
                         //TODO: Add ProgressBar.
-                        Intent myIntent = new Intent(EntryActivity.this, Main2Activity.class);
+                        Intent myIntent = new Intent(EntryActivity.this, LoadUserDataActivity.class);
                         myIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         EntryActivity.this.startActivity(myIntent);
                     }
