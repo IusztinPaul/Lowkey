@@ -113,6 +113,10 @@ public class ConfirmCodeActivity extends AppCompatActivity {
                             public void execute() {
                                 Intent intent = new Intent(ConfirmCodeActivity.this, EntryActivity.class);
                                 startActivity(intent);
+
+                                Toast.makeText(ConfirmCodeActivity.this,
+                                        ConfirmCodeActivity.this.getResources().getString(R.string.confirm_success_message),
+                                        Toast.LENGTH_SHORT).show();
                             }
                         });
 
