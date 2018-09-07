@@ -194,7 +194,6 @@ public class UserManager {
             @Override
             public void onSuccess(CognitoUser cognitoUser, boolean userConfirmed, CognitoUserCodeDeliveryDetails cognitoUserCodeDeliveryDetails) {
                 cognitoPoolUtils.setUser(cognitoUser);
-
                 if (!userConfirmed) {
                     Toast.makeText(currentActivity,
                             currentActivity.getResources().getString(R.string.register_validation_message),
@@ -220,6 +219,7 @@ public class UserManager {
         GenericHandler confirmationCallback = new GenericHandler() {
             @Override
             public void onSuccess() {
+                requestUserDetails(null, null);
                 if (onSuccessCallback != null)
                     onSuccessCallback.execute();
             }
