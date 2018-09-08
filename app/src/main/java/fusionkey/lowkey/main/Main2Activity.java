@@ -23,7 +23,7 @@ import fusionkey.lowkey.auth.utils.UserAttributesEnum;
 public class Main2Activity extends AppCompatActivity {
     private LoadingAsyncTask loadingAsyncTask;
     public static String currentUser = LowKeyApplication.userManager.getUserDetails().getAttributes().
-            getAttributes().get(UserAttributesEnum.USERNAME.toString());
+            getAttributes().get(UserAttributesEnum.EMAIL.toString());
 
     static public boolean SEARCH_STATE;
     /**
@@ -48,10 +48,7 @@ public class Main2Activity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
-        // Determine if this is first start - and whether to show app intro
-        // Determine if the user is logged in
-        //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        //setSupportActionBar(toolbar);
+
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
