@@ -159,6 +159,7 @@ public class UserManager {
             cognitoPoolUtils.getUser().signOut();
             cognitoPoolUtils.setAllUserDataToNull();
             clearCredentials();
+            LowKeyApplication.profilePhoto = null;
             return true;
         } catch (NullPointerException e) {
             // The user has to be set up manually in the cognitoPoolUtils object. So if it wasn't

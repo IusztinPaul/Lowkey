@@ -1,16 +1,6 @@
 package fusionkey.lowkey.main;
 
-import android.content.Context;
 import android.content.Intent;
-
-import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.provider.Settings;
 
 import android.os.Bundle;
 
@@ -24,14 +14,13 @@ import android.widget.Toast;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import fusionkey.lowkey.LowKeyApplication;
-import fusionkey.lowkey.auth.ConfirmCodeActivity;
 import fusionkey.lowkey.entryActivity.EntryActivity;
 import fusionkey.lowkey.R;
 
 import fusionkey.lowkey.main.settings.SettingsActivity;
 
-import fusionkey.lowkey.main.profile.ChangePasswordActivity;
 import fusionkey.lowkey.main.profile.EditUserActivity;
+import fusionkey.lowkey.main.utils.NetworkManager;
 
 
 public class ProfileTab extends Fragment {
@@ -57,7 +46,7 @@ public class ProfileTab extends Fragment {
         logOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(isNetworkAvailable())
+                if(NetworkManager.isNetworkAvailable())
                 logOut();
                 else Toast.makeText(getActivity(), "Check if you're connected to the Internet", Toast.LENGTH_SHORT).show();
 
@@ -84,12 +73,4 @@ public class ProfileTab extends Fragment {
         LowKeyApplication.userManager.logout();
         getActivity().startActivity(new Intent(getContext().getApplicationContext(), EntryActivity.class));
     }
-    private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager)getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-    }
-
-
 }

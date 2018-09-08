@@ -4,13 +4,10 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.LoaderManager.LoaderCallbacks;
-import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -33,9 +30,9 @@ import java.util.List;
 
 import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.auth.utils.AuthCallback;
-import fusionkey.lowkey.entryActivity.EntryActivity;
 import fusionkey.lowkey.main.Main2Activity;
 import fusionkey.lowkey.R;
+import fusionkey.lowkey.main.utils.NetworkManager;
 
 /**
  * A login screen that offers login via email/password.
@@ -91,7 +88,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(isNetworkAvailable())
+                if(NetworkManager.isNetworkAvailable())
                 attemptLogin();
                 else Toast.makeText(LoginActivity.this, "Check if you're connected to the Internet", Toast.LENGTH_SHORT).show();
 
@@ -140,8 +137,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mPasswordView.setError(null);
 
         // Store values at the time of the login attempt.
-        final String email = mEmailView.getText().toString();
-        final String password = mPasswordView.getText().toString();
+        final String email = mEmailView.getText().toString().trim();
+        final String password = mPasswordView.getText().toString().trim();
 
         if (TextUtils.isEmpty(email)) {
             mEmailView.setError(getResources().getString(R.string.error_empty_email_field));
@@ -180,20 +177,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     }
                 }, true);
     }
-    private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-    }
-
-
-
-
-
-
-
-
 
     /**
      * Shows the progress UI and hides the login form.

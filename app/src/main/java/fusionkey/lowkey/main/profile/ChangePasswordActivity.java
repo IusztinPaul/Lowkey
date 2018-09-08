@@ -42,9 +42,9 @@ public class ChangePasswordActivity extends AppCompatActivity {
         etNewPass1.setError(null);
         etNewPass2.setError(null);
 
-        String oldPass = etOldPass.getText().toString(),
-               newPass1 = etNewPass1.getText().toString(),
-               newPass2 = etNewPass2.getText().toString();
+        String oldPass = etOldPass.getText().toString().trim(),
+               newPass1 = etNewPass1.getText().toString().trim(),
+               newPass2 = etNewPass2.getText().toString().trim();
 
         if(!AttributesValidator.isPasswordValid(newPass1)) {
             etNewPass1.setError(getResources().getString(R.string.register_invalid_password_error));

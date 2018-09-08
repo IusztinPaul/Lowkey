@@ -1,9 +1,6 @@
 package fusionkey.lowkey.auth;
 
-import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -19,6 +16,7 @@ import fusionkey.lowkey.R;
 import fusionkey.lowkey.auth.utils.AttributesValidator;
 import fusionkey.lowkey.auth.utils.AuthCallback;
 import fusionkey.lowkey.auth.utils.UserAttributesEnum;
+import fusionkey.lowkey.main.utils.NetworkManager;
 
 public class RegisterActivity extends AppCompatActivity {
     //TODO: Add TextView with password indications(what should contain)
@@ -42,7 +40,7 @@ public class RegisterActivity extends AppCompatActivity {
         btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isNetworkAvailable())
+                if(NetworkManager.isNetworkAvailable())
                 attemptRegister();
                 else Toast.makeText(RegisterActivity.this, "Check if you're connected to the Internet", Toast.LENGTH_SHORT).show();
 
@@ -56,10 +54,10 @@ public class RegisterActivity extends AppCompatActivity {
         etPass.setError(null);
         etPass2.setError(null);
 
-        String email = etEmail.getText().toString(),
-               username = etUsername.getText().toString(),
-               password = etPass.getText().toString(),
-               password2 = etPass2.getText().toString();
+        String email = etEmail.getText().toString().trim(),
+               username = etUsername.getText().toString().trim(),
+               password = etPass.getText().toString().trim(),
+               password2 = etPass2.getText().toString().trim();
 
         if(!AttributesValidator.isEmailValid(email)) {
             etEmail.setError(getResources().getString(R.string.register_invalid_email));
@@ -98,11 +96,5 @@ public class RegisterActivity extends AppCompatActivity {
                         startActivity(intent);
                     }
                 });
-    }
-    private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 }

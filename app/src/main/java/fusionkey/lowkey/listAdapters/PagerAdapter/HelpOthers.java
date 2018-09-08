@@ -1,10 +1,7 @@
 package fusionkey.lowkey.listAdapters.PagerAdapter;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -16,6 +13,7 @@ import android.widget.Toast;
 
 import fusionkey.lowkey.R;
 import fusionkey.lowkey.main.Main2Activity;
+import fusionkey.lowkey.main.utils.NetworkManager;
 
 public class HelpOthers extends Fragment {
     private static final String KEY_POSITION="position";
@@ -42,7 +40,7 @@ public class HelpOthers extends Fragment {
         imag1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(isNetworkAvailable()){
+                if(NetworkManager.isNetworkAvailable()){
                 if(loadState()==0) {
                     Intent intent = new Intent(getContext(), Main2Activity.class);
                     saveState("step", 2);
@@ -65,11 +63,5 @@ public class HelpOthers extends Fragment {
     private int loadState(){
          sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
         return (sharedPreferences.getInt("step", 0));
-    }
-    private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 }

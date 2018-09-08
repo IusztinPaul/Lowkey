@@ -1,9 +1,6 @@
 package fusionkey.lowkey.auth;
 
-import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -18,6 +15,7 @@ import fusionkey.lowkey.R;
 import fusionkey.lowkey.auth.utils.AttributesValidator;
 import fusionkey.lowkey.auth.utils.AuthCallback;
 import fusionkey.lowkey.entryActivity.EntryActivity;
+import fusionkey.lowkey.main.utils.NetworkManager;
 
 public class ConfirmCodeActivity extends AppCompatActivity {
 
@@ -66,9 +64,9 @@ public class ConfirmCodeActivity extends AppCompatActivity {
         btnContinue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isNetworkAvailable()){
+                if(NetworkManager.isNetworkAvailable()){
                 etEmail.setError(null);
-                String email = etEmail.getText().toString();
+                String email = etEmail.getText().toString().trim();
                 if(TextUtils.isEmpty(email)) {
                     etEmail.setError(ConfirmCodeActivity.this.getResources().getString(R.string.field_empty));
                     etEmail.requestFocus();
@@ -98,9 +96,9 @@ public class ConfirmCodeActivity extends AppCompatActivity {
         btnFinish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isNetworkAvailable()){
+                if(NetworkManager.isNetworkAvailable()){
                 etCode.setError(null);
-                String code = etCode.getText().toString();
+                String code = etCode.getText().toString().trim();
                 if(TextUtils.isEmpty(code)) {
                     etCode.setError(ConfirmCodeActivity.this.getResources().getString(R.string.field_empty));
                     etCode.requestFocus();
@@ -126,10 +124,5 @@ public class ConfirmCodeActivity extends AppCompatActivity {
                 }
         });
     }
-    private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-    }
+
 }

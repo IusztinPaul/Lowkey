@@ -1,6 +1,5 @@
 package fusionkey.lowkey.main;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.design.widget.TabLayout;
@@ -12,7 +11,6 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.ImageView;
@@ -20,10 +18,13 @@ import android.widget.ProgressBar;
 
 import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.R;
+import fusionkey.lowkey.auth.utils.UserAttributesEnum;
 
 public class Main2Activity extends AppCompatActivity {
     private LoadingAsyncTask loadingAsyncTask;
-    public static String currentUser="SebastianDevTeam";
+    public static String currentUser = LowKeyApplication.userManager.getUserDetails().getAttributes().
+            getAttributes().get(UserAttributesEnum.USERNAME.toString());
+
     static public boolean SEARCH_STATE;
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide

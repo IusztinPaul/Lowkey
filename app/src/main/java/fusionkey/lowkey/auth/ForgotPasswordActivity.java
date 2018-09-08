@@ -1,9 +1,6 @@
 package fusionkey.lowkey.auth;
 
-import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -21,6 +18,7 @@ import fusionkey.lowkey.auth.utils.AttributesValidator;
 import fusionkey.lowkey.auth.utils.AuthCallback;
 import fusionkey.lowkey.auth.utils.CodeHandler;
 import fusionkey.lowkey.entryActivity.EntryActivity;
+import fusionkey.lowkey.main.utils.NetworkManager;
 
 public class ForgotPasswordActivity extends AppCompatActivity {
 
@@ -69,12 +67,12 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         etEmail = findViewById(R.id.etEmail);
         btnContinue = findViewById(R.id.btnContinue);
 
-        if(isNetworkAvailable()){
+        if(NetworkManager.isNetworkAvailable()){
         btnContinue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 etEmail.setError(null);
-                String email = etEmail.getText().toString();
+                String email = etEmail.getText().toString().trim();
                 if(TextUtils.isEmpty(email)) {
                     etEmail.setError(ForgotPasswordActivity.this.getResources().getString(R.string.field_empty));
                     etEmail.requestFocus();
@@ -111,7 +109,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         btnFinish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isNetworkAvailable())
+                if(NetworkManager.isNetworkAvailable())
                 validateCode();
                 else Toast.makeText(ForgotPasswordActivity.this, "Check if you're connected to the Internet", Toast.LENGTH_SHORT).show();
 
@@ -146,9 +144,9 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         etPass.setError(null);
         etPass2.setError(null);
 
-        String code = etCode.getText().toString();
-        String password = etPass.getText().toString();
-        String password2 = etPass2.getText().toString();
+        String code = etCode.getText().toString().trim();
+        String password = etPass.getText().toString().trim();
+        String password2 = etPass2.getText().toString().trim();
 
         if(TextUtils.isEmpty(code)) {
             etCode.setError(getResources().getString(R.string.field_empty));
@@ -175,10 +173,5 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         this.password = password;
         proceedToCode = true;
     }
-    private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-    }
+
 }
