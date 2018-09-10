@@ -65,6 +65,8 @@ public class ProfileTab extends Fragment {
         final CircleImageView circleImageView = rootView.findViewById(R.id.circleImageView);
         if(LowKeyApplication.profilePhoto != null)
             circleImageView.setImageBitmap(LowKeyApplication.profilePhoto);
+        else
+            circleImageView.setBackgroundResource(R.drawable.avatar_placeholder);
 
         return rootView;
     }

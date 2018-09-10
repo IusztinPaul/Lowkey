@@ -5,6 +5,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.amazonaws.mobile.client.AWSMobileClient;
@@ -26,23 +28,21 @@ public class EntryActivity extends AppCompatActivity {
 
     private static final int RC_SIGN_IN = 9001;
 
+    private ProgressBar pBar;
+    private LinearLayout llView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_entry);
 
-        boolean isLogged = LowKeyApplication.userManager.logInIfHasCredentials(this,
-                new AuthCallback() {
-                    @Override
-                    public void execute() {
-                        //TODO: Add ProgressBar.
-                        Intent myIntent = new Intent(EntryActivity.this, LoadUserDataActivity.class);
-                        myIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        EntryActivity.this.startActivity(myIntent);
-                    }
-                });
+        pBar = findViewById(R.id.pBar);
+        llView = findViewById(R.id.llView);
+        switchView(true);
+
         // If you are logged in just proceed.
-       if(isLogged) return;
+        if (isLoggedIn()) return;
+        switchView(false);
 
         Button Glogin = (Button) findViewById(R.id.Gconnect);
         Button Alogin = (Button) findViewById(R.id.Aconnect);
@@ -51,10 +51,10 @@ public class EntryActivity extends AppCompatActivity {
         Slogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                overridePendingTransition(0,0);
+                overridePendingTransition(0, 0);
                 Intent intent = new Intent(EntryActivity.this, RegisterActivity.class);
                 startActivity(intent);
-                overridePendingTransition(0,0);
+                overridePendingTransition(0, 0);
             }
         });
 
@@ -68,10 +68,10 @@ public class EntryActivity extends AppCompatActivity {
         Alogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                overridePendingTransition(0,0);
+                overridePendingTransition(0, 0);
                 Intent intent = new Intent(EntryActivity.this, LoginActivity.class);
                 startActivity(intent);
-                overridePendingTransition(0,0);
+                overridePendingTransition(0, 0);
             }
         });
 
@@ -82,13 +82,13 @@ public class EntryActivity extends AppCompatActivity {
                         .requestEmail()
                         .build();
                 GoogleSignInClient mGoogleSignInClient = GoogleSignIn.getClient(EntryActivity.this, gso);
-               // mGoogleSignInClient.signOut();
+                // mGoogleSignInClient.signOut();
 
                 Intent signInIntent = mGoogleSignInClient.getSignInIntent();
                 startActivityForResult(signInIntent, RC_SIGN_IN);
 
                 GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(EntryActivity.this);
-                if(account != null) {
+                if (account != null) {
                     Intent intent = new Intent(EntryActivity.this, Main2Activity.class);
                     startActivity(intent);
 
@@ -96,9 +96,27 @@ public class EntryActivity extends AppCompatActivity {
             }
         });
     }
+
     @Override
-    public void onBackPressed(){
+    public void onBackPressed() {
 
     }
 
+    private boolean isLoggedIn() {
+        return LowKeyApplication.userManager.logInIfHasCredentials(this,
+                new AuthCallback() {
+                    @Override
+                    public void execute() {
+                        //TODO: Add ProgressBar.
+                        Intent myIntent = new Intent(EntryActivity.this, LoadUserDataActivity.class);
+                        myIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        EntryActivity.this.startActivity(myIntent);
+                    }
+                });
+    }
+
+    private void switchView(boolean loading) {
+        pBar.setVisibility(loading ? View.VISIBLE : View.GONE);
+        llView.setVisibility(loading ? View.GONE : View.VISIBLE);
+    }
 }

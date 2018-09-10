@@ -22,8 +22,7 @@ import fusionkey.lowkey.auth.utils.UserAttributesEnum;
 
 public class Main2Activity extends AppCompatActivity {
     private LoadingAsyncTask loadingAsyncTask;
-    public static String currentUser = LowKeyApplication.userManager.getUserDetails().getAttributes().
-            getAttributes().get(UserAttributesEnum.EMAIL.toString());
+    public static String currentUser = getParsedEmail();
 
     static public boolean SEARCH_STATE;
     /**
@@ -52,15 +51,7 @@ public class Main2Activity extends AppCompatActivity {
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-        /**
-         * @To-DO Tried to get the user Atributes
-         */
-        //Map<String,String> userDetails = UserManager.getInstance(getApplicationContext()).getUserDetails().getAttributes().getAttributes();
-        // String currentUser = userDetails.get("username");
-        /**
-         * @return the EMAIL
-         */
-        // currentUser = UserManager.getInstance(this).getUser().getUserId();
+
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
@@ -187,6 +178,21 @@ public class Main2Activity extends AppCompatActivity {
             }
             return null;
         }
+    }
+
+    private static String getParsedEmail() {
+        String[] items = LowKeyApplication.userManager.getUserDetails().getAttributes().
+                getAttributes().get(UserAttributesEnum.EMAIL.toString()).split("@");
+
+        return parseDots(items[0]) + parseDots(items[1]);
+    }
+
+    private static String parseDots(String item) {
+        StringBuilder sb = new StringBuilder();
+        for(String s : item.split("\\."))
+            sb.append(s);
+
+        return sb.toString();
     }
 
 }

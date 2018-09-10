@@ -160,7 +160,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     @Override
                     public void execute() {
                         //OnSuccess
-                        Intent myIntent = new Intent(LoginActivity.this, Main2Activity.class);
+                        Intent myIntent = new Intent(LoginActivity.this, LoadUserDataActivity.class);
                         myIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         LoginActivity.this.startActivity(myIntent);
                         showProgress(false);

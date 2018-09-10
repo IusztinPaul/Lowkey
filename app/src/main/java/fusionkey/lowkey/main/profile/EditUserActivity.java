@@ -240,6 +240,7 @@ public class EditUserActivity extends AppCompatActivity {
                         new Callback() {
                             @Override
                             public void handle() {
+                                ivProfile.setBackgroundResource(R.drawable.avatar_placeholder);
                                 switchView(false);
                             }
                         }

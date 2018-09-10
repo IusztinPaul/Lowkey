@@ -28,7 +28,7 @@ public class LoadUserDataActivity extends AppCompatActivity {
 
     private static class AsyncTaskChecker extends AsyncTask<Void, Void, Void> {
         private WeakReference<Activity> activityWeakReference;
-        private boolean loadingPhoto = true;
+        private boolean loadingPhoto;
 
         public AsyncTaskChecker(WeakReference<Activity> activityWeakReference) {
             this.activityWeakReference = activityWeakReference;
@@ -36,7 +36,7 @@ public class LoadUserDataActivity extends AppCompatActivity {
 
         @Override
         protected Void doInBackground(Void... voids) {
-
+            loadingPhoto = true;
             final ProfilePhotoUploader profilePhotoUploader =
                     new ProfilePhotoUploader();
 
