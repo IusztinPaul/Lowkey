@@ -158,7 +158,7 @@ public class ChatActivity extends AppCompatActivity {
             public void onClick(View v) {
                 chatAsyncTask.cancel(true);
                 t.cancel();
-                if(msgDtoList!=null) {
+                if(msgDtoList!=null && msgDtoList.size() > 0) {
                     UserD userD = new UserD(userRequest, msgDtoList.get(msgDtoList.size() - 1).getContent(), msgDtoList);
                     AppDatabase database = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "user-database")
                             .allowMainThreadQueries()   //Allows room to do operation on main thread

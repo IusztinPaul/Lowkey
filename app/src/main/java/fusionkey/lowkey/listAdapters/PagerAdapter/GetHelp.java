@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.R;
 import fusionkey.lowkey.main.Main2Activity;
 import fusionkey.lowkey.main.utils.NetworkManager;
@@ -44,7 +45,10 @@ public class GetHelp extends Fragment {
                 if(NetworkManager.isNetworkAvailable()){
                 if(loadState()==0) {
                     Intent intent = new Intent(getContext(), Main2Activity.class);
+
                     saveState("step", 1);
+                    intent.putExtra(LowKeyApplication.FROM_CHAT, true);
+
                     getActivity().overridePendingTransition(0, 0);
                     startActivity(intent);
                     getActivity().overridePendingTransition(0, 0);

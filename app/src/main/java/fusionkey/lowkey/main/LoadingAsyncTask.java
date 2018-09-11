@@ -17,6 +17,7 @@ import org.json.JSONObject;
 import java.lang.ref.WeakReference;
 
 import fusionkey.lowkey.chat.ChatActivity;
+import fusionkey.lowkey.main.utils.NetworkManager;
 import fusionkey.lowkey.queue.IQueueMatcher;
 import fusionkey.lowkey.queue.LobbyCheckerRunnable;
 import fusionkey.lowkey.queue.QueueMatcherListenerFinder;
@@ -61,36 +62,44 @@ public class LoadingAsyncTask extends AsyncTask<Void, Integer, JSONObject> {
     @Override
     protected JSONObject doInBackground(Void... voids) {
 
-        // Start finding.
-        queueMatcher.find();
+        if(NetworkManager.isNetworkAvailable()) {
+            // Start finding.
+            queueMatcher.find();
 
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            queueMatcher.stopFinding();
-            e.printStackTrace();
-            return QueueMatcherUtils.JSON_FAILED_REQUESTED_OBJECT;
-        }
-
-        // Wait for lobby to get full or to timeout.
-        while (queueMatcher.isLoopCheckerAlive() && !isCancelled()) {
-
-            int loopState = queueMatcher.getLoopState();
-            if (loopState < 0)
-                loopState = 0;
-            publishProgress(loopState);
-
+            // This time is needed so the runnables from the queueMatcher can start. Otherwise
+            // the container will be null and queueMatcher.isLoopCheckerAlive() == FALSE
             try {
-                Thread.sleep(500);
+                Thread.sleep(2000);
             } catch (InterruptedException e) {
                 queueMatcher.stopFinding();
                 e.printStackTrace();
                 return QueueMatcherUtils.JSON_FAILED_REQUESTED_OBJECT;
             }
+
+            // Wait for lobby to get full or to timeout.
+            while (queueMatcher.isLoopCheckerAlive() &&
+                    !isCancelled() &&
+                    NetworkManager.isNetworkAvailable()) {
+
+                int loopState = queueMatcher.getLoopState();
+                if (loopState < 0)
+                    loopState = 0;
+                publishProgress(loopState);
+
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    queueMatcher.stopFinding();
+                    e.printStackTrace();
+                    return QueueMatcherUtils.JSON_FAILED_REQUESTED_OBJECT;
+                }
+            }
+
+            // Return the response container.
+            return queueMatcher.getContainer();
         }
 
-        // Return the response container.
-        return queueMatcher.getContainer();
+        return QueueMatcherUtils.JSON_FAILED_REQUESTED_OBJECT;
     }
 
     @Override
@@ -102,6 +111,7 @@ public class LoadingAsyncTask extends AsyncTask<Void, Integer, JSONObject> {
     @Override
     protected void onCancelled(JSONObject jsonObject) {
         Toast.makeText(this.currentActivity.get(), EXIT_LOBBY_TOAST, Toast.LENGTH_SHORT).show();
+        this.progressBar.get().setVisibility(View.GONE);
     }
 
     @Override
@@ -122,9 +132,14 @@ public class LoadingAsyncTask extends AsyncTask<Void, Integer, JSONObject> {
                 Intent intent = new Intent(currentActivity.get(), ChatActivity.class);
                 intent.putExtra("Listener", currentUser);
                     if(!findListener)
-                        intent.putExtra("User", jsonObject.getJSONObject("data").getString("speakers"));
+                        intent.putExtra("User",
+                                jsonObject.getJSONObject(QueueMatcherUtils.DATA_JSON_KEY).
+                                        getString(QueueMatcherUtils.DATA_SPEAKERS_KEY));
                     else
-                        intent.putExtra("User", jsonObject.getJSONObject("data").getString("listener"));
+                        intent.putExtra("User",
+                                jsonObject.getJSONObject(QueueMatcherUtils.DATA_JSON_KEY).
+                                        getString(QueueMatcherUtils.DATA_LISTENER_KEY));
+
                 saveState("step",0);
                searchCard.get().setVisibility(View.GONE);
                     currentActivity.get().startActivity(intent);
