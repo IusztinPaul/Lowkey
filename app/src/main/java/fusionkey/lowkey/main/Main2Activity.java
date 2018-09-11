@@ -48,8 +48,6 @@ public class Main2Activity extends AppCompatActivity implements LifecycleObserve
     private CardView searchCard;
     private ImageView imageView;
 
-    private boolean fromChat;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,8 +67,6 @@ public class Main2Activity extends AppCompatActivity implements LifecycleObserve
         progressBar = (ProgressBar) findViewById(R.id.loadingBar);
         searchCard = (CardView) findViewById(R.id.searchCard);
         imageView = findViewById(R.id.imageView8);
-
-        fromChat = getIntent().getBooleanExtra(LowKeyApplication.FROM_CHAT, false);
 
         if (loadState() == 1)
             searchForHelp();
@@ -126,10 +122,10 @@ public class Main2Activity extends AppCompatActivity implements LifecycleObserve
     @Override
     protected void onDestroy() {
         //TODO : Decide about this @Sebi.
-//        Log.e("onDestory", "Called");
-//        if(loadingAsyncTask!=null)
-//        loadingAsyncTask.cancel(true);
-//        searchCard=null;
+        Log.e("onDestory", "Called");
+        if(loadingAsyncTask!=null)
+        loadingAsyncTask.cancel(true);
+        searchCard=null;
         super.onDestroy();
     }
 
@@ -207,16 +203,6 @@ public class Main2Activity extends AppCompatActivity implements LifecycleObserve
     protected void onPause() {
         super.onPause();
         Log.e("onPauseMain2Activity", "called");
-
-        // Close queue logic.
-        if (loadingAsyncTask != null && !fromChat) {
-            saveState("step",0);
-            loadingAsyncTask.cancel(true);
-            searchCard.setVisibility(View.GONE);
-            searchCard = null;
-        }
-
-        fromChat = false;
     }
 
 }

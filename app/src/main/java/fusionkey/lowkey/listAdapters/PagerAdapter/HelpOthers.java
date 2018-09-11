@@ -46,7 +46,7 @@ public class HelpOthers extends Fragment {
                     Intent intent = new Intent(getContext(), Main2Activity.class);
 
                     saveState("step", 2);
-                    intent.putExtra(LowKeyApplication.FROM_CHAT, true);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
                     getActivity().overridePendingTransition(0, 0);
                     startActivity(intent);
