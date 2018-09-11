@@ -116,7 +116,7 @@
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:text="connected"
+        android:text="Waiting for the user to connect"
         android:textSize="18sp"
         android:textStyle="italic"
         app:layout_constraintBottom_toTopOf="@+id/constraintLayout3"

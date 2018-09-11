@@ -24,7 +24,6 @@ public class InChatRunnable implements Runnable {
         this.c = c;
     }
     public void run(){
-
             c.getUserState(new VolleyResponseListener() {
                 @Override
                 public void onError(String message) {
@@ -36,7 +35,9 @@ public class InChatRunnable implements Runnable {
                     Log.e("USER STATE:",response.toString());
                     try {
                         if (!response.getBoolean("data")) {
-                            state.setText("not connected");
+                            state.setText("disconnected");
+                        }else {
+                            state.setText("connected");
                         }
                     }catch(JSONException e){
                         Log.e("JSON-STATE ERROR",e.toString());
@@ -54,11 +55,11 @@ public class InChatRunnable implements Runnable {
                 public void onResponse(JSONObject response) {
                     Log.e("USER WRITE STATE:",response.toString());
                     try {
-                        if (!response.getBoolean("data")) {
-                            state.setText("connected");
-                        } else {
+                        if (response.getBoolean("data")) {
                             state.setText("user is writting");
                         }
+
+
                     }catch (JSONException e){
                         Log.e("JSON WRITE STATE",e.toString());
                     }

@@ -1,10 +1,11 @@
 package fusionkey.lowkey.chat;
 
+import android.app.AlertDialog;
 import android.arch.persistence.room.Room;
-import android.content.Intent;
+import android.content.DialogInterface;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,22 +17,22 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import fusionkey.lowkey.R;
 import fusionkey.lowkey.ROOMdatabase.AppDatabase;
 import fusionkey.lowkey.ROOMdatabase.UserDao;
+import fusionkey.lowkey.chat.Runnables.DisconnectedRunnable;
 import fusionkey.lowkey.chat.Runnables.InChatRunnable;
 import fusionkey.lowkey.listAdapters.ChatServiceAdapters.ChatAppMsgAdapter;
-import fusionkey.lowkey.main.Main2Activity;
 import fusionkey.lowkey.models.MessageTO;
 import fusionkey.lowkey.models.UserD;
 
@@ -45,28 +46,44 @@ import fusionkey.lowkey.models.UserD;
  */
 public class ChatActivity extends AppCompatActivity {
 
-    final long delay = 1000;
+
+    final long periodForT = 1000, periodForT1 =2000, delay=0;
     long last_text_edit=0;
+
+    InChatRunnable inChatRunnable;
+    ChatRoom chatRoom;
+    DisconnectedRunnable disconnectedRunnable;
     ChatAsyncTask chatAsyncTask;
-    Timer t;
+    Timer t,t1;
+
+    EditText msgInputText;
+    LinearLayout chatbox;
     String listenerRequest;
     String userRequest;
     ArrayList<MessageTO> msgDtoList;
+
+    private static final String disconnectedDialog = "just disconnected from the chat !";
+    private static final String listenerIntent ="Listener";
+    private static final String userIntent ="User";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_message_list);
         //INIT
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        final TextView isWritting = (TextView) findViewById(R.id.isWritting);
-        final String listener = getIntent().getStringExtra("Listener");
-        final String user = getIntent().getStringExtra("User");
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        final TextView state = findViewById(R.id.isWritting);
+        final RecyclerView msgRecyclerView = findViewById(R.id.reyclerview_message_list);
+        final String listener = getIntent().getStringExtra(listenerIntent);
+        final String user = getIntent().getStringExtra(userIntent);
+
+        chatbox = findViewById(R.id.layout_chatbox);
+        msgInputText = findViewById(R.id.chat_input_msg);
         listenerRequest = listener.replace("[", "").replace("]", "").replace("\"","");
         userRequest = user.replace("[", "").replace("]", "").replace("\"","");
-        final ChatRoom chatRoom = new ChatRoom(userRequest,listenerRequest); //C - D
-        msgDtoList = new ArrayList<MessageTO>();
-        final RecyclerView msgRecyclerView = (RecyclerView)findViewById(R.id.reyclerview_message_list);
+        chatRoom = new ChatRoom(userRequest,listenerRequest);
+        msgDtoList = new ArrayList<>();
+
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         msgRecyclerView.setLayoutManager(linearLayoutManager);
         final ChatAppMsgAdapter chatAppMsgAdapter = new ChatAppMsgAdapter(msgDtoList);
@@ -76,58 +93,13 @@ public class ChatActivity extends AppCompatActivity {
 
         chatAsyncTask = new ChatAsyncTask(chatRoom,msgRecyclerView,chatAppMsgAdapter,msgDtoList);
         chatAsyncTask.execute();
-
         //Object that makes request and updates the UI if the user is/isn't connected/writting
-        final InChatRunnable inChatRunnable = new InChatRunnable(isWritting,chatRoom);
+        inChatRunnable = new InChatRunnable(state,chatRoom);
+        disconnectedRunnable = new DisconnectedRunnable(state,chatbox);
         t = new Timer();
-        t.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                inChatRunnable.run();
-
-            }
-
-            @Override
-            public boolean cancel() {
-                return super.cancel();
-            }
-        },0,500);
-
-
-
-        //Following lines set your writting-flag true/false if you're writting
-        final Handler handler = new Handler();
-        final Runnable input_finish_checker = new Runnable() {
-            @Override
-            public void run() {
-                chatRoom.stopIsWritting();
-                if(System.currentTimeMillis() > (last_text_edit + delay - 500)){
-
-                }
-            }
-        };
-        final EditText msgInputText = (EditText)findViewById(R.id.chat_input_msg);
-        msgInputText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(final CharSequence s, int start, int before, int count) {
-                handler.removeCallbacks(input_finish_checker);
-
-            }
-
-            @Override
-            public void afterTextChanged(final Editable s) {
-                if(s.length() > 0){
-                    last_text_edit = System.currentTimeMillis();
-                    handler.postDelayed(input_finish_checker,delay);
-                    chatRoom.userIsWritting();
-                }
-            }
-        });
+        t1 = new Timer();
+        startRunnable();
+        startWritingListener();
 
 
         Button msgSendButton = (Button)findViewById(R.id.button_chatbox_send);
@@ -153,38 +125,23 @@ public class ChatActivity extends AppCompatActivity {
                 }
             }
         });
+
+
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                chatAsyncTask.cancel(true);
-                t.cancel();
-                if(msgDtoList!=null) {
-                    UserD userD = new UserD(userRequest, msgDtoList.get(msgDtoList.size() - 1).getContent(), msgDtoList);
-                    AppDatabase database = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "user-database")
-                            .allowMainThreadQueries()   //Allows room to do operation on main thread
-                            .build();
-                    UserDao userDAO = database.userDao();
-
-                    UserD userF = userDAO.findByName(userRequest);
-                    if (userF != null) {
-                        userF.addMessages(msgDtoList);
-                        userDAO.update(userF);
-                    } else {
-                        userDAO.insertAll(userD);
-                    }
-                    database.close();
-                }
-                Intent intent = new Intent(ChatActivity.this, Main2Activity.class);
-                startActivity(intent);
+                onBackPressed();
             }
         });
 
 
     }
+
     @Override
     public void onBackPressed(){
         chatAsyncTask.cancel(true);
         t.cancel();
+        t1.cancel();
         if(msgDtoList!=null) {
             UserD userD = new UserD(userRequest, msgDtoList.get(msgDtoList.size() - 1).getContent(), msgDtoList);
             AppDatabase database = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "user-database")
@@ -204,6 +161,90 @@ public class ChatActivity extends AppCompatActivity {
         super.onBackPressed();
     }
 
+    private void startRunnable(){
+     t.scheduleAtFixedRate(new TimerTask() {
+        @Override
+        public void run() {
+            inChatRunnable.run();
+        }
 
+        @Override
+        public boolean cancel() {
+            return super.cancel();
+        }
+        },delay, periodForT);
+
+     t1.scheduleAtFixedRate(new TimerTask() {
+        @Override
+        public void run() {
+            disconnectedRunnable.run();
+            if(chatbox.getVisibility()==View.GONE){
+                this.cancel();
+                AlertDialog.Builder builder;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    builder = new AlertDialog.Builder(getApplicationContext(), android.R.style.Theme_Material_Dialog_Alert);
+                } else {
+                    builder = new AlertDialog.Builder(getApplicationContext());
+                }
+                builder.setTitle("Delete entry")
+                        .setMessage(listenerRequest+disconnectedDialog)
+
+                        .setPositiveButton("Okay", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // continue with delete
+                            }
+                        })
+                        .setNegativeButton("Exit", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                onBackPressed();
+                            }
+                        })
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
+            }
+        }
+
+        @Override
+        public boolean cancel() {
+            return super.cancel();
+        }
+        },delay, periodForT1);
+    }
+
+    private void startWritingListener(){
+        //Following lines set your writting-flag true/false if you're writting
+        final Handler handler = new Handler();
+        final Runnable input_finish_checker = new Runnable() {
+            @Override
+            public void run() {
+                chatRoom.stopIsWritting();
+                if(System.currentTimeMillis() > (last_text_edit + periodForT - 500)){
+
+                }
+            }
+        };
+
+        msgInputText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(final CharSequence s, int start, int before, int count) {
+                handler.removeCallbacks(input_finish_checker);
+
+            }
+
+            @Override
+            public void afterTextChanged(final Editable s) {
+                if(s.length() > 0){
+                    last_text_edit = System.currentTimeMillis();
+                    handler.postDelayed(input_finish_checker, periodForT);
+                    chatRoom.userIsWritting();
+                }
+            }
+        });
+    }
 
 }
