@@ -23,8 +23,9 @@ import android.widget.ProgressBar;
 import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.R;
 import fusionkey.lowkey.auth.utils.UserAttributesEnum;
+import fusionkey.lowkey.chat.interfaces.VolleyResponseListener;
 
-public class Main2Activity extends AppCompatActivity implements LifecycleObserver {
+public class Main2Activity extends AppCompatActivity implements LifecycleObserver,MainCallback {
     private LoadingAsyncTask loadingAsyncTask;
     public static String currentUser = getParsedEmail();
 
@@ -79,17 +80,17 @@ public class Main2Activity extends AppCompatActivity implements LifecycleObserve
         else
             doNothing();
     }
-
-    private void searchForHelp() {
+    @Override
+    public void searchForHelp() {
         loadingAsyncTask = new LoadingAsyncTask(currentUser, this, progressBar, true, searchCard);
         loadingAsyncTask.execute();
         saveState("step", 0);
     }
+    @Override
+    public void helpOthers() {
 
-    private void helpOthers() {
         searchCard.setVisibility(View.VISIBLE);
         loadingAsyncTask = new LoadingAsyncTask(currentUser, this, progressBar, false, searchCard);
-
         loadingAsyncTask.execute();
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -102,7 +103,7 @@ public class Main2Activity extends AppCompatActivity implements LifecycleObserve
     }
 
     private void doNothing() {
-        searchCard.setVisibility(View.GONE);
+        searchCard.setVisibility(View.INVISIBLE);
     }
 
     private void saveState(String key, int step) {
@@ -123,15 +124,7 @@ public class Main2Activity extends AppCompatActivity implements LifecycleObserve
 
     }
 
-    @Override
-    protected void onDestroy() {
-        //TODO : Decide about this @Sebi.
-//        Log.e("onDestory", "Called");
-//        if(loadingAsyncTask!=null)
-//        loadingAsyncTask.cancel(true);
-//        searchCard=null;
-        super.onDestroy();
-    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -212,8 +205,7 @@ public class Main2Activity extends AppCompatActivity implements LifecycleObserve
         if (loadingAsyncTask != null && !fromChat) {
             saveState("step",0);
             loadingAsyncTask.cancel(true);
-            searchCard.setVisibility(View.GONE);
-            searchCard = null;
+            searchCard.setVisibility(View.INVISIBLE);
         }
 
         fromChat = false;

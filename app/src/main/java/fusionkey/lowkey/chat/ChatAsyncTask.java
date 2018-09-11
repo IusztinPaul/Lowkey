@@ -116,9 +116,7 @@ public class ChatAsyncTask extends AsyncTask<Void,String,JSONObject> {
 
     @Override
     protected void onCancelled(JSONObject jsonObject) {
-
         chatRoom.deleteRoom();
-
     }
 
     @Override

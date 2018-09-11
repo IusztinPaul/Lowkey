@@ -5,8 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
-    android:orientation="vertical"
->
+    android:orientation="vertical">
+
     <com.flaviofaria.kenburnsview.KenBurnsView
         android:id="@+id/kenBurnsView"
         android:layout_width="match_parent"
@@ -18,152 +18,169 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/textView15"
+    <ScrollView
+        android:id="@+id/login_form"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="32dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="64dp"
-        android:paddingLeft="50dp"
-        android:paddingRight="50dp"
-        android:text="Enter your confirmation code we send you on your email that you used to register. "
-        android:textColor="@android:color/white"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView18" />
-
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/linearLayout2"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="204dp"
+        android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
-        android:layout_marginStart="8dp"
-        android:orientation="vertical"
-        android:paddingLeft="0dp"
-        android:paddingRight="0dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp"
+        android:elevation="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        tools:context=".auth.ConfirmCodeActivity">
+        app:layout_constraintTop_toTopOf="parent">
 
-
-        <LinearLayout
-            android:id="@+id/llFirstStep"
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/linearLayout2"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginStart="8dp"
+            android:orientation="vertical"
+            android:paddingLeft="0dp"
+            android:paddingRight="0dp"
+            app:layout_constraintBottom_toBottomOf="@+id/kenBurnsView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:context=".auth.ConfirmCodeActivity">
 
-            <com.github.florent37.materialtextfield.MaterialTextField
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/textView18"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
-                app:mtf_image="@drawable/selprofile"
-                app:mtf_labelColor="#FFF">
+                android:layout_gravity="center"
+                android:layout_marginEnd="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="32dp"
+                android:gravity="center"
+                android:text="Confirm your account "
+                android:textColor="@android:color/white"
+                android:textSize="30sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-                <EditText
-                    android:id="@+id/etEmail"
+            <TextView
+                android:id="@+id/textView15"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:gravity="center"
+                android:paddingLeft="50dp"
+                android:paddingRight="50dp"
+                android:text="Enter your confirmation code we send you on your email that you used to register. "
+                android:textColor="@android:color/white"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <LinearLayout
+                android:id="@+id/llFirstStep"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <com.github.florent37.materialtextfield.MaterialTextField
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    app:mtf_image="@drawable/selprofile"
+                    app:mtf_labelColor="#FFF">
+
+                    <EditText
+                        android:id="@+id/etEmail"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:hint="@string/confirm_email"
+                        android:inputType="textEmailAddress"
+                        android:maxLines="1"
+                        android:paddingBottom="15dp"
+                        android:singleLine="true"
+                        android:textColor="@android:color/black" />
+                </com.github.florent37.materialtextfield.MaterialTextField>
+
+                <Button
+                    android:id="@+id/btnContinue"
+                    style="?android:textAppearanceSmall"
                     android:layout_width="300dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:hint="@string/confirm_email"
-                    android:inputType="textEmailAddress"
-                    android:maxLines="1"
-                    android:paddingBottom="15dp"
-                    android:singleLine="true"
-                    android:textColor="@android:color/black" />
-            </com.github.florent37.materialtextfield.MaterialTextField>
+                    android:layout_marginBottom="16dp"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/roundedbutton"
+                    android:backgroundTint="@android:color/white"
+                    android:elevation="15dp"
+                    android:text="@string/confirm_btn_continue"
+                    android:textColor="@android:color/black"
+                    android:textStyle="bold" />
 
-            <Button
-                android:id="@+id/btnContinue"
-                style="?android:textAppearanceSmall"
-                android:layout_width="300dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginBottom="16dp"
-                android:layout_marginTop="16dp"
-                android:background="@drawable/roundedbutton"
-                android:backgroundTint="@android:color/white"
-                android:elevation="15dp"
-                android:text="@string/confirm_btn_continue"
-                android:textColor="@android:color/black"
-                android:textStyle="bold" />
-
-        </LinearLayout>
+            </LinearLayout>
 
 
-        <LinearLayout
-            android:id="@+id/llSecondStep"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <com.github.florent37.materialtextfield.MaterialTextField
+            <LinearLayout
+                android:id="@+id/llSecondStep"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
-                app:mtf_image="@drawable/selprofile"
-                app:mtf_labelColor="#FFF">
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
-                <EditText
-                    android:id="@+id/etCode"
+                <com.github.florent37.materialtextfield.MaterialTextField
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    app:mtf_image="@drawable/selprofile"
+                    app:mtf_labelColor="#FFF">
+
+                    <EditText
+                        android:id="@+id/etCode"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:hint="@string/confirm_code"
+                        android:inputType="textPassword"
+                        android:maxLines="1"
+                        android:paddingBottom="15dp"
+                        android:singleLine="true"
+                        android:textColor="@android:color/black" />
+                </com.github.florent37.materialtextfield.MaterialTextField>
+
+                <Button
+                    android:id="@+id/btnFinish"
+                    style="?android:textAppearanceSmall"
                     android:layout_width="300dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:hint="@string/confirm_code"
-                    android:inputType="textPassword"
-                    android:maxLines="1"
-                    android:paddingBottom="15dp"
-                    android:singleLine="true"
-                    android:textColor="@android:color/black" />
-            </com.github.florent37.materialtextfield.MaterialTextField>
+                    android:layout_marginBottom="16dp"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/roundedbutton"
+                    android:backgroundTint="@android:color/white"
+                    android:elevation="15dp"
+                    android:text="@string/confirm_btn_validate"
+                    android:textColor="@android:color/black"
+                    android:textStyle="bold" />
 
-            <Button
-                android:id="@+id/btnFinish"
-                style="?android:textAppearanceSmall"
-                android:layout_width="300dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginBottom="16dp"
-                android:layout_marginTop="16dp"
-                android:background="@drawable/roundedbutton"
-                android:backgroundTint="@android:color/white"
-                android:elevation="15dp"
-                android:text="@string/confirm_btn_validate"
-                android:textColor="@android:color/black"
-                android:textStyle="bold" />
+            </LinearLayout>
 
         </LinearLayout>
+    </ScrollView>
 
-    </LinearLayout>
 
-    <TextView
-        android:id="@+id/textView18"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="32dp"
-        android:text="Confirm your account "
-        android:textColor="@android:color/white"
-        android:textSize="30sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 </android.support.constraint.ConstraintLayout>

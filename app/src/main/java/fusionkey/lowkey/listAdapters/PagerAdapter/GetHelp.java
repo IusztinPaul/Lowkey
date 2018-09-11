@@ -1,5 +1,6 @@
 package fusionkey.lowkey.listAdapters.PagerAdapter;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -14,11 +15,15 @@ import android.widget.Toast;
 import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.R;
 import fusionkey.lowkey.main.Main2Activity;
+import fusionkey.lowkey.main.MainCallback;
 import fusionkey.lowkey.main.utils.NetworkManager;
 
 public class GetHelp extends Fragment {
+
     private static final String KEY_POSITION="position";
+    private MainCallback mainCallback;
     SharedPreferences sharedPreferences;
+
     static GetHelp newInstance(int position) {
         GetHelp frag=new GetHelp();
         Bundle args=new Bundle();
@@ -32,6 +37,15 @@ public class GetHelp extends Fragment {
 
 
     @Override
+    public void onAttach(Context context){
+        super.onAttach(context);
+        try{
+            mainCallback = (MainCallback) context;
+        }catch(ClassCastException castException){
+
+        }
+    }
+    @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
@@ -42,21 +56,8 @@ public class GetHelp extends Fragment {
         imag2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(NetworkManager.isNetworkAvailable()){
-                if(loadState()==0) {
-                    Intent intent = new Intent(getContext(), Main2Activity.class);
-
-                    saveState("step", 1);
-                    intent.putExtra(LowKeyApplication.FROM_CHAT, true);
-
-                    getActivity().overridePendingTransition(0, 0);
-                    startActivity(intent);
-                    getActivity().overridePendingTransition(0, 0);
-                }
-
-                // final LoadingAsyncTask loadingAsyncTask = new LoadingAsyncTask(currentUser,getActivity(),progressBar,true);
-                //   loadingAsyncTask.execute();
-                // searchCard.setVisibility(View.VISIBLE);
+                if(NetworkManager.isNetworkAvailable() && loadState()==0){
+                    mainCallback.searchForHelp();
             } else Toast.makeText(getActivity(), "Check if you're connected to the Internet", Toast.LENGTH_SHORT).show();
             }
         });
@@ -72,4 +73,5 @@ public class GetHelp extends Fragment {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
         return (sharedPreferences.getInt("step", 0));
     }
+
 }

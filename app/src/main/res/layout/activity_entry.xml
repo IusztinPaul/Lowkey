@@ -9,8 +9,13 @@
 
     <ProgressBar
         android:id="@+id/pBar"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="@+id/kenBurnsView"
+        app:layout_constraintTop_toTopOf="parent" />
 
         <Button
             android:id="@+id/reg"

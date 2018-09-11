@@ -1,10 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".main.profile.EditUserActivity">
+
+    <Button
+        android:id="@+id/btnSave"
+        style="?android:textAppearanceSmall"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="24dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:background="@drawable/roundedbutton"
+        android:backgroundTint="@android:color/white"
+        android:elevation="15dp"
+        android:text="@string/edit_btn_save"
+        android:textColor="@android:color/black"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.flaviofaria.kenburnsview.KenBurnsView
+        android:id="@+id/kenBurnsView4"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/qbg"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ProgressBar
         android:id="@+id/pBar"
@@ -14,8 +47,18 @@
 
     <ScrollView
         android:id="@+id/svForm"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/btnSave"
+        app:layout_constraintEnd_toEndOf="@+id/kenBurnsView4"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -34,16 +77,14 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:elevation="15dp"
-                android:src="@drawable/fff"
-                 />
+                android:src="@drawable/fff" />
 
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
-                >
+                android:layout_marginRight="15dp">
 
                 <EditText
                     android:id="@+id/etUsername"
@@ -55,15 +96,15 @@
                     android:maxLines="1"
                     android:paddingBottom="15dp"
                     android:singleLine="true"
-                    android:textColor="@android:color/black" />
+                    android:textColor="@android:color/background_light"
+                    android:textColorHint="@android:color/white" />
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
-                >
+                android:layout_marginRight="15dp">
 
                 <EditText
                     android:id="@+id/etName"
@@ -75,15 +116,15 @@
                     android:maxLines="1"
                     android:paddingBottom="15dp"
                     android:singleLine="true"
-                    android:textColor="@android:color/black" />
+                    android:textColor="@android:color/background_light"
+                    android:textColorHint="@android:color/white" />
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
-               >
+                android:layout_marginRight="15dp">
 
                 <EditText
                     android:id="@+id/etPhone"
@@ -95,34 +136,26 @@
                     android:maxLines="1"
                     android:paddingBottom="15dp"
                     android:singleLine="true"
-                    android:textColor="@android:color/black" />
+                    android:textColor="@android:color/background_light"
+                    android:textColorHint="@android:color/white" />
             </android.support.design.widget.TextInputLayout>
 
             <Spinner
                 android:id="@+id/spinnerGender"
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center" />
 
             <DatePicker
                 android:id="@+id/dpBirth"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:datePickerMode="spinner"
-                android:calendarViewShown="false" />
-
-            <Button
-                android:id="@+id/btnSave"
-                style="?android:textAppearanceSmall"
-                android:layout_width="200dp"
-                android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="50dp"
-                android:background="@drawable/roundedbutton"
-                android:backgroundTint="@android:color/white"
-                android:elevation="15dp"
-                android:text="@string/edit_btn_save"
-                android:textColor="@android:color/black"
-                android:textStyle="bold" />
+                android:calendarTextColor="@android:color/white"
+                android:calendarViewShown="false"
+                android:datePickerMode="spinner" />
+
         </LinearLayout>
     </ScrollView>
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>

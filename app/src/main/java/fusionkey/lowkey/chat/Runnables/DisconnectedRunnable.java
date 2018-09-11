@@ -1,19 +1,23 @@
 package fusionkey.lowkey.chat.Runnables;
 
+import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
 import android.view.View;
+import android.os.Message;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class DisconnectedRunnable implements Runnable {
 
     private TextView state;
-    private LinearLayout chatbox;
     private static final int delay=2000;
+    private Handler h1;
 
-
-    public DisconnectedRunnable(TextView state, LinearLayout chatbox){
+    public DisconnectedRunnable(Handler h1, TextView state){
         this.state=state;
-        this.chatbox=chatbox;
+
+        this.h1=h1;
     }
 
     public void run(){
@@ -22,8 +26,19 @@ public class DisconnectedRunnable implements Runnable {
         }catch (InterruptedException e){
 
         }
+        Log.e("Checking DISCONNECT","checking");
         if(state.getText().equals("disconnected")){
-         chatbox.setVisibility(View.GONE);
+            Message msg = Message.obtain();
+            Bundle b = new Bundle();
+            b.putString("TheState","disconnected");
+            msg.setData(b);
+            h1.sendMessage(msg);
+        }else{
+            Message msg = Message.obtain();
+            Bundle b = new Bundle();
+            b.putString("TheState","connected");
+            msg.setData(b);
+            h1.sendMessage(msg);
         }
     }
 }

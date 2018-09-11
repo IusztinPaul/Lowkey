@@ -125,7 +125,7 @@ public class ChatRoom extends AbstractChat implements Ichatroom {
      */
     public void getUserState(final VolleyResponseListener listener){
         HashMap<String,String> queryParameters = new HashMap<>();
-        queryParameters.put(USER_API_QUERY_STRING, this.getUser());
+        queryParameters.put(USER_API_QUERY_STRING, this.getListener());
         String URL = getAbsoluteUrlWithQueryString(queryParameters, USER_RELATIVE_URL);
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(GET, URL,null,

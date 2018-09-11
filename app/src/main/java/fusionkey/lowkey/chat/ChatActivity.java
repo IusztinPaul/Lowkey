@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -47,7 +48,7 @@ import fusionkey.lowkey.models.UserD;
 public class ChatActivity extends AppCompatActivity {
 
 
-    final long periodForT = 1000, periodForT1 =2000, delay=0;
+    final long periodForT = 1000, periodForT1 =3000, delay=0;
     long last_text_edit=0;
 
     InChatRunnable inChatRunnable;
@@ -55,7 +56,10 @@ public class ChatActivity extends AppCompatActivity {
     DisconnectedRunnable disconnectedRunnable;
     ChatAsyncTask chatAsyncTask;
     Timer t,t1;
-
+    Handler h1;
+    Bundle bb = new Bundle();
+    Thread thread;
+    TextView state;
     EditText msgInputText;
     LinearLayout chatbox;
     String listenerRequest;
@@ -72,7 +76,7 @@ public class ChatActivity extends AppCompatActivity {
         setContentView(R.layout.activity_message_list);
         //INIT
         Toolbar toolbar = findViewById(R.id.toolbar);
-        final TextView state = findViewById(R.id.isWritting);
+        state = findViewById(R.id.isWritting);
         final RecyclerView msgRecyclerView = findViewById(R.id.reyclerview_message_list);
         final String listener = getIntent().getStringExtra(listenerIntent);
         final String user = getIntent().getStringExtra(userIntent);
@@ -95,11 +99,28 @@ public class ChatActivity extends AppCompatActivity {
         chatAsyncTask.execute();
         //Object that makes request and updates the UI if the user is/isn't connected/writting
         inChatRunnable = new InChatRunnable(state,chatRoom);
-        disconnectedRunnable = new DisconnectedRunnable(state,chatbox);
+
         t = new Timer();
-        t1 = new Timer();
         startRunnable();
         startWritingListener();
+
+
+        h1 = new Handler(Looper.getMainLooper()) {
+            @Override
+            public void handleMessage(android.os.Message msg) {
+                bb = msg.getData();
+                String str = bb.getString("TheState");
+                try {
+                    if (str.equals("disconnected"))
+                        chatbox.setVisibility(View.INVISIBLE);
+
+                } catch(NullPointerException e){
+
+                }
+            }
+        };
+        thread = new Thread(new DisconnectedRunnable(h1,state));
+        thread.start();
 
 
         Button msgSendButton = (Button)findViewById(R.id.button_chatbox_send);
@@ -131,7 +152,6 @@ public class ChatActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 onBackPressed();
-
             }
         });
 
@@ -142,8 +162,9 @@ public class ChatActivity extends AppCompatActivity {
     public void onBackPressed(){
         chatAsyncTask.cancel(true);
         t.cancel();
-        t1.cancel();
-        if(msgDtoList!=null) {
+        thread.interrupt();
+
+        if(msgDtoList!=null && msgDtoList.size() < 1) {
             UserD userD = new UserD(userRequest, msgDtoList.get(msgDtoList.size() - 1).getContent(), msgDtoList);
             AppDatabase database = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "user-database")
                     .allowMainThreadQueries()   //Allows room to do operation on main thread
@@ -175,41 +196,7 @@ public class ChatActivity extends AppCompatActivity {
         }
         },delay, periodForT);
 
-     t1.scheduleAtFixedRate(new TimerTask() {
-        @Override
-        public void run() {
-            disconnectedRunnable.run();
-            if(chatbox.getVisibility()==View.GONE){
-                this.cancel();
-                AlertDialog.Builder builder;
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    builder = new AlertDialog.Builder(getApplicationContext(), android.R.style.Theme_Material_Dialog_Alert);
-                } else {
-                    builder = new AlertDialog.Builder(getApplicationContext());
-                }
-                builder.setTitle("Delete entry")
-                        .setMessage(listenerRequest+disconnectedDialog)
 
-                        .setPositiveButton("Okay", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                // continue with delete
-                            }
-                        })
-                        .setNegativeButton("Exit", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                onBackPressed();
-                            }
-                        })
-                        .setIcon(android.R.drawable.ic_dialog_alert)
-                        .show();
-            }
-        }
-
-        @Override
-        public boolean cancel() {
-            return super.cancel();
-        }
-        },delay, periodForT1);
     }
 
     private void startWritingListener(){

@@ -126,7 +126,7 @@ public class LoadingAsyncTask extends AsyncTask<Void, Integer, JSONObject> {
                 Log.e("LoadingAsyncTask", "The match was not made successfully");
                 Toast.makeText(currentActivity.get(), LOBBY_DELETED_TOAST, Toast.LENGTH_SHORT).show();
                 saveState("step",0);
-                searchCard.get().setVisibility(View.GONE);
+                searchCard.get().setVisibility(View.INVISIBLE);
             } else {
                 Log.e("LoadingAsyncTask :", jsonObject.toString());
                 Intent intent = new Intent(currentActivity.get(), ChatActivity.class);
@@ -141,7 +141,7 @@ public class LoadingAsyncTask extends AsyncTask<Void, Integer, JSONObject> {
                                         getString(QueueMatcherUtils.DATA_LISTENER_KEY));
 
                 saveState("step",0);
-               searchCard.get().setVisibility(View.GONE);
+               searchCard.get().setVisibility(View.INVISIBLE);
                     currentActivity.get().startActivity(intent);
                 Toast.makeText(this.currentActivity.get(), FIND_LOBBY_TOAST, Toast.LENGTH_SHORT).show();
 

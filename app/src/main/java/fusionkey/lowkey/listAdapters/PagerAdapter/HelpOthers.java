@@ -1,5 +1,6 @@
 package fusionkey.lowkey.listAdapters.PagerAdapter;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -14,11 +15,14 @@ import android.widget.Toast;
 import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.R;
 import fusionkey.lowkey.main.Main2Activity;
+import fusionkey.lowkey.main.MainCallback;
 import fusionkey.lowkey.main.utils.NetworkManager;
 
 public class HelpOthers extends Fragment {
     private static final String KEY_POSITION="position";
     SharedPreferences sharedPreferences;
+    private MainCallback mainCallback;
+
     static HelpOthers newInstance(int position) {
         HelpOthers frag=new HelpOthers();
         Bundle args=new Bundle();
@@ -29,6 +33,15 @@ public class HelpOthers extends Fragment {
         return(frag);
     }
 
+    @Override
+    public void onAttach(Context context){
+        super.onAttach(context);
+        try{
+            mainCallback = (MainCallback) context;
+        }catch(ClassCastException castException){
+
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater,
@@ -36,22 +49,15 @@ public class HelpOthers extends Fragment {
                              Bundle savedInstanceState) {
         View result=inflater.inflate(R.layout.help_others, container, false);
 
-        int position=getArguments().getInt(KEY_POSITION, -1);
+
+
         Button imag1 = (Button) result.findViewById(R.id.ChooseGreen);
         imag1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(NetworkManager.isNetworkAvailable()){
-                if(loadState()==0) {
-                    Intent intent = new Intent(getContext(), Main2Activity.class);
-
-                    saveState("step", 2);
-                    intent.putExtra(LowKeyApplication.FROM_CHAT, true);
-
-                    getActivity().overridePendingTransition(0, 0);
-                    startActivity(intent);
-                    getActivity().overridePendingTransition(0, 0);
-                }
+                if(NetworkManager.isNetworkAvailable() && loadState()==0){
+                    mainCallback.helpOthers();
+                    saveState("step",1);
             }else Toast.makeText(getActivity(), "Check if you're connected to the Internet", Toast.LENGTH_SHORT).show();
             }
         });
