@@ -49,8 +49,6 @@ public class Main2Activity extends AppCompatActivity implements LifecycleObserve
     private CardView searchCard;
     private ImageView imageView;
 
-    private boolean fromChat;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,14 +69,6 @@ public class Main2Activity extends AppCompatActivity implements LifecycleObserve
         searchCard = (CardView) findViewById(R.id.searchCard);
         imageView = findViewById(R.id.imageView8);
 
-        fromChat = getIntent().getBooleanExtra(LowKeyApplication.FROM_CHAT, false);
-
-        if (loadState() == 1)
-            searchForHelp();
-        if (loadState() == 2)
-            helpOthers();
-        else
-            doNothing();
     }
     @Override
     public void searchForHelp() {
@@ -125,6 +115,11 @@ public class Main2Activity extends AppCompatActivity implements LifecycleObserve
     }
 
 
+    @Override
+    protected void onDestroy() {
+
+        super.onDestroy();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -181,6 +176,11 @@ public class Main2Activity extends AppCompatActivity implements LifecycleObserve
         }
     }
 
+
+    /**
+     * @To-DO de ce nu ai folosit .replace("@", "").replace(".".""); ? @Paul. Era mult mai easy
+     *
+     */
     private static String getParsedEmail() {
         String[] items = LowKeyApplication.userManager.getUserDetails().getAttributes().
                 getAttributes().get(UserAttributesEnum.EMAIL.toString()).split("@");
@@ -198,17 +198,14 @@ public class Main2Activity extends AppCompatActivity implements LifecycleObserve
 
     @Override
     protected void onPause() {
-        super.onPause();
         Log.e("onPauseMain2Activity", "called");
-
         // Close queue logic.
-        if (loadingAsyncTask != null && !fromChat) {
+        if (loadingAsyncTask != null) {
             saveState("step",0);
             loadingAsyncTask.cancel(true);
             searchCard.setVisibility(View.INVISIBLE);
         }
-
-        fromChat = false;
+        super.onPause();
     }
 
 }

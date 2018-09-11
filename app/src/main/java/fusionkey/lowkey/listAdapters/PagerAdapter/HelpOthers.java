@@ -39,7 +39,7 @@ public class HelpOthers extends Fragment {
         try{
             mainCallback = (MainCallback) context;
         }catch(ClassCastException castException){
-
+            castException.printStackTrace();
         }
     }
 
@@ -58,6 +58,8 @@ public class HelpOthers extends Fragment {
                 if(NetworkManager.isNetworkAvailable() && loadState()==0){
                     mainCallback.helpOthers();
                     saveState("step",1);
+
+
             }else Toast.makeText(getActivity(), "Check if you're connected to the Internet", Toast.LENGTH_SHORT).show();
             }
         });

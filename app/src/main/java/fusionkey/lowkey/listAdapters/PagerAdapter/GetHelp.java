@@ -42,7 +42,7 @@ public class GetHelp extends Fragment {
         try{
             mainCallback = (MainCallback) context;
         }catch(ClassCastException castException){
-
+            castException.printStackTrace();
         }
     }
     @Override
@@ -58,6 +58,8 @@ public class GetHelp extends Fragment {
             public void onClick(View view) {
                 if(NetworkManager.isNetworkAvailable() && loadState()==0){
                     mainCallback.searchForHelp();
+                    saveState("step", 1);
+
             } else Toast.makeText(getActivity(), "Check if you're connected to the Internet", Toast.LENGTH_SHORT).show();
             }
         });
