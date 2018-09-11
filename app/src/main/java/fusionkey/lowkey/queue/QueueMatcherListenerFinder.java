@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
+import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 
@@ -20,10 +21,10 @@ import static fusionkey.lowkey.LowKeyApplication.requestQueueSingleton;
  * @author Iusztin Paul
  * @version 1.0
  * @since 31.07.2018
- *
+ * <p>
  * <h1>Class that wraps the Queue API hosted in AWS</h1>
  * <h2>It uses lambda functions and Redis ElastiCache as backend</h2>
- *
+ * <p>
  * <p>The requests are make with Volley</p>
  */
 
@@ -46,7 +47,7 @@ public class QueueMatcherListenerFinder extends QueueMatcherUtils implements IQu
         String url = getAbsoluteUrlWithQueryString(queryParameters, SEAPKER_RELATIVE_URL);
 
         // call S0 lambda function
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url,null,
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, null,
                 new Response.Listener<JSONObject>() {
 
                     @Override
@@ -55,7 +56,7 @@ public class QueueMatcherListenerFinder extends QueueMatcherUtils implements IQu
 
                         try {
                             // continue only if the response has data
-                            if(!response.get(DATA_JSON_KEY).equals(RESPONSE_NO_DATA)) {
+                            if (!response.get(DATA_JSON_KEY).equals(RESPONSE_NO_DATA)) {
                                 final String listener = response.get(DATA_JSON_KEY).toString();
 
                                 HashMap<String, String> queryParameters = new HashMap<>();
@@ -66,14 +67,14 @@ public class QueueMatcherListenerFinder extends QueueMatcherUtils implements IQu
                                 currentActivity.runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        findRunnable = new LobbyCheckerRunnable(url, listener, currentUser,response);
+                                        findRunnable = new LobbyCheckerRunnable(url, listener, currentUser);
                                         new Thread(findRunnable).start();
                                     }
                                 });
                             }
                         } catch (JSONException e) {
-                            Log.e("JSONException", "Json response had no '" + DATA_JSON_KEY +  "' key");
-                            if(findRunnable != null) {
+                            Log.e("JSONException", "Json response had no '" + DATA_JSON_KEY + "' key");
+                            if (findRunnable != null) {
                                 findRunnable.setResponseContainer(JSON_FAILED_REQUESTED_OBJECT);
                                 findRunnable.setStillChecking(false);
                             }
@@ -84,7 +85,7 @@ public class QueueMatcherListenerFinder extends QueueMatcherUtils implements IQu
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.e("findSpeakerError", error.toString());
-                        if(findRunnable != null) {
+                        if (findRunnable != null) {
                             findRunnable.setResponseContainer(JSON_FAILED_REQUESTED_OBJECT);
                             findRunnable.setStillChecking(false);
                         }
@@ -101,6 +102,23 @@ public class QueueMatcherListenerFinder extends QueueMatcherUtils implements IQu
             }
         };
 
+        jsonObjectRequest.setRetryPolicy(new RetryPolicy() {
+            @Override
+            public int getCurrentTimeout() {
+                return 50000;
+            }
+
+            @Override
+            public int getCurrentRetryCount() {
+                return 50000;
+            }
+
+            @Override
+            public void retry(VolleyError error) throws VolleyError {
+                Log.e("retryVolley", error.getMessage());
+            }
+        });
+
         requestQueueSingleton.addToRequestQueue(jsonObjectRequest);
     }
 
@@ -110,29 +128,20 @@ public class QueueMatcherListenerFinder extends QueueMatcherUtils implements IQu
      */
     @Override
     public JSONObject getContainer() {
-        try {
-            if(findRunnable == null || findRunnable.isStillChecking())
-                return JSON_FAILED_REQUESTED_OBJECT;
+        if (findRunnable == null || findRunnable.isStillChecking())
+            return JSON_FAILED_REQUESTED_OBJECT;
 
-            return findRunnable.getResponseContainer();
-        } finally {
-            // after you get the speaker we put it on null so the data is consistent
-            // you will know if there is new data or not at a further call of findListener
-            if(findRunnable != null)
-                findRunnable.setResponseContainer(JSON_FAILED_REQUESTED_OBJECT);
-        }
+        return findRunnable.getResponseContainer();
     }
-    public JSONObject getUsefullContainer(){
-        return findRunnable.getUsefullResponseContainer();
-    }
+
     /**
      * This method removes the lobby of the listener and ads a flag that the listener from the queue
      * it's deprecated. So no more lobbies will be created for that listener.
      */
     @Override
     public void stopFinding() {
-        if(findRunnable != null)
-            if(findRunnable.isStillChecking())
+        if (findRunnable != null)
+            if (findRunnable.isStillChecking())
                 findRunnable.setStillChecking(false);
             else
                 findRunnable.makeSpeakerDeleteRequest();
@@ -149,7 +158,7 @@ public class QueueMatcherListenerFinder extends QueueMatcherUtils implements IQu
      * @return loop count down from the thread to feed a progress bar
      */
     public int getLoopState() {
-        if(findRunnable == null)
+        if (findRunnable == null)
             return 0;
 
         return findRunnable.getLoopState();

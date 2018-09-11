@@ -9,6 +9,8 @@ import fusionkey.lowkey.queue.RequestQueueSingleton;
 
 public class LowKeyApplication extends Application {
 
+    public static final String FROM_CHAT = "frct";
+
     public static Bitmap profilePhoto;
 
     public static RequestQueueSingleton requestQueueSingleton;

@@ -12,12 +12,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <LinearLayout
-        android:id="@+id/llView"
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
         <Button
             android:id="@+id/reg"
             style="?android:textAppearanceSmall"
@@ -146,5 +140,5 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/cloud" />
-    </LinearLayout>
+
 </android.support.constraint.ConstraintLayout>

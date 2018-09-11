@@ -1,5 +1,8 @@
 package fusionkey.lowkey.main;
 
+import android.arch.lifecycle.Lifecycle;
+import android.arch.lifecycle.LifecycleObserver;
+import android.arch.lifecycle.OnLifecycleEvent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.design.widget.TabLayout;
@@ -11,6 +14,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.ImageView;
@@ -20,7 +24,7 @@ import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.R;
 import fusionkey.lowkey.auth.utils.UserAttributesEnum;
 
-public class Main2Activity extends AppCompatActivity {
+public class Main2Activity extends AppCompatActivity implements LifecycleObserver {
     private LoadingAsyncTask loadingAsyncTask;
     public static String currentUser = getParsedEmail();
 
@@ -39,10 +43,13 @@ public class Main2Activity extends AppCompatActivity {
      */
 
     private ViewPager mViewPager;
-    ProgressBar progressBar;
-    SharedPreferences sharedPreferences;
+    private ProgressBar progressBar;
+    private SharedPreferences sharedPreferences;
     private CardView searchCard;
-    ImageView imageView;
+    private ImageView imageView;
+
+    private boolean fromChat;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,65 +70,67 @@ public class Main2Activity extends AppCompatActivity {
         searchCard = (CardView) findViewById(R.id.searchCard);
         imageView = findViewById(R.id.imageView8);
 
+        fromChat = getIntent().getBooleanExtra(LowKeyApplication.FROM_CHAT, false);
 
-        if(loadState()==1)
+        if (loadState() == 1)
             searchForHelp();
-        if(loadState()==2)
+        if (loadState() == 2)
             helpOthers();
         else
             doNothing();
     }
 
-    private void searchForHelp(){
-        loadingAsyncTask = new LoadingAsyncTask(currentUser, this, progressBar, true,searchCard);
+    private void searchForHelp() {
+        loadingAsyncTask = new LoadingAsyncTask(currentUser, this, progressBar, true, searchCard);
         loadingAsyncTask.execute();
-        saveState("step",0);
+        saveState("step", 0);
     }
 
-    private void helpOthers(){
+    private void helpOthers() {
         searchCard.setVisibility(View.VISIBLE);
-        loadingAsyncTask = new LoadingAsyncTask(currentUser, this, progressBar, false,searchCard);
+        loadingAsyncTask = new LoadingAsyncTask(currentUser, this, progressBar, false, searchCard);
 
         loadingAsyncTask.execute();
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 loadingAsyncTask.cancel(true);
-                saveState("step",0);
+                saveState("step", 0);
                 doNothing();
             }
         });
     }
 
-    private void doNothing(){
+    private void doNothing() {
         searchCard.setVisibility(View.GONE);
     }
 
-    private void saveState(String key,int step){
+    private void saveState(String key, int step) {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putInt(key, step);
         editor.apply();
     }
-    private int loadState(){
+
+    private int loadState() {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        int i = sharedPreferences.getInt("step", 0);
-        return i;
+        return sharedPreferences.getInt("step", 0);
     }
 
 
     @Override
-    public void onBackPressed(){
+    public void onBackPressed() {
 
     }
 
     @Override
     protected void onDestroy() {
-        if(loadingAsyncTask!=null)
-        loadingAsyncTask.cancel(true);
-        searchCard=null;
+        //TODO : Decide about this @Sebi.
+//        Log.e("onDestory", "Called");
+//        if(loadingAsyncTask!=null)
+//        loadingAsyncTask.cancel(true);
+//        searchCard=null;
         super.onDestroy();
-
     }
 
     @Override
@@ -130,8 +139,6 @@ public class Main2Activity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_main2, menu);
         return true;
     }
-
-
 
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
@@ -145,7 +152,7 @@ public class Main2Activity extends AppCompatActivity {
 
         @Override
         public Fragment getItem(int position) {
-            switch (position){
+            switch (position) {
                 case 0:
                     ProfileTab Chat = new ProfileTab();
                     return Chat;
@@ -165,9 +172,10 @@ public class Main2Activity extends AppCompatActivity {
             // Show 3 total pages.
             return 3;
         }
+
         @Override
-        public CharSequence getPageTitle(int position){
-            switch (position){
+        public CharSequence getPageTitle(int position) {
+            switch (position) {
                 case 0:
                     return "Chat";
                 case 1:
@@ -189,10 +197,26 @@ public class Main2Activity extends AppCompatActivity {
 
     private static String parseDots(String item) {
         StringBuilder sb = new StringBuilder();
-        for(String s : item.split("\\."))
+        for (String s : item.split("\\."))
             sb.append(s);
 
         return sb.toString();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.e("onPauseMain2Activity", "called");
+
+        // Close queue logic.
+        if (loadingAsyncTask != null && !fromChat) {
+            saveState("step",0);
+            loadingAsyncTask.cancel(true);
+            searchCard.setVisibility(View.GONE);
+            searchCard = null;
+        }
+
+        fromChat = false;
     }
 
 }

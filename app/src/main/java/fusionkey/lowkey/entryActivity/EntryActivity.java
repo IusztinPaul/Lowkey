@@ -5,11 +5,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.amazonaws.mobile.client.AWSMobileClient;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -22,14 +20,12 @@ import fusionkey.lowkey.R;
 import fusionkey.lowkey.auth.RegisterActivity;
 import fusionkey.lowkey.auth.utils.AuthCallback;
 import fusionkey.lowkey.main.Main2Activity;
-import fusionkey.lowkey.main.profile.EditUserActivity;
 
 public class EntryActivity extends AppCompatActivity {
 
     private static final int RC_SIGN_IN = 9001;
 
     private ProgressBar pBar;
-    private LinearLayout llView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +33,6 @@ public class EntryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_entry);
 
         pBar = findViewById(R.id.pBar);
-        llView = findViewById(R.id.llView);
         switchView(true);
 
         // If you are logged in just proceed.
@@ -117,6 +112,5 @@ public class EntryActivity extends AppCompatActivity {
 
     private void switchView(boolean loading) {
         pBar.setVisibility(loading ? View.VISIBLE : View.GONE);
-        llView.setVisibility(loading ? View.GONE : View.VISIBLE);
     }
 }
