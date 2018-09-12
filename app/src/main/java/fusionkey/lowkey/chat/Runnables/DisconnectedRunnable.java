@@ -11,7 +11,7 @@ import android.widget.TextView;
 public class DisconnectedRunnable implements Runnable {
 
     private TextView state;
-    private static final int delay=2000;
+    private static final int delay=4000;
     private Handler h1;
 
     public DisconnectedRunnable(Handler h1, TextView state){
@@ -26,7 +26,7 @@ public class DisconnectedRunnable implements Runnable {
         }catch (InterruptedException e){
 
         }
-        Log.e("Checking DISCONNECT","checking");
+
         if(state.getText().equals("disconnected")){
             Message msg = Message.obtain();
             Bundle b = new Bundle();

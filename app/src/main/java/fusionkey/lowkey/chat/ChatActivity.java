@@ -3,6 +3,7 @@ package fusionkey.lowkey.chat;
 import android.app.AlertDialog;
 import android.arch.persistence.room.Room;
 import android.content.DialogInterface;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -12,8 +13,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
+import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.text.style.ImageSpan;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -48,7 +51,7 @@ import fusionkey.lowkey.models.UserD;
 public class ChatActivity extends AppCompatActivity {
 
 
-    final long periodForT = 1000, periodForT1 =3000, delay=0;
+    final long periodForT = 1000, periodForT1 =4000, delay=0;
     long last_text_edit=0;
 
     InChatRunnable inChatRunnable;
@@ -60,6 +63,7 @@ public class ChatActivity extends AppCompatActivity {
     Bundle bb = new Bundle();
     Thread thread;
     TextView state;
+    TextView connectDot;
     EditText msgInputText;
     LinearLayout chatbox;
     String listenerRequest;
@@ -77,6 +81,7 @@ public class ChatActivity extends AppCompatActivity {
         //INIT
         Toolbar toolbar = findViewById(R.id.toolbar);
         state = findViewById(R.id.isWritting);
+        connectDot = findViewById(R.id.textView8);
         final RecyclerView msgRecyclerView = findViewById(R.id.reyclerview_message_list);
         final String listener = getIntent().getStringExtra(listenerIntent);
         final String user = getIntent().getStringExtra(userIntent);
@@ -87,6 +92,8 @@ public class ChatActivity extends AppCompatActivity {
         userRequest = user.replace("[", "").replace("]", "").replace("\"","");
         chatRoom = new ChatRoom(userRequest,listenerRequest);
         msgDtoList = new ArrayList<>();
+
+
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         msgRecyclerView.setLayoutManager(linearLayoutManager);
@@ -103,7 +110,7 @@ public class ChatActivity extends AppCompatActivity {
         t = new Timer();
         startRunnable();
         startWritingListener();
-
+        t1 = new Timer();
 
         h1 = new Handler(Looper.getMainLooper()) {
             @Override
@@ -111,16 +118,37 @@ public class ChatActivity extends AppCompatActivity {
                 bb = msg.getData();
                 String str = bb.getString("TheState");
                 try {
-                    if (str.equals("disconnected"))
+                    if (str.equals("disconnected")) {
+                        Log.e("Checking DISCONNECT", "checking");
                         chatbox.setVisibility(View.INVISIBLE);
-
+                        Drawable drawable = getApplicationContext().getResources().getDrawable(R.drawable.red_dot);
+                        connectDot.setBackground(drawable);
+                    }
+                    else {
+                        Drawable drawable = getApplicationContext().getResources().getDrawable(R.drawable.green_dot);
+                        connectDot.setBackground(drawable);
+                    }
                 } catch(NullPointerException e){
 
                 }
             }
         };
-        thread = new Thread(new DisconnectedRunnable(h1,state));
-        thread.start();
+
+
+        t1.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                thread = new Thread(new DisconnectedRunnable(h1,state));
+                thread.start();
+            }
+
+            @Override
+            public boolean cancel() {
+                return super.cancel();
+            }
+        },delay, periodForT1);
+
+
 
 
         Button msgSendButton = (Button)findViewById(R.id.button_chatbox_send);
@@ -128,6 +156,7 @@ public class ChatActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String msgContent = msgInputText.getText().toString();
+                chatRoom.stopIsWritting();
                 if(!TextUtils.isEmpty(msgContent))
                 {   //MessageTO is the class that is embedded to the RecyclerView because i was lazy to change the main Message Class
                     SimpleDateFormat df = new SimpleDateFormat("hh:mm");
@@ -162,9 +191,9 @@ public class ChatActivity extends AppCompatActivity {
     public void onBackPressed(){
         chatAsyncTask.cancel(true);
         t.cancel();
-        thread.interrupt();
+        t1.cancel();
 
-        if(msgDtoList!=null && msgDtoList.size() < 1) {
+        if(msgDtoList!=null && msgDtoList.size() > 1) {
             UserD userD = new UserD(userRequest, msgDtoList.get(msgDtoList.size() - 1).getContent(), msgDtoList);
             AppDatabase database = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "user-database")
                     .allowMainThreadQueries()   //Allows room to do operation on main thread

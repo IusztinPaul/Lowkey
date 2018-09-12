@@ -58,8 +58,6 @@ public class InChatRunnable implements Runnable {
                         if (response.getBoolean("data")) {
                             state.setText("user is writting");
                         }
-
-
                     }catch (JSONException e){
                         Log.e("JSON WRITE STATE",e.toString());
                     }
