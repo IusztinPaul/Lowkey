@@ -176,24 +176,11 @@ public class Main2Activity extends AppCompatActivity implements LifecycleObserve
         }
     }
 
-
-    /**
-     * @To-DO de ce nu ai folosit .replace("@", "").replace(".".""); ? @Paul. Era mult mai easy
-     *
-     */
     private static String getParsedEmail() {
-        String[] items = LowKeyApplication.userManager.getUserDetails().getAttributes().
-                getAttributes().get(UserAttributesEnum.EMAIL.toString()).split("@");
+        String email = LowKeyApplication.userManager.getUserDetails().getAttributes().
+                getAttributes().get(UserAttributesEnum.EMAIL.toString());
 
-        return parseDots(items[0]) + parseDots(items[1]);
-    }
-
-    private static String parseDots(String item) {
-        StringBuilder sb = new StringBuilder();
-        for (String s : item.split("\\."))
-            sb.append(s);
-
-        return sb.toString();
+        return email.replace("@", "").replace(".", "");
     }
 
     @Override

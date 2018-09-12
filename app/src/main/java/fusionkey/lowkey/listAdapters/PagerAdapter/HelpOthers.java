@@ -48,10 +48,8 @@ public class HelpOthers extends Fragment {
                              ViewGroup container,
                              Bundle savedInstanceState) {
         View result=inflater.inflate(R.layout.help_others, container, false);
-
-
-
         Button imag1 = (Button) result.findViewById(R.id.ChooseGreen);
+
         imag1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

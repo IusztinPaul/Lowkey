@@ -34,8 +34,6 @@ public class GetHelp extends Fragment {
         return(frag);
     }
 
-
-
     @Override
     public void onAttach(Context context){
         super.onAttach(context);
@@ -45,6 +43,7 @@ public class GetHelp extends Fragment {
             castException.printStackTrace();
         }
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container,
@@ -65,12 +64,14 @@ public class GetHelp extends Fragment {
         });
         return(result);
     }
+
     private void saveState(String key,int step){
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putInt(key, step);
         editor.apply();
     }
+
     private int loadState(){
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
         return (sharedPreferences.getInt("step", 0));
