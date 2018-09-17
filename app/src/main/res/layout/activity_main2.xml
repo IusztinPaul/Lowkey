@@ -79,7 +79,7 @@
             android:layout_height="wrap_content">
 
             <ProgressBar
-                android:id="@+id/loadingBar"
+                android:id="@+id/paymentBar"
                 style="?android:attr/progressBarStyleHorizontal"
                 android:layout_width="285dp"
                 android:layout_height="31dp"
@@ -93,7 +93,7 @@
                 android:progress="0"
 
                 android:visibility="visible"
-                app:layout_constraintBottom_toTopOf="@+id/textView4"
+                app:layout_constraintBottom_toTopOf="@+id/Title"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -101,7 +101,7 @@
 
 
             <TextView
-                android:id="@+id/textView4"
+                android:id="@+id/Title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"

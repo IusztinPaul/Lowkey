@@ -38,7 +38,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
-                android:id="@+id/imageView6"
+                android:id="@+id/helpot"
                 android:layout_width="75dp"
                 android:layout_height="75dp"
                 android:layout_marginBottom="8dp"
@@ -48,7 +48,21 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/gethelp" />
+                app:srcCompat="@drawable/shakewhite" />
+
+            <ImageView
+                android:id="@+id/gethelp"
+                android:layout_width="75dp"
+                android:layout_height="75dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:visibility="visible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/gethelpwhite" />
 
             <TextView
                 android:id="@+id/name"
@@ -59,11 +73,11 @@
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="16dp"
                 android:text="Sebastian Sandru"
-                android:textColor="@android:color/black"
+                android:textColor="@android:color/white"
                 android:textSize="15dp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toTopOf="@+id/lastmsg"
-                app:layout_constraintStart_toEndOf="@+id/imageView6"
+                app:layout_constraintStart_toEndOf="@+id/gethelp"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.0" />
 
@@ -74,13 +88,14 @@
                 android:layout_marginBottom="36dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginLeft="16dp"
+                android:textColor="@android:color/white"
                 android:layout_marginRight="8dp"
                 android:layout_marginStart="16dp"
                 android:text="You should be okay now "
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.037"
-                app:layout_constraintStart_toEndOf="@+id/imageView6" />
+                app:layout_constraintStart_toEndOf="@+id/gethelp" />
         </android.support.constraint.ConstraintLayout>
 
     </android.support.v7.widget.CardView>

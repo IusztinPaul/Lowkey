@@ -3,9 +3,9 @@ package fusionkey.lowkey.listAdapters.ChatTabAdapters;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import de.hdodenhof.circleimageview.CircleImageView;
 import fusionkey.lowkey.R;
 import fusionkey.lowkey.models.UserD;
 
@@ -13,10 +13,11 @@ import fusionkey.lowkey.models.UserD;
 public class ChatTabViewHolder extends RecyclerView.ViewHolder {
 
     ConstraintLayout leftMsgLayout;
-
+    TextView title;
     TextView name;
     TextView lastmsg;
-
+    ImageView imageStateHelped;
+    ImageView imageStateGetHelp;
 
     public ChatTabViewHolder(View itemView) {
         super(itemView);
@@ -25,8 +26,8 @@ public class ChatTabViewHolder extends RecyclerView.ViewHolder {
             leftMsgLayout = (ConstraintLayout) itemView.findViewById(R.id.chat);
             name = (TextView) itemView.findViewById(R.id.name);
             lastmsg = (TextView) itemView.findViewById(R.id.lastmsg);
-
-
+            imageStateHelped = (ImageView) itemView.findViewById(R.id.gethelp);
+            imageStateGetHelp = (ImageView) itemView.findViewById(R.id.helpot);
         }
     }
 

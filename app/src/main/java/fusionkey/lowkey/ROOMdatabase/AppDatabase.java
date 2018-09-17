@@ -15,7 +15,7 @@ import fusionkey.lowkey.models.UserD;
 import static android.arch.persistence.room.ColumnInfo.TEXT;
 import static android.graphics.PorterDuff.Mode.ADD;
 
-@Database(entities = {UserD.class}, version = 2)
+@Database(entities = {UserD.class}, version = 1)
 @TypeConverters({UserDao.Converters.class})
 public abstract class AppDatabase extends RoomDatabase {
 

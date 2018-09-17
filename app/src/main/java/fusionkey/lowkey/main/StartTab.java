@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.preference.PreferenceManager;
 import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
@@ -92,7 +93,9 @@ public class StartTab extends Fragment {
         msg.setTextColor(Color.GRAY);
         gst.setTextColor(Color.BLACK);
         ViewPager pager=(ViewPager)rootView.findViewById(R.id.pager);
+        TabLayout tabLayout = (TabLayout) rootView.findViewById(R.id.tabDots);
         pager.setAdapter(buildAdapter());
+        tabLayout.setupWithViewPager(pager, true);
     }
     private void messages(){
         msg.setTextColor(Color.BLACK);

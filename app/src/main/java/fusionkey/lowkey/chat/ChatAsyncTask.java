@@ -109,7 +109,6 @@ public class ChatAsyncTask extends AsyncTask<Void,String,JSONObject> {
     @Override
     protected void onProgressUpdate(String... values) {
         int newMsgPosition = list.size() - 1;
-
         chatAppMsgAdapter.notifyItemInserted(newMsgPosition);
         recyclerView.get().scrollToPosition(newMsgPosition);
     }

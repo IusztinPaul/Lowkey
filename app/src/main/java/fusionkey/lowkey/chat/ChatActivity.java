@@ -1,10 +1,7 @@
 package fusionkey.lowkey.chat;
 
-import android.app.AlertDialog;
 import android.arch.persistence.room.Room;
-import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -13,10 +10,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
-import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.text.style.ImageSpan;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -28,17 +23,23 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.R;
 import fusionkey.lowkey.ROOMdatabase.AppDatabase;
 import fusionkey.lowkey.ROOMdatabase.UserDao;
+import fusionkey.lowkey.auth.utils.AuthCallback;
+import fusionkey.lowkey.auth.utils.UserAttributesEnum;
 import fusionkey.lowkey.chat.Runnables.DisconnectedRunnable;
 import fusionkey.lowkey.chat.Runnables.InChatRunnable;
 import fusionkey.lowkey.listAdapters.ChatServiceAdapters.ChatAppMsgAdapter;
 import fusionkey.lowkey.models.MessageTO;
 import fusionkey.lowkey.models.UserD;
+import fusionkey.lowkey.pointsAlgorithm.PointsCalculator;
 
 /**
  * @author Sandru Sebastian
@@ -54,6 +55,8 @@ public class ChatActivity extends AppCompatActivity {
     final long periodForT = 1000, periodForT1 =4000, delay=0;
     long last_text_edit=0;
 
+
+    String role;
     InChatRunnable inChatRunnable;
     ChatRoom chatRoom;
     DisconnectedRunnable disconnectedRunnable;
@@ -70,9 +73,14 @@ public class ChatActivity extends AppCompatActivity {
     String userRequest;
     ArrayList<MessageTO> msgDtoList;
 
+    private int stringCounter,
+                clock;
+    ArrayList<Integer> stringL;
+
     private static final String disconnectedDialog = "just disconnected from the chat !";
     private static final String listenerIntent ="Listener";
     private static final String userIntent ="User";
+    private static final String roleIntent = "role";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,14 +93,14 @@ public class ChatActivity extends AppCompatActivity {
         final RecyclerView msgRecyclerView = findViewById(R.id.reyclerview_message_list);
         final String listener = getIntent().getStringExtra(listenerIntent);
         final String user = getIntent().getStringExtra(userIntent);
-
+        role = getIntent().getStringExtra(roleIntent);
         chatbox = findViewById(R.id.layout_chatbox);
         msgInputText = findViewById(R.id.chat_input_msg);
         listenerRequest = listener.replace("[", "").replace("]", "").replace("\"","");
         userRequest = user.replace("[", "").replace("]", "").replace("\"","");
         chatRoom = new ChatRoom(userRequest,listenerRequest);
         msgDtoList = new ArrayList<>();
-
+        stringL = new ArrayList<>();
 
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
@@ -170,7 +178,8 @@ public class ChatActivity extends AppCompatActivity {
                     Timestamp time = new Timestamp(4242);
                     Message msgToSend = new Message(listenerRequest,userRequest,listenerRequest,msgContent, time,"no");
                     msgToSend.sendMsg();
-
+                    stringL.add(msgContent.length());
+                    stringCounter++;
                     msgInputText.setText("");
                 }
             }
@@ -195,7 +204,7 @@ public class ChatActivity extends AppCompatActivity {
 
 
         if(msgDtoList!=null && msgDtoList.size() > 0) {
-            UserD userD = new UserD(userRequest, msgDtoList.get(msgDtoList.size() - 1).getContent(), msgDtoList);
+            UserD userD = new UserD(userRequest, msgDtoList.get(msgDtoList.size() - 1).getContent(), msgDtoList,role);
             AppDatabase database = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "user-database")
                     .allowMainThreadQueries()   //Allows room to do operation on main thread
                     .build();
@@ -210,13 +219,37 @@ public class ChatActivity extends AppCompatActivity {
             }
             database.close();
         }
+        updatePoints();
         super.onBackPressed();
+    }
+
+    private void updatePoints(){
+        Map<String, String> attributes = LowKeyApplication.userManager.getUserDetails().getAttributes().getAttributes();
+        String actualPoints = attributes.get(UserAttributesEnum.SCORE.toString());
+        Double actualP = Double.parseDouble(actualPoints);
+
+        HashMap<UserAttributesEnum, String> attributesToUpdate = new HashMap<>();
+        attributesToUpdate.put(UserAttributesEnum.SCORE, String.valueOf(actualP+PointsCalculator.calculateStringsValue(stringCounter,stringL,clock)));
+        LowKeyApplication.userManager.updateUserAttributes(attributesToUpdate, this, new AuthCallback() {
+            @Override
+            public void execute() {
+                Log.e("PointsUpdate",String.valueOf(PointsCalculator.calculateStringsValue(stringCounter,stringL,clock)));
+            }
+        }, new AuthCallback() {
+            @Override
+            public void execute() {
+                Log.e("PointsUpdate:","FAIL");
+            }
+        });
+        LowKeyApplication.userManager.requestUserDetails(ChatActivity.this, null);
+
     }
 
     private void startRunnable(){
      t.scheduleAtFixedRate(new TimerTask() {
         @Override
         public void run() {
+            clock++;
             inChatRunnable.run();
         }
 

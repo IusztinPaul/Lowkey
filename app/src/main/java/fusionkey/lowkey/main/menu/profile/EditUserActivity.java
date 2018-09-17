@@ -1,4 +1,4 @@
-package fusionkey.lowkey.main.profile;
+package fusionkey.lowkey.main.menu.profile;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -88,6 +89,14 @@ public class EditUserActivity extends AppCompatActivity {
         spinnerGender.setAdapter(spinnerAdapter);
 
         populateUI();
+        ConstraintLayout back = findViewById(R.id.backL);
+
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
     }
 
     @Override
@@ -180,12 +189,17 @@ public class EditUserActivity extends AppCompatActivity {
                 EditUserActivity.this.getResources().getString(R.string.edit_success_message),
                 Toast.LENGTH_SHORT).show();
 
+        LowKeyApplication.userManager.requestUserDetails(EditUserActivity.this, null);
+
         Intent intent = new Intent(EditUserActivity.this, Main2Activity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
 
         // Reload the user details locally.
-        LowKeyApplication.userManager.requestUserDetails(EditUserActivity.this, null);
+
+        //LowKeyApplication.userManager.requestUserDetails(EditUserActivity.this, null); -> linia asta nu se mai executa dupa ce
+        //dai intentul
+
     }
 
     private void populateUI() {

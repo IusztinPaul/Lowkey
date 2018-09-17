@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".main.profile.EditUserActivity">
+    tools:context=".main.menu.profile.EditUserActivity">
 
     <Button
         android:id="@+id/btnSave"
@@ -84,6 +84,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
+
+                <android.support.constraint.ConstraintLayout
+                    android:id="@+id/backL"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:id="@+id/back"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:srcCompat="@drawable/backbtn" />
+
+                </android.support.constraint.ConstraintLayout>
 
 
                 <de.hdodenhof.circleimageview.CircleImageView

@@ -34,17 +34,20 @@
         <activity android:name=".auth.ConfirmCodeActivity" />
         <activity android:name=".auth.ForgotPasswordActivity" />
         <activity android:name=".ROOMdatabase.MessagesActivity" />
-        <activity android:name=".main.profile.EditUserActivity" />
+        <activity android:name=".main.menu.profile.EditUserActivity" />
         <activity
-            android:name=".main.settings.SettingsActivity"
+            android:name=".main.menu.settings.SettingsActivity"
             android:label="@string/title_activity_settings" />
-        <activity android:name=".main.profile.ChangePasswordActivity" />
+        <activity android:name=".main.menu.profile.ChangePasswordActivity" />
 
         <service
             android:name="com.amazonaws.mobileconnectors.s3.transferutility.TransferService"
             android:enabled="true" />
 
-        <activity android:name=".auth.LoadUserDataActivity"></activity>
+        <activity android:name=".auth.LoadUserDataActivity" />
+        <activity android:name=".main.menu.about.About" />
+        <activity android:name=".main.menu.Menu" />
+        <activity android:name=".main.menu.license.LicenseActivity"></activity>
     </application>
 
 </manifest>

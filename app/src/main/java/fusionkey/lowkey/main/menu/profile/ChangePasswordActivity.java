@@ -1,6 +1,7 @@
-package fusionkey.lowkey.main.profile;
+package fusionkey.lowkey.main.menu.profile;
 
 import android.content.Intent;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -33,6 +34,14 @@ public class ChangePasswordActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 save();
+            }
+        });
+        ConstraintLayout back = findViewById(R.id.backL);
+
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
             }
         });
     }

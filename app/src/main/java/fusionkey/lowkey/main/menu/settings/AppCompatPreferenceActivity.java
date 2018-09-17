@@ -1,4 +1,4 @@
-package fusionkey.lowkey.main.settings;
+package fusionkey.lowkey.main.menu.settings;
 
 import android.content.res.Configuration;
 import android.os.Bundle;

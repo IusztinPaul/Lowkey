@@ -22,11 +22,16 @@ public class UserD {
     @ColumnInfo(name = "last")
     private String last_message;
 
-    public UserD(String username, String last_message, ArrayList<MessageTO> listMessage){
+    @ColumnInfo(name = "state")
+    private String state;
+
+    public UserD(String username, String last_message, ArrayList<MessageTO> listMessage,String state){
         this.setUsername(username);
         this.setLast_message(last_message);
         this.setListMessage(listMessage);
+        this.setState(state);
     }
+
     public UserD(){}
     public String getUsername() {
         return username;
@@ -64,5 +69,13 @@ public class UserD {
 
     public void setUid(int uid) {
         this.uid = uid;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
     }
 }

@@ -1,8 +1,6 @@
 package fusionkey.lowkey.main;
 
-import android.arch.lifecycle.Lifecycle;
 import android.arch.lifecycle.LifecycleObserver;
-import android.arch.lifecycle.OnLifecycleEvent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.design.widget.TabLayout;
@@ -23,7 +21,6 @@ import android.widget.ProgressBar;
 import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.R;
 import fusionkey.lowkey.auth.utils.UserAttributesEnum;
-import fusionkey.lowkey.chat.interfaces.VolleyResponseListener;
 
 public class Main2Activity extends AppCompatActivity implements LifecycleObserver,MainCallback {
     private LoadingAsyncTask loadingAsyncTask;
@@ -65,7 +62,7 @@ public class Main2Activity extends AppCompatActivity implements LifecycleObserve
         tabLayout.setSelectedTabIndicatorHeight(0);
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
-        progressBar = (ProgressBar) findViewById(R.id.loadingBar);
+        progressBar = (ProgressBar) findViewById(R.id.paymentBar);
         searchCard = (CardView) findViewById(R.id.searchCard);
         imageView = findViewById(R.id.imageView8);
 

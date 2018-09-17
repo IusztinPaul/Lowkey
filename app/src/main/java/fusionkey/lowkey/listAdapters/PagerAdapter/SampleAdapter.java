@@ -29,6 +29,6 @@ public class SampleAdapter extends FragmentPagerAdapter {
 
     @Override
     public String getPageTitle(int position) {
-        return "get help";
+        return "";
     }
 }

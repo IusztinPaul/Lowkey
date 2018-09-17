@@ -131,15 +131,17 @@ public class LoadingAsyncTask extends AsyncTask<Void, Integer, JSONObject> {
                 Log.e("LoadingAsyncTask :", jsonObject.toString());
                 Intent intent = new Intent(currentActivity.get(), ChatActivity.class);
                 intent.putExtra("Listener", currentUser);
-                    if(!findListener)
+                    if(!findListener) {
                         intent.putExtra("User",
                                 jsonObject.getJSONObject(QueueMatcherUtils.DATA_JSON_KEY).
                                         getString(QueueMatcherUtils.DATA_SPEAKERS_KEY));
-                    else
+                        intent.putExtra("role","helper");
+                    }else {
                         intent.putExtra("User",
                                 jsonObject.getJSONObject(QueueMatcherUtils.DATA_JSON_KEY).
                                         getString(QueueMatcherUtils.DATA_LISTENER_KEY));
-
+                        intent.putExtra("role","Nothelper");
+                    }
                 saveState("step",0);
                searchCard.get().setVisibility(View.INVISIBLE);
                     currentActivity.get().startActivity(intent);
