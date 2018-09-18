@@ -1,45 +1,74 @@
 package fusionkey.lowkey.listAdapters;
 
+import android.content.Context;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.amazonaws.services.cognitoidentityprovider.model.AttributeType;
 import com.amazonaws.services.cognitoidentityprovider.model.UserType;
 
+import java.lang.reflect.Array;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.TimeZone;
 
 
 import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.R;
 import fusionkey.lowkey.auth.utils.UserAttributesEnum;
+import fusionkey.lowkey.listAdapters.CommentAdapters.CommentAdapter;
+import fusionkey.lowkey.listAdapters.CommentAdapters.CustomLinearLayoutManager;
+import fusionkey.lowkey.newsfeed.Comment;
 import fusionkey.lowkey.newsfeed.NewsFeedMessage;
+import fusionkey.lowkey.newsfeed.NewsfeedRequest;
 
 public class NewsfeedAdapter extends RecyclerView.Adapter<ChatTabViewHolder> {
 
     private List<NewsFeedMessage> mMessages;
     private static String ANON_STRING = "Anonymous";
+    private Context mcontext;
+
+    public NewsfeedAdapter(List<NewsFeedMessage> mMessages,Context context){
+        this.mMessages=mMessages;
+        this.mcontext=context;
+    }
 
     public interface OnItemClickListenerNews {
         void onItemClick(ChatTabViewHolder item);
         boolean onLongClick(ChatTabViewHolder item, int pos);
+
     }
 
     @Override
     public ChatTabViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ChatTabViewHolder(LayoutInflater.from(parent.getContext())
+        CustomLinearLayoutManager linearLayoutManager = new CustomLinearLayoutManager(parent.getContext()){
+            @Override
+            public boolean canScrollVertically(){
+                return false;
+            }
+        };
+        ChatTabViewHolder chatTabViewHolder =new ChatTabViewHolder(LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.chat_item, parent, false));
+        chatTabViewHolder.recyclerView.setLayoutManager(linearLayoutManager);
+        return  chatTabViewHolder;
     }
 
     @Override
-    public void onBindViewHolder(ChatTabViewHolder holder, int position) {
-        NewsFeedMessage msgDto = this.mMessages.get(position);
+    public void onBindViewHolder(final ChatTabViewHolder holder, int position) {
+        final NewsFeedMessage msgDto = this.mMessages.get(position);
 
         holder.leftMsgLayout.setVisibility(LinearLayout.VISIBLE);
 
@@ -57,15 +86,45 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<ChatTabViewHolder> {
         }
 
         holder.lastmsg.setText(msgDto.getContent());
-
+        holder.recyclerView.setNestedScrollingEnabled(false);
         holder.date.setText(localTime(msgDto.getDate()));
+        ArrayList<Comment> commentArrayList;
 
-        if(msgDto.getCommentArrayList()!=null)
+
+
+        if(msgDto.getCommentArrayList()!=null) {
+           commentArrayList = new ArrayList<>(msgDto.getCommentArrayList());
+            Collections.reverse(commentArrayList);
             holder.answers.setText(msgDto.getCommentArrayList().size() + " Answers");
-        else
+            CommentAdapter adapter = new CommentAdapter(commentArrayList);
+            holder.recyclerView.setAdapter(adapter);
+
+
+            int newMsgPosition = commentArrayList.size() - 1;
+            adapter.notifyItemInserted(newMsgPosition);
+            holder.recyclerView.scrollToPosition(newMsgPosition);
+        }else {
             holder.answers.setText("0 Answers");
+        }
+
+        holder.send.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!TextUtils.isEmpty(holder.input.getText().toString())) {
+                    Map<String, String> attributes = LowKeyApplication.userManager.getUserDetails().getAttributes().getAttributes();
+                    final String uniqueID = attributes.get(UserAttributesEnum.EMAIL.toString());
+                    new NewsfeedRequest(uniqueID).postComment(msgDto.getDate(), true, holder.input.getText().toString());
+
+                    holder.input.setText("");
+                }
+
+            }
+        });
 
         holder.bind(holder, listener);
+
+
+
     }
 
     @Override
@@ -77,7 +136,7 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<ChatTabViewHolder> {
         mMessages = users;
     }
 
-    private OnItemClickListenerNews listener;
+    public OnItemClickListenerNews listener;
 
     public void clear(){
         mMessages.clear();

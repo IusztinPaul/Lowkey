@@ -16,7 +16,9 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
@@ -28,6 +30,7 @@ import android.widget.ImageView;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Map;
 
 import fusionkey.lowkey.LowKeyApplication;
@@ -73,15 +76,16 @@ public class NewsFeedTab extends Fragment{
         swipeRefreshLayout = rootView.findViewById(R.id.swipe);
         CardView card = rootView.findViewById(R.id.card);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
-        msgRecyclerView.setHasFixedSize(true);
         msgRecyclerView.setLayoutManager(linearLayoutManager);
+
         //Getting user details from Cognito
         Map<String, String> attributes = LowKeyApplication.userManager.getUserDetails().getAttributes().getAttributes();
         final String id = attributes.get(UserAttributesEnum.USERNAME.toString());
         uniqueID = (attributes.get(UserAttributesEnum.EMAIL.toString()));
+
         // Create the initial data list.
         messages = new ArrayList<NewsFeedMessage>();
-        adapter = new NewsfeedAdapter(messages);
+        adapter = new NewsfeedAdapter(messages,getActivity().getApplicationContext());
         msgRecyclerView.setAdapter(adapter);
         newsfeedRequest = new NewsfeedRequest(uniqueID);
 
@@ -105,12 +109,14 @@ public class NewsFeedTab extends Fragment{
                 boolean anon = checkBox.isChecked();
                 if(!title.getText().toString().equals("") && !body.getText().toString().equals("")){
                     Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-                    newsfeedRequest.postQuestion(timestamp.getTime(),anon,String.valueOf(title.getText()),String.valueOf(body.getText()));
                     NewsFeedMessage m11 = new NewsFeedMessage();
+
+                    newsfeedRequest.postQuestion(timestamp.getTime(),anon,String.valueOf(title.getText()),String.valueOf(body.getText()));
                     m11.setAnon(anon);m11.setUser(id);m11.setDate(String.valueOf(timestamp.getTime()));
                     m11.setTitle(title.getText().toString());m11.setContent(String.valueOf(body.getText()));
                     m11.setId(uniqueID);
                     messages.add(m11);
+
                     int newMsgPosition = messages.size() - 1;
                     adapter.notifyItemInserted(newMsgPosition);
                     collapse(v2,1000,1);
@@ -126,12 +132,13 @@ public class NewsFeedTab extends Fragment{
             }
         });
 
-        initSwipe();
+       // initSwipe();
 
         adapter.setListener(new NewsfeedAdapter.OnItemClickListenerNews() {
             @Override
             public void onItemClick(ChatTabViewHolder item) {
                 item.view.setVisibility(View.VISIBLE);
+
                 expand(item.view,500,400);
             }
             @Override
@@ -143,6 +150,25 @@ public class NewsFeedTab extends Fragment{
 
         refreshNewsfeed();
         adapter.notifyDataSetChanged();
+        RecyclerView.OnItemTouchListener onItemTouchListener = new RecyclerView.OnItemTouchListener() {
+            @Override
+            public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
+                if(e.getAction()==MotionEvent.ACTION_DOWN && rv.getScrollState()==RecyclerView.SCROLL_STATE_SETTLING)
+                    Log.e("motion","clickperformed");
+                rv.stopScroll();
+                return true;
+            }
+
+            @Override
+            public void onTouchEvent(RecyclerView rv, MotionEvent e) {
+
+            }
+
+            @Override
+            public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+
+            }
+        };
 
         return rootView;
     }

@@ -41,6 +41,11 @@ public class LoadUserDataActivity extends AppCompatActivity {
                     new ProfilePhotoUploader();
 
             profilePhotoUploader.download(
+                    /**
+                     * @TO-DO la linia asta e eroare
+                     *      Caused by: java.lang.NullPointerException: Attempt to invoke virtual method 'java.lang.String com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUser.getUserId()'
+                     *      on a null object reference
+                     */
                     LowKeyApplication.userManager.getUser().getUserId(),
                     new Callback() {
                         @Override

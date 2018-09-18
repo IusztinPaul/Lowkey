@@ -29,6 +29,7 @@ public class NewsfeedRequest {
     private static final String MAIN_NEWSFEED_API_URL = MAIN_API_URL;
 
     private static final String POST_RELATIVE_URL = "post/";
+    private static final String COMMENT_RELATIVE_URL = POST_RELATIVE_URL + "comment/";
 
     private  static final String USER_API_QUERY_STRING = "userId";
     private static final String TIME_API_QUERY_STRING = "postTStamp";
@@ -40,19 +41,19 @@ public class NewsfeedRequest {
     private static final String POST_QUESTION_STRING ="postQuestion";
     public static final String GET_QUESTION_STRING ="getQuestion";
     private static final String DELETE_QUESTION_STRING ="deleteQuestion";
-
+    private static final String POST_COMMENT_STRING ="postComment";
 
     public static final String RESPONSE_NO_DATA = "";
     public static final String RESPONSE_ERROR = "error";
     public static final String DATA_JSON_KEY = "data";
     public static final String NO_DATA = "the response has no data";
+
     public NewsfeedRequest(String id){
         this.id=id;
     }
 
-    /**
-     *  POST QUESTION
-     */
+
+
     public void postQuestion(Long time,Boolean anon,String title,String text){
 
         HashMap<String,String> queryParameters = new HashMap<>();
@@ -99,9 +100,8 @@ public class NewsfeedRequest {
         requestQueueSingleton.addToRequestQueue(jsonObjectRequest);
     }
 
-    /**
-     * GET QUESTIONS
-     */
+
+
     public void getNewsfeed(int number,final NewsfeedVolleyCallBack listener){
         HashMap<String,String> queryParameters = new HashMap<>();
         queryParameters.put(PAGE_NUMBER_API_QUERY_STRING, String.valueOf(number));
@@ -136,10 +136,8 @@ public class NewsfeedRequest {
         requestQueueSingleton.addToRequestQueue(jsonObjectRequest);
     }
 
-    /**
-     *
-     * DELETE QUESTION
-     */
+
+
     public void deleteQuestion(String time){
 
         HashMap<String,String> queryParameters = new HashMap<>();
@@ -181,34 +179,38 @@ public class NewsfeedRequest {
         requestQueueSingleton.addToRequestQueue(jsonObjectRequest);
     }
 
-    public void postComment(Timestamp time,Boolean anon,String text){
+
+
+    public void postComment(String time,Boolean anon,String text){
 
         HashMap<String,String> queryParameters = new HashMap<>();
 
         queryParameters.put(TIME_API_QUERY_STRING,time.toString());
 
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+
         JSONObject jsonBody = new JSONObject();
         try {
             jsonBody.put("commentTxt", text);
             jsonBody.put("commentUserId", id);
-            jsonBody.put("commentTStamp", time.toString());
+            jsonBody.put("commentTStamp", String.valueOf(timestamp.getTime()));
             jsonBody.put("commentIsAnonymous", Boolean.toString(anon));
         }catch (JSONException e) {
             e.printStackTrace();
         }
-        String URL = getAbsoluteUrlWithQueryString(queryParameters, POST_RELATIVE_URL);
+        String URL = getAbsoluteUrlWithQueryString(queryParameters, COMMENT_RELATIVE_URL);
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(POST, URL,jsonBody,
                 new Response.Listener<JSONObject>() {
 
                     @Override
                     public void onResponse(JSONObject response) {
-                        Log.e(POST_QUESTION_STRING, response.toString());
+                        Log.e(POST_COMMENT_STRING, response.toString());
                         try {
                             if (!response.get(DATA_JSON_KEY).equals(RESPONSE_NO_DATA))
-                                Log.e(POST_QUESTION_STRING, NO_DATA);
+                                Log.e(POST_COMMENT_STRING, NO_DATA);
                         } catch (JSONException e) {
-                            Log.e(POST_QUESTION_STRING, e.toString());
+                            Log.e(POST_COMMENT_STRING, e.toString());
                         }
                     }
                 },
@@ -231,6 +233,8 @@ public class NewsfeedRequest {
 
         requestQueueSingleton.addToRequestQueue(jsonObjectRequest);
     }
+
+
 
 
     private String getAbsoluteUrlWithQueryString(Map<?, ?> queryParameters, String relativeUrl) {

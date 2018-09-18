@@ -67,14 +67,14 @@ public class NewsFeedAsyncTask extends AsyncTask<Void,String,JSONObject> {
                         try {
                             JSONArray arr2 = new JSONArray(obj.getString("comments")); //get comments
                             for (int j = 0; j < arr2.length(); j++) {
-                                JSONObject comment = arr2.getJSONObject(i);
+                                JSONObject comment = arr2.getJSONObject(j);
                                     Comment commentObj = new Comment(
                                             comment.getString("commentIsAnonymous"),
                                             comment.getString("commentTStamp"),
                                             comment.getString("commentTxt"),
                                             comment.getString("commentUserId"));
                                     commentArrayList.add(commentObj);
-
+                                    Log.e("Comment",commentObj.toString());
                             }
                         }catch (JSONException e){
                             Log.e("Comments","The post has no comments");

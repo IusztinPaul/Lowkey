@@ -86,8 +86,8 @@
                 android:layout_marginRight="8dp"
 
                 android:layout_marginTop="8dp"
-                android:textColor="@android:color/black"
                 android:text="11:40"
+                android:textColor="@android:color/black"
                 android:textSize="13sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -165,7 +165,7 @@
     </View>
 
     <Button
-        android:id="@+id/button_chatbox_send"
+        android:id="@+id/sendComment"
         android:layout_width="64dp"
         android:layout_height="48dp"
         android:layout_gravity="bottom"
@@ -193,22 +193,39 @@
         android:hint="Type a message"
         android:maxLines="6"
         app:layout_constraintBottom_toBottomOf="@+id/expand"
-        app:layout_constraintEnd_toStartOf="@+id/button_chatbox_send"
+        app:layout_constraintEnd_toStartOf="@+id/sendComment"
         app:layout_constraintHorizontal_bias="0.512"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerView"
+    <LinearLayout
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@+id/chat_input_msg"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/expand" />
+        app:layout_constraintTop_toTopOf="@+id/expand">
+
+        <android.support.v4.widget.NestedScrollView
+            android:id="@+id/scroll"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/comments"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:scrollbars="vertical"
+                app:layout_constraintBottom_toTopOf="@+id/chat_input_msg"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/expand"
+                tools:listitem="@layout/newsfeed_comment_item" />
+        </android.support.v4.widget.NestedScrollView>
+    </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>
