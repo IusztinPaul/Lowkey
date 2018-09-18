@@ -73,7 +73,7 @@
             android:maxLines="6" />
 
         <Button
-            android:id="@+id/button_chatbox_send"
+            android:id="@+id/sendComment"
             android:layout_width="64dp"
             android:layout_height="48dp"
             android:layout_gravity="bottom"

@@ -159,7 +159,7 @@ public class ChatActivity extends AppCompatActivity {
 
 
 
-        Button msgSendButton = (Button)findViewById(R.id.button_chatbox_send);
+        Button msgSendButton = (Button)findViewById(R.id.sendComment);
         msgSendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
