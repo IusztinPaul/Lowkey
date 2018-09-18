@@ -4,6 +4,7 @@ import com.amazonaws.auth.AWSCredentialsProvider;
 import com.amazonaws.mobile.client.AWSMobileClient;
 import com.amazonaws.mobile.config.AWSConfiguration;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapperConfig;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 
 import java.util.concurrent.Callable;
@@ -47,7 +48,7 @@ public class UserDBManager {
                UserDB userDB = new UserDB();
                userDB.setUserId(userId);
                userDB.setScore(score);
-               dynamoDBMapper.save(userDB);
+               dynamoDBMapper.save(userDB, new DynamoDBMapperConfig(DynamoDBMapperConfig.SaveBehavior.UPDATE));
            }
        });
     }

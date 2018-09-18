@@ -72,12 +72,6 @@ public class Main2Activity extends AppCompatActivity implements LifecycleObserve
 
         // AWSMobileClient enables AWS user credentials to access your table
         AWSMobileClient.getInstance().initialize(this).execute();
-
-        UserDBManager.create("Andrei");
-        UserDBManager.update("Paul", 20);
-        UserDBManager.update("Sebi", 50);
-        Log.e("USEEEER", UserDBManager.getUserData("Paul").toString());
-        UserDBManager.delete("Andrei");
     }
     @Override
     public void searchForHelp() {

@@ -20,6 +20,7 @@ import java.util.Map;
 import de.hdodenhof.circleimageview.CircleImageView;
 import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.auth.utils.UserAttributesEnum;
+import fusionkey.lowkey.auth.utils.UserDBManager;
 import fusionkey.lowkey.entryActivity.EntryActivity;
 import fusionkey.lowkey.R;
 
@@ -77,6 +78,14 @@ public class ProfileTab extends Fragment {
         imageViewEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                //  UserDBManager.create("Andrei");
+                 UserDBManager.update("Paul", 20);
+                  UserDBManager.update("Sebi", 50);
+                //Log.e("USEEEER", UserDBManager.getUserData("Paul").toString());
+                //UserDBManager.delete("Andrei");
+
+
                 Intent intent = new Intent(ProfileTab.this.getContext(), EditUserActivity.class);
                 startActivity(intent);
             }
