@@ -18,9 +18,13 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
+import com.amazonaws.mobile.client.AWSMobileClient;
+
 import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.R;
 import fusionkey.lowkey.auth.utils.UserAttributesEnum;
+import fusionkey.lowkey.auth.utils.UserDBManager;
+import fusionkey.lowkey.models.UserDB;
 
 public class Main2Activity extends AppCompatActivity implements LifecycleObserver,MainCallback {
     private LoadingAsyncTask loadingAsyncTask;
@@ -66,6 +70,14 @@ public class Main2Activity extends AppCompatActivity implements LifecycleObserve
         searchCard = (CardView) findViewById(R.id.searchCard);
         imageView = findViewById(R.id.imageView8);
 
+        // AWSMobileClient enables AWS user credentials to access your table
+        AWSMobileClient.getInstance().initialize(this).execute();
+
+        UserDBManager.create("Andrei");
+        UserDBManager.update("Paul", 20);
+        UserDBManager.update("Sebi", 50);
+        Log.e("USEEEER", UserDBManager.getUserData("Paul").toString());
+        UserDBManager.delete("Andrei");
     }
     @Override
     public void searchForHelp() {
