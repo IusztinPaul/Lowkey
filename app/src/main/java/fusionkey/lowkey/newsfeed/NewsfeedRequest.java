@@ -59,8 +59,9 @@ public class NewsfeedRequest {
         HashMap<String,String> queryParameters = new HashMap<>();
         queryParameters.put(USER_API_QUERY_STRING, id);
         queryParameters.put(TIME_API_QUERY_STRING,String.valueOf(time));
-        queryParameters.put(ANON_API_QUERY_STRING,Boolean.toString(anon));
+
         Map<String, String> params = new HashMap<String, String>();
+        params.put(ANON_API_QUERY_STRING,Boolean.toString(anon));
         params.put(POST_TITLE_API_QUERY_STRING, title);
         params.put(POST_TEXT_API_QUERY_STRING, text);
 

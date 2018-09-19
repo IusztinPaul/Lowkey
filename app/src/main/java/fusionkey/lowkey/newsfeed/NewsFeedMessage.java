@@ -1,10 +1,11 @@
 package fusionkey.lowkey.newsfeed;
 
 import java.util.ArrayList;
+import java.util.Observable;
 
 import fusionkey.lowkey.newsfeed.Comment;
 
-public class NewsFeedMessage {
+public class NewsFeedMessage extends Observable {
 
     private String content;
     private String date;
@@ -14,7 +15,7 @@ public class NewsFeedMessage {
     private Boolean anon;
     private String id;
     private int weekDay;
-    private ArrayList<Comment> commentArrayList;
+    public ArrayList<Comment>  commentArrayList;
 
 
 
@@ -52,6 +53,10 @@ public class NewsFeedMessage {
 
     public String getTitle() {
         return title;
+    }
+
+    public void addCommentToList(Comment m){
+        commentArrayList.add(m);
     }
 
     public void setTitle(String title) {

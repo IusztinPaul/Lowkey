@@ -24,13 +24,9 @@ public class ChatTabViewHolder extends RecyclerView.ViewHolder {
     TextView lastmsg;
     TextView date;
     TextView answers;
-    Button send;
-    EditText input;
-    RecyclerView recyclerView;
     CircleImageView image;
     public View view;
     private ArrayList<Comment> commentArrayList;
-    NestedScrollView nestedScrollView;
     //ImageView image;
 
     public ChatTabViewHolder(View itemView) {
@@ -42,14 +38,10 @@ public class ChatTabViewHolder extends RecyclerView.ViewHolder {
             lastmsg = (TextView) itemView.findViewById(R.id.lastmsg);
             date = (TextView) itemView.findViewById(R.id.date);
             title = (TextView) itemView.findViewById(R.id.Title);
-            recyclerView = (RecyclerView) itemView.findViewById(R.id.comments);
             answers = (TextView) itemView.findViewById(R.id.answers);
             image = (CircleImageView) itemView.findViewById(R.id.circleImageView);
-            view = (View) itemView.findViewById(R.id.expand);
-            nestedScrollView = itemView.findViewById(R.id.scroll);
-            view.setVisibility(View.INVISIBLE);
-            input = itemView.findViewById(R.id.chat_input_msg);
-            send = itemView.findViewById(R.id.sendComment);
+//            view.setVisibility(View.INVISIBLE);
+
 
         }
     }
@@ -57,7 +49,7 @@ public class ChatTabViewHolder extends RecyclerView.ViewHolder {
 
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
-                listener.onItemClick(item);
+                listener.onItemClick(item,v);
             }
         });
         itemView.setOnLongClickListener(new View.OnLongClickListener() {
@@ -69,12 +61,4 @@ public class ChatTabViewHolder extends RecyclerView.ViewHolder {
         });
     }
 
-
-    public ArrayList<Comment> getCommentArrayList() {
-        return commentArrayList;
-    }
-
-    public void setCommentArrayList(ArrayList<Comment> commentArrayList) {
-        this.commentArrayList = commentArrayList;
-    }
 }

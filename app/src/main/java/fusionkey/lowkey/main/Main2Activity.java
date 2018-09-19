@@ -21,6 +21,7 @@ import android.widget.ProgressBar;
 import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.R;
 import fusionkey.lowkey.auth.utils.UserAttributesEnum;
+import fusionkey.lowkey.newsfeed.NewsFeedTab;
 
 public class Main2Activity extends AppCompatActivity implements LifecycleObserver,MainCallback {
     private LoadingAsyncTask loadingAsyncTask;

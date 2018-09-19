@@ -47,22 +47,15 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<ChatTabViewHolder> {
     }
 
     public interface OnItemClickListenerNews {
-        void onItemClick(ChatTabViewHolder item);
+        void onItemClick(ChatTabViewHolder item,View v);
         boolean onLongClick(ChatTabViewHolder item, int pos);
 
     }
 
     @Override
     public ChatTabViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        CustomLinearLayoutManager linearLayoutManager = new CustomLinearLayoutManager(parent.getContext()){
-            @Override
-            public boolean canScrollVertically(){
-                return false;
-            }
-        };
         ChatTabViewHolder chatTabViewHolder =new ChatTabViewHolder(LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.chat_item, parent, false));
-        chatTabViewHolder.recyclerView.setLayoutManager(linearLayoutManager);
         return  chatTabViewHolder;
     }
 
@@ -86,40 +79,15 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<ChatTabViewHolder> {
         }
 
         holder.lastmsg.setText(msgDto.getContent());
-        holder.recyclerView.setNestedScrollingEnabled(false);
-        holder.date.setText(localTime(msgDto.getDate()));
-        ArrayList<Comment> commentArrayList;
 
+        holder.date.setText(localTime(msgDto.getDate()));
 
 
         if(msgDto.getCommentArrayList()!=null) {
-           commentArrayList = new ArrayList<>(msgDto.getCommentArrayList());
-            Collections.reverse(commentArrayList);
             holder.answers.setText(msgDto.getCommentArrayList().size() + " Answers");
-            CommentAdapter adapter = new CommentAdapter(commentArrayList);
-            holder.recyclerView.setAdapter(adapter);
-
-
-            int newMsgPosition = commentArrayList.size() - 1;
-            adapter.notifyItemInserted(newMsgPosition);
-            holder.recyclerView.scrollToPosition(newMsgPosition);
         }else {
             holder.answers.setText("0 Answers");
         }
-
-        holder.send.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(!TextUtils.isEmpty(holder.input.getText().toString())) {
-                    Map<String, String> attributes = LowKeyApplication.userManager.getUserDetails().getAttributes().getAttributes();
-                    final String uniqueID = attributes.get(UserAttributesEnum.EMAIL.toString());
-                    new NewsfeedRequest(uniqueID).postComment(msgDto.getDate(), true, holder.input.getText().toString());
-
-                    holder.input.setText("");
-                }
-
-            }
-        });
 
         holder.bind(holder, listener);
 
