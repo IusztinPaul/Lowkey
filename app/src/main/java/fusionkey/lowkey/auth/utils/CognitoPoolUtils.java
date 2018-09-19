@@ -18,17 +18,16 @@ import com.amazonaws.services.cognitoidentityprovider.model.UserType;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 public class CognitoPoolUtils {
-    static final String REGION = "eu-central-1"; // Used by Java SDK.
-    static final Regions REGIONS = Regions.EU_CENTRAL_1; // Used by Android SDK.
-    static final String USER_POOL_ID = "eu-central-1_TU6gnuPdq";
-    static final String CLIENT_ID = "4dt31qskgv09rtckvli0g6ikia";
-    static final String CLIENT_SECRET = "ecbl2apn2k54nl9terbqhvsrco5t780isc1fcusptci08jic7q1";
+   static final String REGION = "eu-central-1"; // Used by Java SDK.
+   static final Regions REGIONS = Regions.EU_CENTRAL_1; // Used by Android SDK.
+   static final String USER_POOL_ID = "eu-central-1_TU6gnuPdq";
+   static final String CLIENT_ID = "4dt31qskgv09rtckvli0g6ikia";
+   static final String CLIENT_SECRET = "ecbl2apn2k54nl9terbqhvsrco5t780isc1fcusptci08jic7q1";
 
     private CognitoUserPool userPool;
     private CognitoUser user;

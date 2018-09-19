@@ -47,9 +47,5 @@
       "Bucket": "lowkey-userfiles-mobilehub-1217601830",
       "Region": "eu-central-1"
     }
-  },
-  "GoogleSignIn": {
-    "ClientId-WebApp": "879577828342-jou47momrqohhqjil9f6om5me5fpn9eb.apps.googleusercontent.com",
-    "Permissions": "email,profile,openid"
   }
 }

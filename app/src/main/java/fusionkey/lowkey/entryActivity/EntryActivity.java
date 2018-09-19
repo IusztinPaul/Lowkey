@@ -90,6 +90,8 @@ public class EntryActivity extends AppCompatActivity {
                 }
             }
         });
+
+
     }
 
     @Override
