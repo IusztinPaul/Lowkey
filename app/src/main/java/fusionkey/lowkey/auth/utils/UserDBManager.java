@@ -7,6 +7,8 @@ import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapperConfig;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -16,16 +18,17 @@ import java.util.concurrent.FutureTask;
 import fusionkey.lowkey.models.UserDB;
 
 public class UserDBManager {
-    // Attributes
-    static final String USER_ID = "userId";
-    static final String SCORE = "score";
-
     private static DynamoDBMapper dynamoDBMapper;
 
     public static void create(final String userId) {
+        create(userId, 0L, new ArrayList<Long>());
+    }
+
+    public static void create(final String userId, final long score, final List<Long> timeStamps) {
         final UserDB userDB = new UserDB();
         userDB.setUserId(userId);
-        userDB.setScore(0L);
+        userDB.setScore(score);
+        userDB.setTimeStamps(timeStamps);
 
         if(dynamoDBMapper == null)
             dynamoDBMapper = createDynamoDBMapper();
@@ -33,12 +36,12 @@ public class UserDBManager {
         new Thread(new Runnable() {
             @Override
             public void run() {
-               dynamoDBMapper.save(userDB);
+                dynamoDBMapper.save(userDB);
             }
         }).start();
     }
 
-    public static void update(final String userId, final long score) {
+    public static void update(final String userId, final long score, final List<Long> timeStamps) {
         if(dynamoDBMapper == null)
             dynamoDBMapper = createDynamoDBMapper();
 
@@ -48,9 +51,13 @@ public class UserDBManager {
                UserDB userDB = new UserDB();
                userDB.setUserId(userId);
                userDB.setScore(score);
-               dynamoDBMapper.save(userDB, new DynamoDBMapperConfig(DynamoDBMapperConfig.SaveBehavior.UPDATE));
+               userDB.setTimeStamps(timeStamps);
+               dynamoDBMapper.save(userDB,
+                       new DynamoDBMapperConfig(
+                               DynamoDBMapperConfig.SaveBehavior.UPDATE_SKIP_NULL_ATTRIBUTES)
+               );
            }
-       });
+       }).start();
     }
 
     public static void delete(final String userId) {
@@ -64,7 +71,7 @@ public class UserDBManager {
                 userDB.setUserId(userId);
                 dynamoDBMapper.delete(userDB);
             }
-        });
+        }).start();
     }
 
     public static UserDB getUserData(final String userId) {

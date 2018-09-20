@@ -15,6 +15,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -28,6 +29,7 @@ import fusionkey.lowkey.main.menu.Menu;
 
 import fusionkey.lowkey.main.menu.profile.EditUserActivity;
 import fusionkey.lowkey.main.utils.NetworkManager;
+import fusionkey.lowkey.models.UserDB;
 import fusionkey.lowkey.pointsAlgorithm.PointsCalculator;
 
 
@@ -78,17 +80,8 @@ public class ProfileTab extends Fragment {
         imageViewEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-		
-		// TODO: DELETE THIS
-                //  UserDBManager.create("Andrei");
-                 UserDBManager.update("Paul", 20);
-                  UserDBManager.update("Sebi", 50);
-                //Log.e("USEEEER", UserDBManager.getUserData("Paul").toString());
-                //UserDBManager.delete("Andrei");
-
-
-                Intent intent = new Intent(ProfileTab.this.getContext(), EditUserActivity.class);
-                startActivity(intent);
+            Intent intent = new Intent(ProfileTab.this.getContext(), EditUserActivity.class);
+            startActivity(intent);
             }
         });
 
