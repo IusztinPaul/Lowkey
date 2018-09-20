@@ -24,7 +24,7 @@ public class CommentViewHolder extends RecyclerView.ViewHolder {
             leftMsgLayout = (ConstraintLayout) itemView.findViewById(R.id.chat_left_msg_layout);
             answers = (TextView) itemView.findViewById(R.id.chat_left_msg_text_view);
             date = (TextView) itemView.findViewById(R.id.text_message_timeLeft);
-
+            name = (TextView) itemView.findViewById(R.id.username);
         }
     }
 

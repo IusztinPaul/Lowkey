@@ -1,6 +1,11 @@
 package fusionkey.lowkey.newsfeed;
 
-public class Comment {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.io.Serializable;
+
+public class Comment implements Parcelable{
     private String commentIsAnonymous;
     private String commentTStamp;
     private String commentTxt;
@@ -12,6 +17,39 @@ public class Comment {
         this.setCommentTxt(commentTxt);
         this.setCommentUserId(commentUserId);
     }
+
+    public Comment(Parcel read){
+        commentIsAnonymous = read.readString();
+        commentTStamp = read.readString();
+        commentTxt = read.readString();
+        commentUserId = read.readString();
+    }
+    public static final Parcelable.Creator<Comment> CREATOR =
+            new Parcelable.Creator<Comment>() {
+
+                @Override
+                public Comment createFromParcel(Parcel source) {
+                    return new Comment(source);
+                }
+
+                @Override
+                public Comment[] newArray(int size) {
+                    return new Comment[size];
+                }
+            };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(getCommentIsAnonymous());
+        dest.writeString(getCommentTStamp());
+        dest.writeString(getCommentTxt());
+        dest.writeString(getCommentUserId());
+    }
+
 
     public String getCommentIsAnonymous() {
         return commentIsAnonymous;

@@ -1,6 +1,8 @@
-package fusionkey.lowkey.main;
+package fusionkey.lowkey.newsfeed;
 
 import android.animation.ValueAnimator;
+import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -9,6 +11,7 @@ import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -31,12 +34,15 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.auth.utils.UserAttributesEnum;
+import fusionkey.lowkey.listAdapters.CommentAdapters.CommentAdapter;
 import fusionkey.lowkey.listAdapters.NewsfeedAdapter;
 import fusionkey.lowkey.listAdapters.ChatTabViewHolder;
+import fusionkey.lowkey.main.ProfileTab;
 import fusionkey.lowkey.newsfeed.NewsFeedMessage;
 import fusionkey.lowkey.R;
 import fusionkey.lowkey.newsfeed.NewsFeedAsyncTask;
@@ -136,10 +142,24 @@ public class NewsFeedTab extends Fragment{
 
         adapter.setListener(new NewsfeedAdapter.OnItemClickListenerNews() {
             @Override
-            public void onItemClick(ChatTabViewHolder item) {
-                item.view.setVisibility(View.VISIBLE);
+            public void onItemClick(ChatTabViewHolder item,View v) {
+                int position = item.getAdapterPosition();
+                NewsFeedMessage m = adapter.getMsg(position);
+                final Intent intent = new Intent(NewsFeedTab.this.getContext(), CommentsActivity.class);
+                int[] startingLocation = new int[2];
+                v.getLocationOnScreen(startingLocation);
+                intent.putExtra(CommentsActivity.ARG_DRAWING_START_LOCATION, startingLocation[1]);
+                if(m.getCommentArrayList()!=null) {
+                    MyParcelable object = new MyParcelable();
+                    object.setArrList(m.getCommentArrayList());
+                    object.setMyInt(m.getCommentArrayList().size());
+                    intent.putExtra("parcel", object);
 
-                expand(item.view,500,400);
+                    intent.putExtra("timestampID",m.getDate());
+                }
+
+                startActivityForResult(intent,1);
+                getActivity().overridePendingTransition(0, 0);
             }
             @Override
             public boolean onLongClick(ChatTabViewHolder item,int position) {
@@ -173,6 +193,34 @@ public class NewsFeedTab extends Fragment{
         return rootView;
     }
 
+    @Override
+    public void onActivityResult(int requestCode,int resultCode,Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+             if (requestCode == 1) {
+                 Log.e("GETHERE", "HERE");
+                 if(resultCode == Activity.RESULT_OK){
+                Bundle b = data.getExtras();
+                try {
+                    MyParcelable object = b.getParcelable("NewComments");
+                    String timestampID = b.getString("ItemID");
+                    List<Comment> commentArrayList = object.getArrList();
+                    for (NewsFeedMessage m : messages) {
+                        Log.e("GETHERE", "HERE FOR ");
+                            if (m.getDate().equals(timestampID)) {
+                                Log.e("GETHERE", "HERE IF");
+                                    for (Comment c : commentArrayList)
+                                        m.addCommentToList(c);
+                            adapter.notifyDataSetChanged();
+                    }
+                }
+                } catch (NullPointerException e) {
+                Log.e("Error", "parcelable object failed");
+                    }
+            }else { Log.e("IntentResult","No comments to update");
+                 }
+             }
+
+    }
     public void refreshNewsfeed(){
         NewsFeedAsyncTask newsFeedAsyncTask = new NewsFeedAsyncTask(messages,msgRecyclerView,adapter,newsfeedRequest);
         newsFeedAsyncTask.execute();

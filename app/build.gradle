@@ -32,8 +32,15 @@ dependencies {
     implementation 'com.flaviofaria:kenburnsview:1.0.7'
     implementation 'com.github.florent37:materialleanback:1.0.2'
     implementation 'com.nineoldandroids:library:2.4.0'
+<<<<<<< HEAD
+
+    compile 'com.netflix.rxjava:rxjava-android:0.16.1'
+
+    // Mobile Client for initializing the SDK.
+=======
     //Aws
     implementation 'com.amazonaws:aws-android-sdk-ddb-mapper:2.6.+'
+>>>>>>> eb01e060297b5675e44e6891a90fe026f602a88d
     implementation('com.amazonaws:aws-android-sdk-mobile-client:2.6.+@aar') { transitive = true }
     implementation('com.amazonaws:aws-android-sdk-auth-userpools:2.6.+@aar') { transitive = true }
     implementation 'com.amazonaws:aws-android-sdk-s3:2.6.+'
