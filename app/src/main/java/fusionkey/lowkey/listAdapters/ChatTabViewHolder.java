@@ -33,7 +33,6 @@ public class ChatTabViewHolder extends RecyclerView.ViewHolder {
         super(itemView);
 
         if(itemView!=null) {
-            leftMsgLayout = (ConstraintLayout) itemView.findViewById(R.id.chat);
             name = (TextView) itemView.findViewById(R.id.name);
             lastmsg = (TextView) itemView.findViewById(R.id.lastmsg);
             date = (TextView) itemView.findViewById(R.id.date);
