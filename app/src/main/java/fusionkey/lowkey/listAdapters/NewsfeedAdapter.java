@@ -65,7 +65,7 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<ChatTabViewHolder> {
     public void onBindViewHolder(final ChatTabViewHolder holder, int position) {
         final NewsFeedMessage msgDto = this.mMessages.get(position);
 
-        holder.leftMsgLayout.setVisibility(LinearLayout.VISIBLE);
+
 
         holder.title.setText(msgDto.getTitle());
 
