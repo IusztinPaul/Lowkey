@@ -28,9 +28,11 @@ import java.util.TimeZone;
 
 import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.R;
+import fusionkey.lowkey.auth.utils.UserAttributeManager;
 import fusionkey.lowkey.auth.utils.UserAttributesEnum;
 import fusionkey.lowkey.listAdapters.CommentAdapters.CommentAdapter;
 import fusionkey.lowkey.listAdapters.CommentAdapters.CustomLinearLayoutManager;
+import fusionkey.lowkey.main.utils.ProfilePhotoUploader;
 import fusionkey.lowkey.newsfeed.Comment;
 import fusionkey.lowkey.newsfeed.NewsFeedMessage;
 import fusionkey.lowkey.newsfeed.NewsfeedRequest;
@@ -72,8 +74,13 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<ChatTabViewHolder> {
          * holder.image.setImageBitmap(YOUR_FUNCTION);
          */
 
+        holder.image.setImageResource(R.drawable.avatar_placeholder);
+        ProfilePhotoUploader photoUploader = new ProfilePhotoUploader();
+        //photoUploader.download();
+
         if(!msgDto.getAnon()) {
-            holder.name.setText(getUsername(msgDto));
+            UserAttributeManager attributeManager = new UserAttributeManager(msgDto.getId());
+            holder.name.setText(attributeManager.getUsername());
         }else{
             holder.name.setText(ANON_STRING);
         }
@@ -90,9 +97,6 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<ChatTabViewHolder> {
         }
 
         holder.bind(holder, listener);
-
-
-
     }
 
     @Override
@@ -122,21 +126,6 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<ChatTabViewHolder> {
         sf.setTimeZone(tz);
         Date date = new Date(Long.parseLong(time));
         return sf.format(date);
-    }
-
-    private String getUsername(NewsFeedMessage nfm) {
-        String id = nfm.getId();
-        List<UserType> userTypeList = LowKeyApplication.userManager.getUsers(UserAttributesEnum.EMAIL, id);
-        for (UserType e : userTypeList) {
-            List<AttributeType> attributeTypeList = e.getAttributes();
-                for(AttributeType a : attributeTypeList){
-                    if(a.getValue().equals(id)){
-                        for(AttributeType b : attributeTypeList)
-                            if(b.getName().equals("nickname"))
-                                return b.getValue();
-                }}
-        }
-        return "User not found";
     }
 
     public void removeItem(int position) {
