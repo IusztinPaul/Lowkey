@@ -4,10 +4,13 @@ import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBAttribut
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBHashKey;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBTable;
 
+import java.util.List;
+
 @DynamoDBTable(tableName = "lowkey-mobilehub-1217601830-Users")
 public class UserDB {
     private String _userId;
     private Long _score;
+    private List<Long> _timeStamps;
 
     @DynamoDBHashKey(attributeName = "userId")
     @DynamoDBAttribute(attributeName = "userId")
@@ -28,11 +31,21 @@ public class UserDB {
         this._score = _score;
     }
 
+    @DynamoDBAttribute(attributeName = "timeStamps")
+    public List<Long> getTimeStamps() {
+        return _timeStamps;
+    }
+
+    public void setTimeStamps(List<Long> _timeStamps) {
+        this._timeStamps = _timeStamps;
+    }
+
     @Override
     public String toString() {
         return "UserDB{" +
-                "userId='" + _userId + '\'' +
-                ", score=" + _score +
+                "_userId='" + _userId + '\'' +
+                ", _score=" + _score +
+                ", _timeStamps=" + _timeStamps +
                 '}';
     }
 }

@@ -33,6 +33,7 @@ dependencies {
     implementation 'com.github.florent37:materialleanback:1.0.2'
     implementation 'com.nineoldandroids:library:2.4.0'
 
+
     //Aws
     implementation 'com.amazonaws:aws-android-sdk-ddb-mapper:2.6.+'
 
