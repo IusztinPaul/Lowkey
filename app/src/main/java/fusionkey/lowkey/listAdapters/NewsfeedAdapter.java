@@ -32,6 +32,7 @@ import fusionkey.lowkey.auth.utils.UserAttributeManager;
 import fusionkey.lowkey.auth.utils.UserAttributesEnum;
 import fusionkey.lowkey.listAdapters.CommentAdapters.CommentAdapter;
 import fusionkey.lowkey.listAdapters.CommentAdapters.CustomLinearLayoutManager;
+import fusionkey.lowkey.main.utils.Callback;
 import fusionkey.lowkey.main.utils.ProfilePhotoUploader;
 import fusionkey.lowkey.newsfeed.Comment;
 import fusionkey.lowkey.newsfeed.NewsFeedMessage;
@@ -75,8 +76,14 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<ChatTabViewHolder> {
          */
 
         holder.image.setImageResource(R.drawable.avatar_placeholder);
-        ProfilePhotoUploader photoUploader = new ProfilePhotoUploader();
-        //photoUploader.download();
+        final ProfilePhotoUploader photoUploader = new ProfilePhotoUploader();
+        photoUploader.download(msgDto.getId(),
+                new Callback() {
+                    @Override
+                    public void handle() {
+                        holder.image.setImageBitmap(photoUploader.getPhoto());
+                    }
+                }, null);
 
         if(!msgDto.getAnon()) {
             UserAttributeManager attributeManager = new UserAttributeManager(msgDto.getId());
