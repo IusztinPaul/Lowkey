@@ -78,7 +78,8 @@ public class ProfileTab extends Fragment {
         imageViewEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+		
+		// TODO: DELETE THIS
                 //  UserDBManager.create("Andrei");
                  UserDBManager.update("Paul", 20);
                   UserDBManager.update("Sebi", 50);
