@@ -1,5 +1,6 @@
 package fusionkey.lowkey.newsfeed;
 
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -11,7 +12,12 @@ import org.json.JSONObject;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
+import fusionkey.lowkey.LowKeyApplication;
+import fusionkey.lowkey.R;
+import fusionkey.lowkey.auth.utils.UserManager;
 import fusionkey.lowkey.listAdapters.NewsfeedAdapter;
+import fusionkey.lowkey.main.utils.Callback;
+import fusionkey.lowkey.main.utils.ProfilePhotoUploader;
 
 public class NewsFeedAsyncTask extends AsyncTask<Void,String,JSONObject> {
 
@@ -51,8 +57,26 @@ public class NewsFeedAsyncTask extends AsyncTask<Void,String,JSONObject> {
 
                     for (int i = 0; i < arr.length(); i++) {
                         JSONObject obj = arr.getJSONObject(i);
+                        final NewsFeedMessage newsFeedMessage = new NewsFeedMessage();
 
-                        NewsFeedMessage newsFeedMessage = new NewsFeedMessage();
+                        String email = obj.getString("userId");
+
+                        // Set photo logic.
+                        newsFeedMessage.setUserPhoto(BitmapFactory.decodeResource(
+                                LowKeyApplication.instance.getResources(),
+                                R.drawable.avatar_placeholder)
+                        );
+                        final ProfilePhotoUploader photoUploader = new ProfilePhotoUploader();
+                        photoUploader.download(UserManager.parseEmailToPhotoFileName(email),
+                                new Callback() {
+                                    @Override
+                                    public void handle() {
+                                        Log.e("PHOTO", "photo downloaded");
+                                        newsFeedMessage.setUserPhoto(photoUploader.getPhoto());
+                                        newsfeedAdapter.notifyDataSetChanged();
+                                    }
+                                }, null);
+
                         newsFeedMessage.setWeekDay(obj.getInt("weekDay"));newsFeedMessage.setId(obj.getString("userId"));
                         newsFeedMessage.setContent(obj.getString("postTxt"));newsFeedMessage.setDate(obj.getString("postTStamp"));
                         newsFeedMessage.setTitle(obj.getString("postTitle"));

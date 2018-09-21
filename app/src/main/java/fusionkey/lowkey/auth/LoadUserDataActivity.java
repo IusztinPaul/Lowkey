@@ -36,17 +36,20 @@ public class LoadUserDataActivity extends AppCompatActivity {
 
         @Override
         protected Void doInBackground(Void... voids) {
+            // First wait for the user details which are loaded from the login login.
+            while (LowKeyApplication.userManager.getUserDetails() == null) ;
+
+            // Now access the S3 photo with the new user details.
             loadingPhoto = true;
             final ProfilePhotoUploader profilePhotoUploader =
                     new ProfilePhotoUploader();
-
             profilePhotoUploader.download(
                     /**
                      * @TO-DO la linia asta e eroare
                      *      Caused by: java.lang.NullPointerException: Attempt to invoke virtual method 'java.lang.String com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUser.getUserId()'
                      *      on a null object reference
                      */
-                    LowKeyApplication.userManager.getUser().getUserId(),
+                    LowKeyApplication.userManager.getPhotoFileName(),
                     new Callback() {
                         @Override
                         public void handle() {
@@ -62,9 +65,7 @@ public class LoadUserDataActivity extends AppCompatActivity {
                         }
                     }
             );
-
-            while (LowKeyApplication.userManager.getUserDetails() == null
-                    || loadingPhoto) ;
+            while (loadingPhoto);
 
             LowKeyApplication.profilePhoto = profilePhotoUploader.getPhoto();
             return null;

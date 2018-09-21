@@ -30,7 +30,7 @@ import fusionkey.lowkey.models.UserDB;
 
 public class Main2Activity extends AppCompatActivity implements LifecycleObserver,MainCallback {
     private LoadingAsyncTask loadingAsyncTask;
-    public static String currentUser = getParsedEmail();
+    public static String currentUser = LowKeyApplication.userManager.getParsedUserEmail();
 
     static public boolean SEARCH_STATE;
     /**
@@ -179,13 +179,6 @@ public class Main2Activity extends AppCompatActivity implements LifecycleObserve
             }
             return null;
         }
-    }
-
-    private static String getParsedEmail() {
-        String email = LowKeyApplication.userManager.getUserDetails().getAttributes().
-                getAttributes().get(UserAttributesEnum.EMAIL.toString());
-
-        return email.replace("@", "").replace(".", "");
     }
 
     @Override

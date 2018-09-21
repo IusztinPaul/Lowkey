@@ -154,7 +154,7 @@ public class EditUserActivity extends AppCompatActivity {
             public void execute() {
                 if (newImage != null) {
                     new ProfilePhotoUploader(newImage).upload(
-                            LowKeyApplication.userManager.getUser().getUserId(),
+                            LowKeyApplication.userManager.getPhotoFileName(),
                             new Callback() {
                                 @Override
                                 public void handle() {
@@ -243,7 +243,7 @@ public class EditUserActivity extends AppCompatActivity {
             else {
                 final ProfilePhotoUploader profilePhotoUploader = new ProfilePhotoUploader();
                 profilePhotoUploader.download(
-                        LowKeyApplication.userManager.getUser().getUserId(),
+                        LowKeyApplication.userManager.getPhotoFileName(),
                         new Callback() {
                             @Override
                             public void handle() {

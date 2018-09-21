@@ -66,24 +66,8 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<ChatTabViewHolder> {
     public void onBindViewHolder(final ChatTabViewHolder holder, int position) {
         final NewsFeedMessage msgDto = this.mMessages.get(position);
 
-
-
         holder.title.setText(msgDto.getTitle());
-
-        /**
-         * @TO-DO aici trebue sa incarci poza din S3 , asa :
-         * holder.image.setImageBitmap(YOUR_FUNCTION);
-         */
-
-        holder.image.setImageResource(R.drawable.avatar_placeholder);
-        final ProfilePhotoUploader photoUploader = new ProfilePhotoUploader();
-        photoUploader.download(msgDto.getId(),
-                new Callback() {
-                    @Override
-                    public void handle() {
-                        holder.image.setImageBitmap(photoUploader.getPhoto());
-                    }
-                }, null);
+        holder.image.setImageBitmap(msgDto.getUserPhoto());
 
         if(!msgDto.getAnon()) {
             UserAttributeManager attributeManager = new UserAttributeManager(msgDto.getId());
