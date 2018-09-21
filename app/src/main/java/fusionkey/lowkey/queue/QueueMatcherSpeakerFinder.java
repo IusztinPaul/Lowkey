@@ -130,9 +130,11 @@ public class QueueMatcherSpeakerFinder extends QueueMatcherUtils implements IQue
     }
 
     /**
-     * This method removes the speaker from the lobby and adds the listener back to the queue.
+     *
+     * This method removes the lobby of the listener and ads a flag that the listener from the queue
+     * it's deprecated. So no more speakers will stay or be added in the lobby for that listener.
      */
-    //TODO implement add listener back to queue logic
+
     @Override
     public void stopFinding() {
         if (findRunnable != null)

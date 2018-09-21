@@ -19,8 +19,6 @@ import fusionkey.lowkey.auth.utils.UserAttributesEnum;
 import fusionkey.lowkey.main.utils.NetworkManager;
 
 public class RegisterActivity extends AppCompatActivity {
-    //TODO: Add TextView with password indications(what should contain)
-    //TODO: AND ProgressBar when registering.
 
     private EditText etEmail;
     private EditText etUsername;

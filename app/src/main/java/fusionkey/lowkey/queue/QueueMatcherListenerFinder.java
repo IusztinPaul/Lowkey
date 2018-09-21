@@ -135,8 +135,7 @@ public class QueueMatcherListenerFinder extends QueueMatcherUtils implements IQu
     }
 
     /**
-     * This method removes the lobby of the listener and ads a flag that the listener from the queue
-     * it's deprecated. So no more lobbies will be created for that listener.
+     * This method removes the speaker from the lobby and adds the listener back to the queue.
      */
     @Override
     public void stopFinding() {
