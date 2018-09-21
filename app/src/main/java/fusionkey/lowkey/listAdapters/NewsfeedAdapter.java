@@ -102,7 +102,7 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<ChatTabViewHolder> {
     public OnItemClickListenerNews listener;
 
     public void clear(){
-        mMessages.clear();
+        // mMessages.clear();
         notifyDataSetChanged();
     }
 

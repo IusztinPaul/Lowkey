@@ -22,10 +22,7 @@ import com.amazonaws.mobile.client.AWSMobileClient;
 
 import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.R;
-import fusionkey.lowkey.auth.utils.UserAttributesEnum;
 import fusionkey.lowkey.newsfeed.NewsFeedTab;
-import fusionkey.lowkey.auth.utils.UserDBManager;
-import fusionkey.lowkey.models.UserDB;
 
 
 public class Main2Activity extends AppCompatActivity implements LifecycleObserver,MainCallback {
@@ -113,16 +110,12 @@ public class Main2Activity extends AppCompatActivity implements LifecycleObserve
         return sharedPreferences.getInt("step", 0);
     }
 
-
     @Override
     public void onBackPressed() {
-
     }
-
 
     @Override
     protected void onDestroy() {
-
         super.onDestroy();
     }
 
