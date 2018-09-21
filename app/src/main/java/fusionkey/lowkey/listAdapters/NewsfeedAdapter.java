@@ -1,42 +1,21 @@
 package fusionkey.lowkey.listAdapters;
 
 import android.content.Context;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 
-import com.amazonaws.services.cognitoidentityprovider.model.AttributeType;
-import com.amazonaws.services.cognitoidentityprovider.model.UserType;
-
-import java.lang.reflect.Array;
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.TimeZone;
 
-
-import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.R;
 import fusionkey.lowkey.auth.utils.UserAttributeManager;
-import fusionkey.lowkey.auth.utils.UserAttributesEnum;
-import fusionkey.lowkey.listAdapters.CommentAdapters.CommentAdapter;
-import fusionkey.lowkey.listAdapters.CommentAdapters.CustomLinearLayoutManager;
-import fusionkey.lowkey.main.utils.Callback;
-import fusionkey.lowkey.main.utils.ProfilePhotoUploader;
-import fusionkey.lowkey.newsfeed.Comment;
 import fusionkey.lowkey.newsfeed.NewsFeedMessage;
-import fusionkey.lowkey.newsfeed.NewsfeedRequest;
 
 public class NewsfeedAdapter extends RecyclerView.Adapter<ChatTabViewHolder> {
 
@@ -102,6 +81,8 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<ChatTabViewHolder> {
     public OnItemClickListenerNews listener;
 
     public void clear(){
+
+        //TODO: @Sebi I think that we should keep the cached messages for optimization.
         // mMessages.clear();
         notifyDataSetChanged();
     }
