@@ -1,5 +1,7 @@
 package fusionkey.lowkey.newsfeed;
 
+import android.graphics.Bitmap;
+
 import java.util.ArrayList;
 import java.util.Observable;
 
@@ -23,8 +25,8 @@ public class NewsFeedMessage extends Observable {
     private String id;
     private int weekDay;
     private String type;
-    public ArrayList<Comment>  commentArrayList;
-
+    public ArrayList<Comment> commentArrayList;
+    private Bitmap userPhoto;
 
 
     public String getContent() {
@@ -63,7 +65,7 @@ public class NewsFeedMessage extends Observable {
         return title;
     }
 
-    public void addCommentToList(Comment m){
+    public void addCommentToList(Comment m) {
         commentArrayList.add(m);
     }
 
@@ -103,6 +105,7 @@ public class NewsFeedMessage extends Observable {
         this.id = id;
     }
 
+
     public String getType() {
         return type;
     }
@@ -110,4 +113,11 @@ public class NewsFeedMessage extends Observable {
     public void setType(String type) {
         this.type = type;
     }
+    public Bitmap getUserPhoto(){
+            return userPhoto;
+    }
+    public void setUserPhoto(Bitmap userPhoto){
+            this.userPhoto = userPhoto;
+    }
+
 }

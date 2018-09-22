@@ -11,7 +11,6 @@ import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -33,34 +32,31 @@ import android.widget.ImageView;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.auth.utils.UserAttributesEnum;
-import fusionkey.lowkey.listAdapters.CommentAdapters.CommentAdapter;
 import fusionkey.lowkey.listAdapters.NewsfeedAdapter;
 import fusionkey.lowkey.listAdapters.ChatTabViewHolder;
-import fusionkey.lowkey.main.ProfileTab;
-import fusionkey.lowkey.newsfeed.NewsFeedMessage;
 import fusionkey.lowkey.R;
-import fusionkey.lowkey.newsfeed.NewsFeedAsyncTask;
-import fusionkey.lowkey.newsfeed.NewsfeedRequest;
+
 
 public class NewsFeedTab extends Fragment{
-    NewsfeedAdapter adapter;
-    ArrayList<NewsFeedMessage> messages;
+    public static final int NEWS_FEED_PAGE_SIZE = 3;
+
+    private NewsfeedAdapter adapter;
+    private ArrayList<NewsFeedMessage> messages;
 
     private RecyclerView msgRecyclerView;
-    EditText title;
-    EditText body;
-    Button send;
-    ImageView exp;
-    ImageView col;
-    CheckBox checkBox;
-    NewsfeedRequest newsfeedRequest;
-    String uniqueID;
+    private EditText title;
+    private EditText body;
+    private Button send;
+    private ImageView exp;
+    private ImageView col;
+    private CheckBox checkBox;
+    private NewsfeedRequest newsfeedRequest;
+    private String uniqueID;
     public SwipeRefreshLayout swipeRefreshLayout;
 
     private Paint p = new Paint();

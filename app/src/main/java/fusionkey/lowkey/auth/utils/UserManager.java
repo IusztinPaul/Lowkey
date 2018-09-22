@@ -380,6 +380,21 @@ public class UserManager {
         }
     }
 
+    public String getPhotoFileName() {
+        return getParsedUserEmail();
+    }
+
+    public String getParsedUserEmail() {
+        String email = cognitoPoolUtils.getUserDetails().getAttributes().
+                getAttributes().get(UserAttributesEnum.EMAIL.toString());
+
+        return parseEmailToPhotoFileName(email);
+    }
+
+    public static String parseEmailToPhotoFileName(String email) {
+        return email.replace("@", "").replace(".", "");
+    }
+
     public String getAccessToken() {
         return cognitoPoolUtils.getUserSession().getAccessToken().getJWTToken();
     }

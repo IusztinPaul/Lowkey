@@ -104,7 +104,6 @@ public class EntryActivity extends AppCompatActivity {
                 new AuthCallback() {
                     @Override
                     public void execute() {
-                        //TODO: Add ProgressBar.
                         Intent myIntent = new Intent(EntryActivity.this, LoadUserDataActivity.class);
                         myIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         EntryActivity.this.startActivity(myIntent);

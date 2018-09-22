@@ -24,6 +24,7 @@ import com.amazonaws.mobile.client.AWSMobileClient;
 
 import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.R;
+
 import fusionkey.lowkey.auth.utils.UserAttributesEnum;
 import fusionkey.lowkey.main.menu.profile.EditUserActivity;
 import fusionkey.lowkey.newsfeed.NewsFeedTab;
@@ -31,10 +32,13 @@ import fusionkey.lowkey.auth.utils.UserDBManager;
 import fusionkey.lowkey.models.UserDB;
 import fusionkey.lowkey.newsfeed.UserQuestions;
 
+import fusionkey.lowkey.newsfeed.NewsFeedTab;
+
+
 
 public class Main2Activity extends AppCompatActivity implements LifecycleObserver,MainCallback {
     private LoadingAsyncTask loadingAsyncTask;
-    public static String currentUser = getParsedEmail();
+    public static String currentUser = LowKeyApplication.userManager.getParsedUserEmail();
 
     static public boolean SEARCH_STATE;
     /**
@@ -127,16 +131,12 @@ public class Main2Activity extends AppCompatActivity implements LifecycleObserve
         return sharedPreferences.getInt("step", 0);
     }
 
-
     @Override
     public void onBackPressed() {
-
     }
-
 
     @Override
     protected void onDestroy() {
-
         super.onDestroy();
     }
 
@@ -193,13 +193,6 @@ public class Main2Activity extends AppCompatActivity implements LifecycleObserve
             }
             return null;
         }
-    }
-
-    private static String getParsedEmail() {
-        String email = LowKeyApplication.userManager.getUserDetails().getAttributes().
-                getAttributes().get(UserAttributesEnum.EMAIL.toString());
-
-        return email.replace("@", "").replace(".", "");
     }
 
     @Override
