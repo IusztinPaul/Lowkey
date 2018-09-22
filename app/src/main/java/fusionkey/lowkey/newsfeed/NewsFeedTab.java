@@ -98,7 +98,7 @@ public class NewsFeedTab extends Fragment{
         exp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                expand(v2,500,500);
+                expand(v2,500,670);
             }
         });
 
@@ -122,9 +122,7 @@ public class NewsFeedTab extends Fragment{
                     m11.setTitle(title.getText().toString());m11.setContent(String.valueOf(body.getText()));
                     m11.setId(uniqueID);
                     messages.add(m11);
-
-                    int newMsgPosition = messages.size() - 1;
-                    adapter.notifyItemInserted(newMsgPosition);
+                    adapter.notifyDataSetChanged();
                     collapse(v2,1000,1);
                 }
             }
@@ -221,6 +219,7 @@ public class NewsFeedTab extends Fragment{
              }
 
     }
+
     public void refreshNewsfeed(){
         NewsFeedAsyncTask newsFeedAsyncTask = new NewsFeedAsyncTask(messages,msgRecyclerView,adapter,newsfeedRequest);
         newsFeedAsyncTask.execute();

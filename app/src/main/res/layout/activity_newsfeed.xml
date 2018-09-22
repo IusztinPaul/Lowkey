@@ -80,81 +80,117 @@
                 <ScrollView
                     android:id="@+id/login_form"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="80dp"
+                    android:layout_height="0dp"
+                    android:layout_marginBottom="64dp"
+                    android:layout_marginTop="8dp"
                     android:elevation="10dp"
                     app:layout_constraintBottom_toBottomOf="@+id/v2"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toStartOf="parent">>
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/v2">>
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="8dp"
                         android:layout_marginStart="8dp"
+                        android:background="@drawable/frame"
                         android:orientation="vertical"
                         app:layout_constraintBottom_toBottomOf="@+id/v2"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toStartOf="@+id/v2">
 
+                        <android.support.constraint.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:paddingBottom="8dp"
+                            android:paddingTop="8dp">
+
+                            <de.hdodenhof.circleimageview.CircleImageView
+                                android:id="@+id/circleImageView2"
+                                android:layout_width="50dp"
+                                android:layout_height="50dp"
+                                android:layout_marginLeft="8dp"
+                                android:layout_marginStart="8dp"
+                                android:layout_marginTop="8dp"
+                                android:elevation="15dp"
+                                android:src="@drawable/fff"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/textView4"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="8dp"
+                                android:layout_marginStart="8dp"
+                                android:layout_marginTop="16dp"
+                                android:text="username"
+                                android:textColor="@android:color/black"
+                                app:layout_constraintStart_toEndOf="@+id/circleImageView2"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/textView14"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="8dp"
+                                android:layout_marginLeft="8dp"
+                                android:layout_marginStart="8dp"
+                                android:text="12:30"
+                                android:textColor="@android:color/darker_gray"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintStart_toEndOf="@+id/circleImageView2"
+                                app:layout_constraintTop_toBottomOf="@+id/textView4" />
+                        </android.support.constraint.ConstraintLayout>
+
+
                         <EditText
                             android:id="@+id/title"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:layout_marginBottom="10dp"
-                            android:layout_marginLeft="4dp"
+                            android:layout_height="match_parent"
                             android:layout_weight="1"
                             android:background="@android:color/transparent"
-                            android:hint="Type a title for your question"
-                            android:overScrollMode="always"
-                            android:scrollbarStyle="insideInset"
-                            android:scrollbars="vertical"
-                            app:layout_constraintBottom_toBottomOf="@+id/v2"
-                            app:layout_constraintEnd_toStartOf="@+id/button2"
-                            app:layout_constraintHorizontal_bias="0.371"
-                            app:layout_constraintStart_toStartOf="parent" />
-
+                            android:hint="Type your question title"
+                            android:maxLines="6"
+                            android:padding="8dp"
+                            android:textColor="@color/lightGreen"
+                            android:textStyle="bold" />
 
                         <EditText
                             android:id="@+id/body"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:layout_marginBottom="10dp"
-                            android:layout_marginLeft="4dp"
+                            android:layout_height="match_parent"
                             android:layout_weight="1"
                             android:background="@android:color/transparent"
-                            android:hint="Type the question's body"
-                            android:overScrollMode="always"
-                            android:scrollbarStyle="insideInset"
-                            android:scrollbars="vertical"
-                            app:layout_constraintBottom_toBottomOf="@+id/v2"
-                            app:layout_constraintEnd_toStartOf="@+id/button2"
-                            app:layout_constraintHorizontal_bias="0.371"
-                            app:layout_constraintStart_toStartOf="parent" />
+                            android:hint="Type your question"
+                            android:textColor="@android:color/darker_gray"
+                            android:maxLines="6"
+                            android:padding="8dp" />
 
                         <CheckBox
                             android:id="@+id/checkBox"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="20dp"
+                            android:layout_marginBottom="8dp"
                             android:layout_marginTop="8dp"
                             android:layout_weight="1"
+                            android:padding="8dp"
                             android:text="Post Annonymous?" />
 
                         <Button
                             android:id="@+id/button2"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp"
                             android:layout_marginLeft="80dp"
                             android:layout_marginRight="80dp"
-                            android:layout_marginTop="20dp"
+                            android:layout_marginTop="8dp"
                             android:layout_weight="1"
                             android:background="@drawable/roundedbutton"
-                            android:text="Button"
+                            android:text="Send Question"
                             android:textColor="@android:color/white"
                             android:visibility="visible"
                             tools:layout_editor_absoluteX="272dp"

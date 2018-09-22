@@ -30,6 +30,7 @@ public class NewsfeedRequest {
 
     private static final String POST_RELATIVE_URL = "post/";
     private static final String COMMENT_RELATIVE_URL = POST_RELATIVE_URL + "comment/";
+    private static final String USER_QUESTIONS_RELATIVE_URL = POST_RELATIVE_URL + "user/";
 
     private  static final String USER_API_QUERY_STRING = "userId";
     private static final String TIME_API_QUERY_STRING = "postTStamp";
@@ -49,7 +50,7 @@ public class NewsfeedRequest {
     public static final String NO_DATA = "the response has no data";
 
     public NewsfeedRequest(String id){
-        this.id=id;
+        this.setId(id);
     }
 
 
@@ -57,7 +58,7 @@ public class NewsfeedRequest {
     public void postQuestion(Long time,Boolean anon,String title,String text){
 
         HashMap<String,String> queryParameters = new HashMap<>();
-        queryParameters.put(USER_API_QUERY_STRING, id);
+        queryParameters.put(USER_API_QUERY_STRING, getId());
         queryParameters.put(TIME_API_QUERY_STRING,String.valueOf(time));
 
         Map<String, String> params = new HashMap<String, String>();
@@ -193,7 +194,7 @@ public class NewsfeedRequest {
         JSONObject jsonBody = new JSONObject();
         try {
             jsonBody.put("commentTxt", text);
-            jsonBody.put("commentUserId", id);
+            jsonBody.put("commentUserId", getId());
             jsonBody.put("commentTStamp", String.valueOf(timestamp.getTime()));
             jsonBody.put("commentIsAnonymous", Boolean.toString(anon));
         }catch (JSONException e) {
@@ -237,6 +238,40 @@ public class NewsfeedRequest {
 
 
 
+    public void getYourQuestions(final NewsfeedVolleyCallBack listener){
+        HashMap<String,String> queryParameters = new HashMap<>();
+        queryParameters.put(USER_API_QUERY_STRING, getId());
+
+        String URL = getAbsoluteUrlWithQueryString(queryParameters, USER_QUESTIONS_RELATIVE_URL);
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(GET, URL,null,
+                new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        listener.onResponse(response);
+                    }
+                },
+                new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        listener.onError(error.toString());
+                    }
+
+                }) {
+
+            @Override
+            public Map<String, String> getHeaders() {
+                HashMap<String, String> headers = new HashMap<>();
+                headers.put("Content-Type", "application/json");
+                return headers;
+            }
+        };
+
+        requestQueueSingleton.addToRequestQueue(jsonObjectRequest);
+    }
+
 
     private String getAbsoluteUrlWithQueryString(Map<?, ?> queryParameters, String relativeUrl) {
         StringBuilder sb = new StringBuilder();
@@ -265,4 +300,11 @@ public class NewsfeedRequest {
         }
     }
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 }

@@ -34,9 +34,9 @@
         <activity android:name=".auth.RegisterActivity" />
         <activity android:name=".auth.ConfirmCodeActivity" />
         <activity android:name=".auth.ForgotPasswordActivity" />
-        <activity android:name=".newsfeed.CommentsActivity"
-                  android:theme="@style/AppTheme.CommentsActivity">
-
+        <activity
+            android:name=".newsfeed.CommentsActivity"
+            android:theme="@style/AppTheme.CommentsActivity">
         </activity>
         <activity android:name=".ROOMdatabase.MessagesActivity" />
         <activity android:name=".main.menu.profile.EditUserActivity" />
@@ -52,7 +52,8 @@
         <activity android:name=".auth.LoadUserDataActivity" />
         <activity android:name=".main.menu.about.About" />
         <activity android:name=".main.menu.Menu" />
-        <activity android:name=".main.menu.license.LicenseActivity"></activity>
+        <activity android:name=".main.menu.license.LicenseActivity" />
+        <activity android:name=".newsfeed.UserQuestions"></activity>
     </application>
 
 </manifest>

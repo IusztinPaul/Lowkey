@@ -7,6 +7,13 @@ import fusionkey.lowkey.newsfeed.Comment;
 
 public class NewsFeedMessage extends Observable {
 
+    public final static String YOUR_QUESTIONS = "yourQuestions";
+
+    public final static String OTHER_QUESTIONS = "otherQuestions";
+
+    public final static String NORMAL = "normal";
+
+
     private String content;
     private String date;
     private String user;
@@ -15,6 +22,7 @@ public class NewsFeedMessage extends Observable {
     private Boolean anon;
     private String id;
     private int weekDay;
+    private String type;
     public ArrayList<Comment>  commentArrayList;
 
 
@@ -93,5 +101,13 @@ public class NewsFeedMessage extends Observable {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

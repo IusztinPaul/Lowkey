@@ -2,6 +2,7 @@ package fusionkey.lowkey.listAdapters;
 
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.widget.NestedScrollView;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -25,6 +26,7 @@ public class ChatTabViewHolder extends RecyclerView.ViewHolder {
     TextView date;
     TextView answers;
     CircleImageView image;
+    CardView normal,otherQ,yourQ;
     public View view;
     private ArrayList<Comment> commentArrayList;
     //ImageView image;
@@ -39,8 +41,6 @@ public class ChatTabViewHolder extends RecyclerView.ViewHolder {
             title = (TextView) itemView.findViewById(R.id.Title);
             answers = (TextView) itemView.findViewById(R.id.answers);
             image = (CircleImageView) itemView.findViewById(R.id.circleImageView);
-//            view.setVisibility(View.INVISIBLE);
-
 
         }
     }

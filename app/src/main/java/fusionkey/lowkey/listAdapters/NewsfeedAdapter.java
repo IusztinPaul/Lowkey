@@ -63,8 +63,6 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<ChatTabViewHolder> {
     public void onBindViewHolder(final ChatTabViewHolder holder, int position) {
         final NewsFeedMessage msgDto = this.mMessages.get(position);
 
-
-
         holder.title.setText(msgDto.getTitle());
 
         /**
@@ -73,7 +71,7 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<ChatTabViewHolder> {
          */
 
         if(!msgDto.getAnon()) {
-            holder.name.setText(getUsername(msgDto));
+            holder.name.setText(msgDto.getUser());
         }else{
             holder.name.setText(ANON_STRING);
         }

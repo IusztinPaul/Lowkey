@@ -1,8 +1,10 @@
 package fusionkey.lowkey.main;
 
 import android.arch.lifecycle.LifecycleObserver;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
 
@@ -23,9 +25,11 @@ import com.amazonaws.mobile.client.AWSMobileClient;
 import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.R;
 import fusionkey.lowkey.auth.utils.UserAttributesEnum;
+import fusionkey.lowkey.main.menu.profile.EditUserActivity;
 import fusionkey.lowkey.newsfeed.NewsFeedTab;
 import fusionkey.lowkey.auth.utils.UserDBManager;
 import fusionkey.lowkey.models.UserDB;
+import fusionkey.lowkey.newsfeed.UserQuestions;
 
 
 public class Main2Activity extends AppCompatActivity implements LifecycleObserver,MainCallback {
@@ -51,7 +55,7 @@ public class Main2Activity extends AppCompatActivity implements LifecycleObserve
     private SharedPreferences sharedPreferences;
     private CardView searchCard;
     private ImageView imageView;
-
+    private FloatingActionButton fab;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,12 +72,22 @@ public class Main2Activity extends AppCompatActivity implements LifecycleObserve
         tabLayout.setSelectedTabIndicatorHeight(0);
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
+        mViewPager.setCurrentItem(1);
         progressBar = (ProgressBar) findViewById(R.id.paymentBar);
         searchCard = (CardView) findViewById(R.id.searchCard);
         imageView = findViewById(R.id.imageView8);
+        fab = findViewById(R.id.fab);
 
         // AWSMobileClient enables AWS user credentials to access your table
         AWSMobileClient.getInstance().initialize(this).execute();
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), UserQuestions.class);
+                startActivity(intent);
+            }
+        });
     }
     @Override
     public void searchForHelp() {
