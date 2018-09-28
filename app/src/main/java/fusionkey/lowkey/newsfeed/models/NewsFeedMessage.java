@@ -1,11 +1,9 @@
-package fusionkey.lowkey.newsfeed;
+package fusionkey.lowkey.newsfeed.models;
 
 import android.graphics.Bitmap;
 
 import java.util.ArrayList;
 import java.util.Observable;
-
-import fusionkey.lowkey.newsfeed.Comment;
 
 public class NewsFeedMessage extends Observable {
 
@@ -25,7 +23,7 @@ public class NewsFeedMessage extends Observable {
     private String id;
     private int weekDay;
     private String type;
-    public ArrayList<Comment> commentArrayList;
+    private ArrayList<Comment> commentArrayList;
     private Bitmap userPhoto;
 
 

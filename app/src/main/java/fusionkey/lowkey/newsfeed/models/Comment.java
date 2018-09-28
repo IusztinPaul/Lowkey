@@ -1,9 +1,7 @@
-package fusionkey.lowkey.newsfeed;
+package fusionkey.lowkey.newsfeed.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-
-import java.io.Serializable;
 
 public class Comment implements Parcelable{
     private String commentIsAnonymous;

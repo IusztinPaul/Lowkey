@@ -1,4 +1,4 @@
-package fusionkey.lowkey.newsfeed;
+package fusionkey.lowkey.newsfeed.interfaces;
 
 import org.json.JSONObject;
 

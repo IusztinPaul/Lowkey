@@ -384,6 +384,11 @@ public class UserManager {
         return getParsedUserEmail();
     }
 
+    /**
+     * @TODO SI AICI CRAPA
+     * @return  Caused by: java.lang.NullPointerException: Attempt to invoke virtual method 'com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUserAttributes com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUserDetails.getAttributes()' on a null object reference
+    at fusionkey.lowkey.auth.utils.UserManager.getParsedUserEmail(UserManager.java:388)
+     */
     public String getParsedUserEmail() {
         String email = cognitoPoolUtils.getUserDetails().getAttributes().
                 getAttributes().get(UserAttributesEnum.EMAIL.toString());

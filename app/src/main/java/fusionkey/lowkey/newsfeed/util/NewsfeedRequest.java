@@ -1,4 +1,4 @@
-package fusionkey.lowkey.newsfeed;
+package fusionkey.lowkey.newsfeed.util;
 
 import android.util.Log;
 
@@ -15,6 +15,8 @@ import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
 
+
+import fusionkey.lowkey.newsfeed.interfaces.NewsfeedVolleyCallBack;
 
 import static com.android.volley.Request.Method.DELETE;
 import static com.android.volley.Request.Method.GET;
@@ -187,7 +189,7 @@ public class NewsfeedRequest {
 
         HashMap<String,String> queryParameters = new HashMap<>();
 
-        queryParameters.put(TIME_API_QUERY_STRING,time.toString());
+        queryParameters.put(TIME_API_QUERY_STRING,time);
 
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 

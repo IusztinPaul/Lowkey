@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 
@@ -18,6 +19,10 @@ import fusionkey.lowkey.R;
 import fusionkey.lowkey.auth.utils.UserAttributesEnum;
 import fusionkey.lowkey.listAdapters.ChatTabViewHolder;
 import fusionkey.lowkey.listAdapters.NewsfeedAdapter;
+import fusionkey.lowkey.newsfeed.asynctasks.GetYourQuestionsAsyncTask;
+import fusionkey.lowkey.newsfeed.models.Comment;
+import fusionkey.lowkey.newsfeed.models.NewsFeedMessage;
+import fusionkey.lowkey.newsfeed.util.NewsfeedRequest;
 
 public class UserQuestions extends AppCompatActivity {
     NewsfeedAdapter adapter;
@@ -30,7 +35,7 @@ public class UserQuestions extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_questions);
-
+        Toolbar toolbar = findViewById(R.id.toolbar);
         msgRecyclerView = (RecyclerView) findViewById(R.id.chat_listview);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         msgRecyclerView.setLayoutManager(linearLayoutManager);
@@ -41,7 +46,7 @@ public class UserQuestions extends AppCompatActivity {
         uniqueID = (attributes.get(UserAttributesEnum.EMAIL.toString()));
 
         messages = new ArrayList<NewsFeedMessage>();
-        adapter = new NewsfeedAdapter(messages,this);
+        adapter = new NewsfeedAdapter(messages,this,msgRecyclerView);
         msgRecyclerView.setAdapter(adapter);
         newsfeedRequest = new NewsfeedRequest(uniqueID);
 
@@ -66,11 +71,24 @@ public class UserQuestions extends AppCompatActivity {
                 startActivityForResult(intent,1);
                 overridePendingTransition(0, 0);
             }
+        });
+        adapter.setDeleteListener(new NewsfeedAdapter.OnDeleteItem() {
             @Override
-            public boolean onLongClick(ChatTabViewHolder item,int position) {
-                return true;
+            public void deleteItem(ChatTabViewHolder item, View v) {
+                int position = item.getAdapterPosition();
+                NewsFeedMessage m = adapter.getMsg(position);
+                new NewsfeedRequest(uniqueID).deleteQuestion(m.getDate());
+                adapter.removeItem(position);
             }
         });
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+
         refreshNewsfeed();
     }
 

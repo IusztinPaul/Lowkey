@@ -1,4 +1,4 @@
-package fusionkey.lowkey.newsfeed;
+package fusionkey.lowkey.newsfeed.asynctasks;
 
 import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
@@ -18,6 +18,10 @@ import java.util.List;
 import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.auth.utils.UserAttributesEnum;
 import fusionkey.lowkey.listAdapters.NewsfeedAdapter;
+import fusionkey.lowkey.newsfeed.util.NewsfeedRequest;
+import fusionkey.lowkey.newsfeed.interfaces.NewsfeedVolleyCallBack;
+import fusionkey.lowkey.newsfeed.models.Comment;
+import fusionkey.lowkey.newsfeed.models.NewsFeedMessage;
 
 public class GetYourQuestionsAsyncTask extends AsyncTask<Void,String,JSONObject> {
 

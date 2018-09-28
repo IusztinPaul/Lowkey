@@ -6,6 +6,8 @@ import android.os.Parcelable;
 import java.util.ArrayList;
 import java.util.List;
 
+import fusionkey.lowkey.newsfeed.models.Comment;
+
 
 public class MyParcelable implements Parcelable {
 
