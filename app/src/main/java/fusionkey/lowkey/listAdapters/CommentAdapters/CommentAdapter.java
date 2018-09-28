@@ -4,30 +4,20 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.LinearLayout;
 
-import com.amazonaws.services.cognitoidentityprovider.model.AttributeType;
-import com.amazonaws.services.cognitoidentityprovider.model.UserType;
-
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
-import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.R;
-import fusionkey.lowkey.auth.utils.UserAttributesEnum;
-import fusionkey.lowkey.listAdapters.ChatTabViewHolder;
-import fusionkey.lowkey.newsfeed.Comment;
-import fusionkey.lowkey.newsfeed.NewsFeedMessage;
+import fusionkey.lowkey.newsfeed.models.Comment;
 
 public class CommentAdapter extends  RecyclerView.Adapter<CommentViewHolder>{
 

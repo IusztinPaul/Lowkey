@@ -33,13 +33,13 @@ dependencies {
     implementation 'com.github.florent37:materialleanback:1.0.2'
     implementation 'com.nineoldandroids:library:2.4.0'
 
-
     //Aws
     implementation 'com.amazonaws:aws-android-sdk-ddb-mapper:2.6.+'
-
-    implementation('com.amazonaws:aws-android-sdk-mobile-client:2.6.+@aar') { transitive = true }
+    implementation('com.amazonaws:aws-android-sdk-mobile-client:2.7.+@aar') { transitive = true }
     implementation('com.amazonaws:aws-android-sdk-auth-userpools:2.6.+@aar') { transitive = true }
     implementation 'com.amazonaws:aws-android-sdk-s3:2.6.+'
+    implementation 'com.amazonaws:aws-android-sdk-sns:2.7.2'
+    implementation 'com.amazonaws:aws-android-sdk-core:2.7.+'
     // Google.
     implementation 'com.google.android.gms:play-services-auth:16.0.0'
 

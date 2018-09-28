@@ -3,7 +3,6 @@ package fusionkey.lowkey.newsfeed;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -20,8 +19,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
-import com.amazonaws.services.s3.model.S3DataSource;
-
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,8 +28,9 @@ import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.R;
 import fusionkey.lowkey.auth.utils.UserAttributesEnum;
 import fusionkey.lowkey.listAdapters.CommentAdapters.CommentAdapter;
-import fusionkey.lowkey.listAdapters.NewsfeedAdapter;
-import fusionkey.lowkey.main.MainCallback;
+import fusionkey.lowkey.newsfeed.interfaces.NewsFeedCallBack;
+import fusionkey.lowkey.newsfeed.models.Comment;
+import fusionkey.lowkey.newsfeed.util.NewsfeedRequest;
 
 public class CommentsActivity extends AppCompatActivity {
     public static final String ARG_DRAWING_START_LOCATION = "arg_drawing_start_location";
@@ -83,7 +81,7 @@ public class CommentsActivity extends AppCompatActivity {
                     Map<String, String> attributes = LowKeyApplication.userManager.getUserDetails().getAttributes().getAttributes();
                     final String uniqueID = attributes.get(UserAttributesEnum.EMAIL.toString());
                     final String username = attributes.get(UserAttributesEnum.USERNAME.toString());
-                    new NewsfeedRequest(username).postComment(getIntent().getStringExtra("timestampID"), true, inputTxt.getText().toString());
+                    new NewsfeedRequest(username).postComment( getIntent().getStringExtra("timestampID"), true, inputTxt.getText().toString());
                     commentArrayList.add(new Comment("true",String.valueOf(timestamp.getTime()),inputTxt.getText().toString(),username));
                     commentsSentList.add(new Comment("true",String.valueOf(timestamp.getTime()),inputTxt.getText().toString(),username));
 
@@ -103,13 +101,14 @@ public class CommentsActivity extends AppCompatActivity {
 
 
     private void populateWithData(){
+
         Bundle b = getIntent().getExtras();
+
         try {
             MyParcelable object = b.getParcelable("parcel");
             commentArrayList = object.getArrList();
             commentsAdapter = new CommentAdapter(commentArrayList,this);
             rvComments.setAdapter(commentsAdapter);
-
         }catch(NullPointerException e){
             Log.e("Error","parcelable object failed");
         }
@@ -160,10 +159,7 @@ public class CommentsActivity extends AppCompatActivity {
         object.setArrList(commentsSentList);
         retrieveData.putExtra("NewComments", object);
         retrieveData.putExtra("ItemID",getIntent().getStringExtra("timestampID"));
-        if(commentsSentList!=null)
         setResult(Activity.RESULT_OK,retrieveData);
-        else
-            setResult(Activity.RESULT_CANCELED,retrieveData);
         finish();
 
         contentRoot.animate()

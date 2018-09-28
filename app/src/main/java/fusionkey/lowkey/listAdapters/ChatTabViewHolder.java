@@ -1,30 +1,28 @@
 package fusionkey.lowkey.listAdapters;
 
 import android.support.constraint.ConstraintLayout;
-import android.support.v4.widget.NestedScrollView;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import fusionkey.lowkey.R;
-import fusionkey.lowkey.newsfeed.Comment;
+import fusionkey.lowkey.newsfeed.models.Comment;
 
 public class ChatTabViewHolder extends RecyclerView.ViewHolder {
 
     ConstraintLayout leftMsgLayout;
     TextView title;
     TextView name;
+    TextView type;
     TextView lastmsg;
     TextView date;
     TextView answers;
     CircleImageView image;
+    CardView normal,otherQ,yourQ;
     public View view;
     private ArrayList<Comment> commentArrayList;
     //ImageView image;
@@ -39,8 +37,7 @@ public class ChatTabViewHolder extends RecyclerView.ViewHolder {
             title = (TextView) itemView.findViewById(R.id.Title);
             answers = (TextView) itemView.findViewById(R.id.answers);
             image = (CircleImageView) itemView.findViewById(R.id.circleImageView);
-//            view.setVisibility(View.INVISIBLE);
-
+            type = (TextView) itemView.findViewById(R.id.delete);
 
         }
     }
@@ -51,13 +48,16 @@ public class ChatTabViewHolder extends RecyclerView.ViewHolder {
                 listener.onItemClick(item,v);
             }
         });
-        itemView.setOnLongClickListener(new View.OnLongClickListener() {
+    }
+    public void bindDelete(final ChatTabViewHolder item, final NewsfeedAdapter.OnDeleteItem listener){
+        type.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onLongClick(View view) {
-                listener.onLongClick(item,getAdapterPosition());
-                return true;// returning true instead of false, works for me
+            public void onClick(View view) {
+                listener.deleteItem(item,view);
             }
         });
     }
 
 }
+
+
