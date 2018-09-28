@@ -110,6 +110,11 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 chatTabViewHolder.answers.setText("0 Answers");
             }
             chatTabViewHolder.bind(chatTabViewHolder, listener);
+
+
+
+
+
         }
         else if(holder instanceof LoadingViewHolder){
             LoadingViewHolder loadingViewHolder = (LoadingViewHolder) holder;

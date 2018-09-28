@@ -38,7 +38,7 @@ import fusionkey.lowkey.main.utils.Callback;
 import fusionkey.lowkey.main.utils.ProfilePhotoUploader;
 
 public class EditUserActivity extends AppCompatActivity {
-    private final float SCALE_RATIO = 0.5f;
+    private final float SCALE_RATIO = 0.01f;
     private final String BIRTH_DATE_SEPARATOR = "/";
     private final int GALLERY_REQUEST = 1;
 

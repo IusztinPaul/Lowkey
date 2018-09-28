@@ -89,17 +89,15 @@ public class NewsFeedAsyncTask extends AsyncTask<Void,String,JSONObject> {
                     JSONArray arr = new JSONArray(response.getString("data"));
                         for (int i = 0; i < arr.length(); i++) {
                             JSONObject obj = arr.getJSONObject(i);
-                            if(obj==null)
-                                Log.e("don't add","!!");
                             String email = obj.getString("userId");
                             final NewsFeedMessage newsFeedMessage;
-                            //  if(isCached)
-                            //     newsFeedMessage = newsFeedMessageArrayList.get(page+i);
-                            // else
+                             if(isCached)
+                                newsFeedMessage = newsFeedMessageArrayList.get(page);
+                             else
                             newsFeedMessage = new NewsFeedMessage();
 
                             // Create post only if it doesn't exists.
-                            //if(!isCached) {
+                            if(!isCached) {
 
                             String anon = obj.getString("isAnonymous");
                             // Set photo logic.
@@ -138,7 +136,7 @@ public class NewsFeedAsyncTask extends AsyncTask<Void,String,JSONObject> {
                                 newsFeedMessage.setAnon(false);
 
                             newsFeedMessageArrayList.add(newsFeedMessage);
-                        //}
+                        }
 
 
                         // Refresh comments in any case.
@@ -160,7 +158,7 @@ public class NewsFeedAsyncTask extends AsyncTask<Void,String,JSONObject> {
                         newsFeedMessage.setCommentArrayList(commentArrayList);
 
                         // Add it no the array list only if it doesn't exists.
-                        //if(!isCached)
+                        if(!isCached)
 
 
                         publishProgress();
