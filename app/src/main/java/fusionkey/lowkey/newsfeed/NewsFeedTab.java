@@ -18,10 +18,8 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
@@ -31,18 +29,11 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.regions.Region;
-import com.amazonaws.regions.Regions;
-import com.amazonaws.services.sns.AmazonSNSAsyncClient;
-import com.amazonaws.services.sns.AmazonSNSClient;
-import com.amazonaws.services.sns.model.PublishRequest;
 
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 
 import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.auth.utils.AwsAccessKeys;
@@ -57,7 +48,7 @@ import fusionkey.lowkey.newsfeed.util.NewsfeedRequest;
 
 
 public class NewsFeedTab extends Fragment{
-    public static final int NEWS_FEED_PAGE_SIZE = 3;
+    public static final int NEWS_FEED_PAGE_SIZE = 4;
 
     private NewsfeedAdapter adapter;
     private ArrayList<NewsFeedMessage> messages;
@@ -73,7 +64,7 @@ public class NewsFeedTab extends Fragment{
     private String uniqueID;
     public SwipeRefreshLayout swipeRefreshLayout;
 
-    int pageCounter=1;
+    int pageCounter=0;
 
     private Paint p = new Paint();
 
@@ -100,7 +91,7 @@ public class NewsFeedTab extends Fragment{
         uniqueID = (attributes.get(UserAttributesEnum.EMAIL.toString()));
 
         // Create the initial data list.
-        messages = new ArrayList<NewsFeedMessage>();
+        messages = new ArrayList<>();
         adapter = new NewsfeedAdapter(messages,getActivity().getApplicationContext(),msgRecyclerView);
         msgRecyclerView.setAdapter(adapter);
         newsfeedRequest = new NewsfeedRequest(uniqueID);
@@ -196,10 +187,10 @@ public class NewsFeedTab extends Fragment{
                         @Override
                         public void run() {
                             adapter.removeItem(messages.indexOf(m));
-                            //Generating more data
+                            // Generating more data.
+                            pageCounter += NEWS_FEED_PAGE_SIZE;
                             NewsFeedAsyncTask newsFeedAsyncTask = new NewsFeedAsyncTask(messages,msgRecyclerView,adapter,newsfeedRequest,pageCounter);
                             newsFeedAsyncTask.execute();
-                            pageCounter+=1;
                         }
                     }, 5000);
 
@@ -251,8 +242,10 @@ public class NewsFeedTab extends Fragment{
     }
 
     public void refreshNewsfeed(){
-        NewsFeedAsyncTask newsFeedAsyncTask = new NewsFeedAsyncTask(messages,msgRecyclerView,adapter,newsfeedRequest,0);
-        newsFeedAsyncTask.execute();
+        for(int i=0; i <= pageCounter; i += NEWS_FEED_PAGE_SIZE) {
+            NewsFeedAsyncTask newsFeedAsyncTask = new NewsFeedAsyncTask(messages, msgRecyclerView, adapter, newsfeedRequest, i);
+            newsFeedAsyncTask.execute();
+        }
     }
 
     public static void expand(final View v, int duration, int targetHeight) {

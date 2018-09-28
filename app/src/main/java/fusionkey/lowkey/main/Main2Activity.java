@@ -76,7 +76,7 @@ public class Main2Activity extends AppCompatActivity implements LifecycleObserve
         tabLayout.setSelectedTabIndicatorHeight(0);
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
-       // mViewPager.setCurrentItem(1);
+        mViewPager.setCurrentItem(1);
         progressBar = (ProgressBar) findViewById(R.id.paymentBar);
         searchCard = (CardView) findViewById(R.id.searchCard);
         imageView = findViewById(R.id.imageView8);
