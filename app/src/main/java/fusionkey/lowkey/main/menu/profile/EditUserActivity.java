@@ -38,7 +38,9 @@ import fusionkey.lowkey.main.utils.Callback;
 import fusionkey.lowkey.main.utils.ProfilePhotoUploader;
 
 public class EditUserActivity extends AppCompatActivity {
-    private final float SCALE_RATIO = 0.5f;
+    private final float PHOTO_SCALE_RATIO_BIG = 0.2f;
+    private final float PHOTO_SCALE_RATIO_SMALL = 0.4f;
+    private final int PHOTO_THRESHOLD = 2000;
     private final String BIRTH_DATE_SEPARATOR = "/";
     private final int GALLERY_REQUEST = 1;
 
@@ -111,8 +113,8 @@ public class EditUserActivity extends AppCompatActivity {
 
                         // Resize image before saving it.
                         Bitmap.createScaledBitmap(bitmap,
-                                Math.round(SCALE_RATIO * bitmap.getWidth()),
-                                Math.round(SCALE_RATIO * bitmap.getHeight()),
+                                scaleValue(bitmap.getWidth(), bitmap),
+                                scaleValue(bitmap.getHeight(), bitmap),
                                 true);
 
                         newImage = bitmap;
@@ -290,6 +292,13 @@ public class EditUserActivity extends AppCompatActivity {
     private void switchView(boolean loading) {
         pBar.setVisibility(loading ? View.VISIBLE : View.GONE);
         svForm.setVisibility(loading ? View.GONE : View.VISIBLE);
+    }
+
+    private int scaleValue(int value, Bitmap photo) {
+        if(photo.getWidth() >= PHOTO_THRESHOLD || photo.getHeight() >= PHOTO_THRESHOLD)
+            return Math.round(PHOTO_SCALE_RATIO_BIG * value);
+        else
+            return Math.round(PHOTO_SCALE_RATIO_SMALL * value);
     }
 
 }
