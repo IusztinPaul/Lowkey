@@ -38,7 +38,7 @@ import fusionkey.lowkey.main.utils.Callback;
 import fusionkey.lowkey.main.utils.ProfilePhotoUploader;
 
 public class EditUserActivity extends AppCompatActivity {
-
+    private final float SCALE_RATIO = 0.5f;
     private final String BIRTH_DATE_SEPARATOR = "/";
     private final int GALLERY_REQUEST = 1;
 
@@ -108,8 +108,15 @@ public class EditUserActivity extends AppCompatActivity {
                     Uri selectedImage = data.getData();
                     try {
                         Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
+
+                        // Resize image before saving it.
+                        Bitmap.createScaledBitmap(bitmap,
+                                Math.round(SCALE_RATIO * bitmap.getWidth()),
+                                Math.round(SCALE_RATIO * bitmap.getHeight()),
+                                true);
+
                         newImage = bitmap;
-                        ivProfile.setImageBitmap(bitmap);
+                        ivProfile.setImageBitmap(newImage);
                     } catch (IOException e) {
                         Log.i("GalleryRequest", e.getMessage());
                     }
@@ -189,17 +196,12 @@ public class EditUserActivity extends AppCompatActivity {
                 EditUserActivity.this.getResources().getString(R.string.edit_success_message),
                 Toast.LENGTH_SHORT).show();
 
+        // Reload the user details locally.
         LowKeyApplication.userManager.requestUserDetails(EditUserActivity.this, null);
 
         Intent intent = new Intent(EditUserActivity.this, Main2Activity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
-
-        // Reload the user details locally.
-
-        //LowKeyApplication.userManager.requestUserDetails(EditUserActivity.this, null); -> linia asta nu se mai executa dupa ce
-        //dai intentul
-
     }
 
     private void populateUI() {
