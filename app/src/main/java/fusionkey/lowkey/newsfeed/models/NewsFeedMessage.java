@@ -2,6 +2,7 @@ package fusionkey.lowkey.newsfeed.models;
 
 import android.graphics.Bitmap;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Observable;
 
@@ -25,7 +26,7 @@ public class NewsFeedMessage extends Observable {
     private String type;
     private ArrayList<Comment> commentArrayList;
     private Bitmap userPhoto;
-
+    private File file;
 
     public String getContent() {
         return content;
@@ -118,4 +119,11 @@ public class NewsFeedMessage extends Observable {
             this.userPhoto = userPhoto;
     }
 
+    public File getFile() {
+        return file;
+    }
+
+    public void setFile(File file) {
+        this.file = file;
+    }
 }

@@ -27,7 +27,7 @@ public class PhotoUploader implements IS3Uploader{
 
     private final String PHOTO_NAME_FILE = "photo";
     private final String PHOTOS_NAME_FOLDER = "photos" + File.separator;
-
+    private static int fileID;
     private AmazonS3Client s3Client;
     private File fileTO;
     private Bitmap photo;
@@ -95,7 +95,8 @@ public class PhotoUploader implements IS3Uploader{
     @Override
     public void download(String path,final Callback successCallback,
                             final Callback failCallback) {
-        final File file = new File(LowKeyApplication.instance.getApplicationContext().getFilesDir(), PHOTO_NAME_FILE);
+        fileID++;
+        final File file = new File(LowKeyApplication.instance.getApplicationContext().getFilesDir(), path+fileID);
 
         TransferUtility transferUtility =
                 TransferUtility.builder()

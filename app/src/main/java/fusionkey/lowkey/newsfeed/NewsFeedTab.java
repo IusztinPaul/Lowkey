@@ -4,6 +4,7 @@ import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -38,9 +39,12 @@ import java.util.Map;
 import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.auth.utils.AwsAccessKeys;
 import fusionkey.lowkey.auth.utils.UserAttributesEnum;
+import fusionkey.lowkey.auth.utils.UserManager;
 import fusionkey.lowkey.listAdapters.NewsfeedAdapter;
 import fusionkey.lowkey.listAdapters.ChatTabViewHolder;
 import fusionkey.lowkey.R;
+import fusionkey.lowkey.main.utils.Callback;
+import fusionkey.lowkey.main.utils.ProfilePhotoUploader;
 import fusionkey.lowkey.newsfeed.asynctasks.NewsFeedAsyncTask;
 import fusionkey.lowkey.newsfeed.models.Comment;
 import fusionkey.lowkey.newsfeed.models.NewsFeedMessage;
@@ -84,6 +88,113 @@ public class NewsFeedTab extends Fragment{
         swipeRefreshLayout = rootView.findViewById(R.id.swipe);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
         msgRecyclerView.setLayoutManager(linearLayoutManager);
+        messages = new ArrayList<>();
+        adapter = new NewsfeedAdapter(messages,getActivity().getApplicationContext(),msgRecyclerView);
+        msgRecyclerView.setAdapter(adapter);
+
+        final NewsFeedMessage m1 = new NewsFeedMessage();
+        m1.setId("sandrusebastian1997@gmail.com");
+        m1.setContent("postTxt");
+        m1.setDate("postTStamp");
+        m1.setTitle("postTitle");
+        m1.setUser("sandrusebastian1997@gmail.com");
+        m1.setAnon(false);
+        m1.setDate("qwe");
+        m1.setCommentArrayList(new ArrayList<Comment>());
+        m1.setType(NewsFeedMessage.NORMAL);
+        m1.setUserPhoto(BitmapFactory.decodeResource(
+                LowKeyApplication.instance.getResources(),
+                R.drawable.avatar_placeholder)
+        );
+        final ProfilePhotoUploader photoUploader = new ProfilePhotoUploader();
+        photoUploader.download(UserManager.parseEmailToPhotoFileName(m1.getId()),
+                new Callback() {
+                    @Override
+                    public void handle() {
+                        Log.e("PHOTO", "photo downloaded");
+                        m1.setFile(photoUploader.getFileTO());
+                        //the newsfeedmessage it's added when the downloading it's finished and the file it's exist
+                        messages.add(m1);
+                        adapter.notifyDataSetChanged();
+                    }
+                }, null);
+        final NewsFeedMessage m2 = new NewsFeedMessage();
+        m2.setId("sandrusebastianflorin@gmail.com");
+        m2.setContent("pfostTxt");
+        m2.setDate("postfasdTStamp");
+        m2.setTitle("posfsddtTitle");
+        m2.setUser("sandrusebastianflorin@gmail.com");
+        m2.setAnon(false);
+        m2.setDate("qwde");
+        m2.setCommentArrayList(new ArrayList<Comment>());
+        m2.setType(NewsFeedMessage.OTHER_QUESTIONS);
+        m2.setUserPhoto(BitmapFactory.decodeResource(
+                LowKeyApplication.instance.getResources(),
+                R.drawable.avatar_placeholder)
+        );
+        final ProfilePhotoUploader photoUploader2 = new ProfilePhotoUploader();
+        photoUploader2.download(UserManager.parseEmailToPhotoFileName(m2.getId()),
+                new Callback() {
+                    @Override
+                    public void handle() {
+                        Log.e("PHOTO", "photo downloaded");
+                        m2.setFile(photoUploader2.getFileTO());
+                        messages.add(m2);
+                        adapter.notifyDataSetChanged();
+                    }
+                }, null);
+
+        final NewsFeedMessage m3 = new NewsFeedMessage();
+        m3.setId("sandrusebastianflorin@gmail.com");
+        m3.setContent("posfadstTxt");
+        m3.setDate("postTafsdStamp");
+        m3.setTitle("postfasdTitle");
+        m3.setUser("usefasdrId");
+        m3.setAnon(false);
+        m3.setDate("qwe1");
+        m3.setCommentArrayList(new ArrayList<Comment>());
+        m3.setType(NewsFeedMessage.OTHER_QUESTIONS);
+        m3.setUserPhoto(BitmapFactory.decodeResource(
+                LowKeyApplication.instance.getResources(),
+                R.drawable.avatar_placeholder)
+        );
+        final ProfilePhotoUploader photoUploader3 = new ProfilePhotoUploader();
+        photoUploader3.download(UserManager.parseEmailToPhotoFileName(m3.getId()),
+                new Callback() {
+                    @Override
+                    public void handle() {
+                        Log.e("PHOTO", "photo downloaded");
+                        m3.setFile(photoUploader3.getFileTO());
+                        messages.add(m3);
+                        adapter.notifyDataSetChanged();
+                    }
+                }, null);
+
+        final NewsFeedMessage m4 = new NewsFeedMessage();
+        m4.setId("p.e.iusztin@gmail.com");
+        m4.setContent("postTafsdxt");
+        m4.setDate("postTafsdStamp");
+        m4.setTitle("posafsdtTitle");
+        m4.setUser("useafdrId");
+        m4.setAnon(false);
+        m4.setDate("qwe");
+        m4.setCommentArrayList(new ArrayList<Comment>());
+        m4.setType(NewsFeedMessage.OTHER_QUESTIONS);
+        m4.setUserPhoto(BitmapFactory.decodeResource(
+                LowKeyApplication.instance.getResources(),
+                R.drawable.avatar_placeholder)
+        );
+        final ProfilePhotoUploader photoUploader4 = new ProfilePhotoUploader();
+        photoUploader4.download(UserManager.parseEmailToPhotoFileName(m4.getId()),
+                new Callback() {
+                    @Override
+                    public void handle() {
+                        Log.e("PHOTO", "photo downloaded");
+                        m4.setFile(photoUploader4.getFileTO());
+                        messages.add(m4);
+                        adapter.notifyDataSetChanged();
+                    }
+                }, null);
 
         //Getting user details from Cognito
         Map<String, String> attributes = LowKeyApplication.userManager.getUserDetails().getAttributes().getAttributes();
@@ -91,9 +202,8 @@ public class NewsFeedTab extends Fragment{
         uniqueID = (attributes.get(UserAttributesEnum.EMAIL.toString()));
 
         // Create the initial data list.
-        messages = new ArrayList<>();
-        adapter = new NewsfeedAdapter(messages,getActivity().getApplicationContext(),msgRecyclerView);
-        msgRecyclerView.setAdapter(adapter);
+        //messages.add(m3);messages.add(m4);
+
         newsfeedRequest = new NewsfeedRequest(uniqueID);
 
         BasicAWSCredentials credentials =

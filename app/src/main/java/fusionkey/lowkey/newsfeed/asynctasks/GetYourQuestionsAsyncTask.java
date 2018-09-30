@@ -42,8 +42,8 @@ public class GetYourQuestionsAsyncTask extends AsyncTask<Void,String,JSONObject>
 
     @Override
     protected void onPreExecute() {
-        newsfeedAdapter.clear();
-        newsfeedAdapter.notifyDataSetChanged();
+       // newsfeedAdapter.clear();
+       // newsfeedAdapter.notifyDataSetChanged();
 
     }
 
@@ -110,9 +110,8 @@ public class GetYourQuestionsAsyncTask extends AsyncTask<Void,String,JSONObject>
     protected void onProgressUpdate(String... values) {
 
         int newMsgPosition = newsFeedMessageArrayList.size() - 1;
-        newsfeedAdapter.notifyItemInserted(newMsgPosition);
-        newsfeedAdapter.notifyDataSetChanged();
-        recyclerView.get().scrollToPosition(newMsgPosition);
+        //newsfeedAdapter.notifyItemInserted(newMsgPosition);
+
 
     }
 
@@ -123,7 +122,7 @@ public class GetYourQuestionsAsyncTask extends AsyncTask<Void,String,JSONObject>
 
     @Override
     protected void onPostExecute(JSONObject jsonObject) {
-
+       // newsfeedAdapter.notifyItemInserted(0);
     }
     private String getUsername(String id) {
         for (UserType e : userTypeList) {

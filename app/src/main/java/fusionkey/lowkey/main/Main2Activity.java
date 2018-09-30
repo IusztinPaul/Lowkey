@@ -25,15 +25,9 @@ import com.amazonaws.mobile.client.AWSMobileClient;
 import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.R;
 
-import fusionkey.lowkey.auth.utils.UserAttributesEnum;
-import fusionkey.lowkey.main.menu.profile.EditUserActivity;
 import fusionkey.lowkey.newsfeed.NewsFeedTab;
-import fusionkey.lowkey.auth.utils.UserDBManager;
-import fusionkey.lowkey.models.UserDB;
+import fusionkey.lowkey.newsfeed.ProfileTab;
 import fusionkey.lowkey.newsfeed.UserQuestions;
-
-import fusionkey.lowkey.newsfeed.NewsFeedTab;
-
 
 
 public class Main2Activity extends AppCompatActivity implements LifecycleObserver,MainCallback {

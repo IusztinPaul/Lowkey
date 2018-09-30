@@ -1,10 +1,13 @@
-package fusionkey.lowkey.main;
+package fusionkey.lowkey.newsfeed;
 
+import android.app.Activity;
 import android.content.Intent;
 
 import android.os.Bundle;
 
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,20 +19,26 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.auth.utils.UserAttributesEnum;
-import fusionkey.lowkey.auth.utils.UserDBManager;
 import fusionkey.lowkey.entryActivity.EntryActivity;
 import fusionkey.lowkey.R;
 
+import fusionkey.lowkey.listAdapters.ChatTabViewHolder;
+import fusionkey.lowkey.listAdapters.NewsfeedAdapter;
 import fusionkey.lowkey.main.menu.Menu;
 
 import fusionkey.lowkey.main.menu.profile.EditUserActivity;
 import fusionkey.lowkey.main.utils.NetworkManager;
-import fusionkey.lowkey.models.UserDB;
+
+import fusionkey.lowkey.newsfeed.asynctasks.GetYourQuestionsAsyncTask;
+import fusionkey.lowkey.newsfeed.models.Comment;
+import fusionkey.lowkey.newsfeed.models.NewsFeedMessage;
+import fusionkey.lowkey.newsfeed.util.NewsfeedRequest;
 import fusionkey.lowkey.pointsAlgorithm.PointsCalculator;
 
 
@@ -40,8 +49,17 @@ public class ProfileTab extends Fragment {
     TextView payment;
     TextView username;
     TextView level;
+    TextView showall;
     ProgressBar paymentBar;
     ProgressBar expBar;
+    NewsfeedAdapter adapter;
+    ArrayList<NewsFeedMessage> messages;
+    String uniqueID;
+    private RecyclerView msgRecyclerView;
+    NewsfeedRequest newsfeedRequest;
+
+    private static int showVar;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -55,6 +73,70 @@ public class ProfileTab extends Fragment {
         level = rootView.findViewById(R.id.level);
         expBar = rootView.findViewById(R.id.expBar);
         paymentBar = rootView.findViewById(R.id.paymentBar);
+        showall = rootView.findViewById(R.id.showall);
+
+        msgRecyclerView = (RecyclerView) rootView.findViewById(R.id.chat_listview);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
+        msgRecyclerView.setLayoutManager(linearLayoutManager);
+
+        Map<String, String> attributes = LowKeyApplication.userManager.getUserDetails().getAttributes().getAttributes();
+        final String id = attributes.get(UserAttributesEnum.USERNAME.toString());
+        uniqueID = (attributes.get(UserAttributesEnum.EMAIL.toString()));
+
+        messages = new ArrayList<>();
+        adapter = new NewsfeedAdapter(messages,getActivity().getApplicationContext(),msgRecyclerView);
+        msgRecyclerView.setAdapter(adapter);
+        newsfeedRequest = new NewsfeedRequest(uniqueID);
+
+        adapter.setListener(new NewsfeedAdapter.OnItemClickListenerNews() {
+            @Override
+            public void onItemClick(ChatTabViewHolder item, View v) {
+                int position = item.getAdapterPosition();
+                NewsFeedMessage m = adapter.getMsg(position);
+                final Intent intent = new Intent(getActivity().getApplicationContext(), CommentsActivity.class);
+                int[] startingLocation = new int[2];
+                v.getLocationOnScreen(startingLocation);
+                intent.putExtra(CommentsActivity.ARG_DRAWING_START_LOCATION, startingLocation[1]);
+                if(m.getCommentArrayList()!=null) {
+                    MyParcelable object = new MyParcelable();
+                    object.setArrList(m.getCommentArrayList());
+                    object.setMyInt(m.getCommentArrayList().size());
+                    intent.putExtra("parcel", object);
+
+                    intent.putExtra("timestampID",m.getDate());
+                }
+
+                startActivityForResult(intent,1);
+                getActivity().overridePendingTransition(0, 0);
+            }
+        });
+        adapter.setDeleteListener(new NewsfeedAdapter.OnDeleteItem() {
+            @Override
+            public void deleteItem(ChatTabViewHolder item, View v) {
+                int position = item.getAdapterPosition();
+                NewsFeedMessage m = adapter.getMsg(position);
+                new NewsfeedRequest(uniqueID).deleteQuestion(m.getDate());
+                adapter.removeItem(position);
+            }
+        });
+        showall.setText("show");
+        showall.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (showVar == 0){
+                    refreshNewsfeed();
+                    adapter.notifyDataSetChanged();
+                    showVar = 1;
+                    showall.setText("hide all your questions");
+                }
+                else if (showVar == 1){
+                    showall.setText("show");
+                    adapter.clear();
+                    adapter.notifyDataSetChanged();
+                    showVar = 0;
+                }
+            }
+        });
         ImageView settings = (ImageView) rootView.findViewById(R.id.settingsImg);
         populateUI();
         settings.setOnClickListener(new View.OnClickListener() {
@@ -163,5 +245,38 @@ public class ProfileTab extends Fragment {
             expBar.setProgress(points);
             level.setText("Helper level 4");
         }
+    }
+    public void refreshNewsfeed(){
+        GetYourQuestionsAsyncTask getYourQuestionsAsyncTask = new GetYourQuestionsAsyncTask(messages,msgRecyclerView,adapter,newsfeedRequest);
+        getYourQuestionsAsyncTask.execute();
+        //adapter.notifyDataSetChanged();
+    }
+    @Override
+    public void onActivityResult(int requestCode,int resultCode,Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1) {
+            Log.e("GETHERE", "HERE");
+            if(resultCode == Activity.RESULT_OK){
+                Bundle b = data.getExtras();
+                try {
+                    MyParcelable object = b.getParcelable("NewComments");
+                    String timestampID = b.getString("ItemID");
+                    List<Comment> commentArrayList = object.getArrList();
+                    for (NewsFeedMessage m : messages) {
+                        Log.e("GETHERE", "HERE FOR ");
+                        if (m.getDate().equals(timestampID)) {
+                            Log.e("GETHERE", "HERE IF");
+                            for (Comment c : commentArrayList)
+                                m.addCommentToList(c);
+                            adapter.notifyDataSetChanged();
+                        }
+                    }
+                } catch (NullPointerException e) {
+                    Log.e("Error", "parcelable object failed");
+                }
+            }else { Log.e("IntentResult","No comments to update");
+            }
+        }
+
     }
 }

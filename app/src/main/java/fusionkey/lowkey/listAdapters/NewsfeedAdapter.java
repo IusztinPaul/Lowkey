@@ -18,6 +18,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
+import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.R;
 import fusionkey.lowkey.auth.utils.UserManager;
 import fusionkey.lowkey.main.utils.Callback;
@@ -96,10 +97,13 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             if(msgDto.getType().equals(NewsFeedMessage.NORMAL)) {
                 chatTabViewHolder.type.setVisibility(View.VISIBLE);
                 chatTabViewHolder.bindDelete(chatTabViewHolder,del);
-            }else
+                chatTabViewHolder.image.setImageBitmap(LowKeyApplication.profilePhoto);
+            }else {
                 chatTabViewHolder.type.setVisibility(View.GONE);
+                Picasso.get().load(msgDto.getFile()).into(chatTabViewHolder.image);
+            }
             chatTabViewHolder.title.setText(msgDto.getTitle());
-            chatTabViewHolder.image.setImageBitmap(msgDto.getUserPhoto());
+            //chatTabViewHolder.image.setImageBitmap(msgDto.getUserPhoto());
             if (!msgDto.getAnon()) {
                 chatTabViewHolder.name.setText(msgDto.getUser());
                 //Its the same thing like getUsername in here
@@ -109,7 +113,7 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 chatTabViewHolder.name.setText(ANON_STRING);
             }
             chatTabViewHolder.lastmsg.setText(msgDto.getContent());
-            chatTabViewHolder.date.setText(localTime(msgDto.getDate()));
+//            chatTabViewHolder.date.setText(localTime(msgDto.getDate()));
             if (msgDto.getCommentArrayList() != null) {
                 chatTabViewHolder.answers.setText(msgDto.getCommentArrayList().size() + " Answers");
             } else {
@@ -117,18 +121,9 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             }
             chatTabViewHolder.bind(chatTabViewHolder, listener);
 
+            //Picasso doing the Cached Magic
 
 
-
-            final ProfilePhotoUploader photoUploader = new ProfilePhotoUploader();
-            photoUploader.download(UserManager.parseEmailToPhotoFileName(msgDto.getId()),
-                    new Callback() {
-                        @Override
-                        public void handle() {
-                            Log.e("PHOTO", "photo downloaded");
-                            Picasso.get().load(photoUploader.getFileTO()).into(chatTabViewHolder.image);
-                        }
-                    }, null);
 
 
 
@@ -160,7 +155,7 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public void clear() {
 
         //TODO: @Sebi I think that we should keep the cached messages for optimization. ||| to @Paul : OK we will find a way
-        // mMessages.clear();
+        mMessages.clear();
         notifyDataSetChanged();
     }
 
