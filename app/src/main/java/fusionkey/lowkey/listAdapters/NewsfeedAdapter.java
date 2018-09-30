@@ -3,10 +3,14 @@ package fusionkey.lowkey.listAdapters;
 import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.squareup.picasso.Picasso;
+
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -15,6 +19,9 @@ import java.util.List;
 import java.util.TimeZone;
 
 import fusionkey.lowkey.R;
+import fusionkey.lowkey.auth.utils.UserManager;
+import fusionkey.lowkey.main.utils.Callback;
+import fusionkey.lowkey.main.utils.ProfilePhotoUploader;
 import fusionkey.lowkey.newsfeed.models.NewsFeedMessage;
 
 public class NewsfeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -85,7 +92,7 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         if(holder instanceof ChatTabViewHolder) {
             final NewsFeedMessage msgDto = this.mMessages.get(position);
-            ChatTabViewHolder chatTabViewHolder = (ChatTabViewHolder) holder;
+            final ChatTabViewHolder chatTabViewHolder = (ChatTabViewHolder) holder;
             if(msgDto.getType().equals(NewsFeedMessage.NORMAL)) {
                 chatTabViewHolder.type.setVisibility(View.VISIBLE);
                 chatTabViewHolder.bindDelete(chatTabViewHolder,del);
@@ -110,6 +117,18 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             }
             chatTabViewHolder.bind(chatTabViewHolder, listener);
 
+
+
+
+            final ProfilePhotoUploader photoUploader = new ProfilePhotoUploader();
+            photoUploader.download(UserManager.parseEmailToPhotoFileName(msgDto.getId()),
+                    new Callback() {
+                        @Override
+                        public void handle() {
+                            Log.e("PHOTO", "photo downloaded");
+                            Picasso.get().load(photoUploader.getFileTO()).into(chatTabViewHolder.image);
+                        }
+                    }, null);
 
 
 
@@ -177,6 +196,10 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public void addItem(NewsFeedMessage msg) {
         mMessages.add(msg);
         notifyItemInserted(mMessages.size());
+    }
+
+    public int getPosition(NewsFeedMessage msg){
+        return  mMessages.indexOf(msg);
     }
 
 }

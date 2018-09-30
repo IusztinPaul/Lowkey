@@ -82,9 +82,9 @@ public class NewsFeedAsyncTask extends AsyncTask<Void,String,JSONObject> {
                     Log.e("RESPONSE :",response.toString());
                     // If the page is smaller than the actual size of the list it means that the
                     // current set of items already exists -> it's cached.
-                    boolean isCached = true;
-                    if (page >= newsFeedMessageArrayList.size())
-                        isCached = false;
+                    //boolean isCached = true;
+                   // if (page >= newsFeedMessageArrayList.size())
+                    //    isCached = false;
 
                     JSONArray arr = new JSONArray(response.getString("data"));
                         for (int i = 0; i < arr.length(); i++) {
@@ -96,31 +96,15 @@ public class NewsFeedAsyncTask extends AsyncTask<Void,String,JSONObject> {
 
                             String email = obj.getString("userId");
                             final NewsFeedMessage newsFeedMessage;
-                              if(isCached)
-                                 newsFeedMessage = newsFeedMessageArrayList.get(page+i);
-                             else
+                         //     if(isCached)
+                       //          newsFeedMessage = newsFeedMessageArrayList.get(page+i);
+                       //      else
                                 newsFeedMessage = new NewsFeedMessage();
 
                             // Create post only if it doesn't exists.
-                            if(!isCached) {
+                            //if(!isCached) {
                                 String anon = obj.getString("isAnonymous");
                                 // Set photo logic.
-
-                                newsFeedMessage.setUserPhoto(BitmapFactory.decodeResource(
-                                        LowKeyApplication.instance.getResources(),
-                                        R.drawable.avatar_placeholder)
-                                );
-                                final ProfilePhotoUploader photoUploader = new ProfilePhotoUploader();
-                                photoUploader.download(UserManager.parseEmailToPhotoFileName(email),
-                                        new Callback() {
-                                            @Override
-                                            public void handle() {
-                                                Log.e("PHOTO", "photo downloaded");
-                                                newsFeedMessage.setUserPhoto(photoUploader.getPhoto());
-                                                newsfeedAdapter.notifyDataSetChanged();
-                                            }
-                                        }, null);
-
                                 newsFeedMessage.setWeekDay(obj.getInt("weekDay"));
                                 newsFeedMessage.setId(obj.getString("userId"));
                                 newsFeedMessage.setContent(obj.getString("postTxt"));
@@ -137,9 +121,25 @@ public class NewsFeedAsyncTask extends AsyncTask<Void,String,JSONObject> {
                                     newsFeedMessage.setAnon(false);
 
                                 newsFeedMessageArrayList.add(newsFeedMessage);
-                            }
 
-                        // Refresh comments in any case.
+                            //}/*
+  /*                          newsFeedMessage.setUserPhoto(BitmapFactory.decodeResource(
+                                    LowKeyApplication.instance.getResources(),
+                                    R.drawable.avatar_placeholder)
+                            );
+                            final ProfilePhotoUploader photoUploader = new ProfilePhotoUploader();
+                            photoUploader.download(UserManager.parseEmailToPhotoFileName(email),
+                                    new Callback() {
+                                        @Override
+                                        public void handle() {
+                                            Log.e("PHOTO", "photo downloaded");
+                                            newsFeedMessage.setUserPhoto(photoUploader.getPhoto());
+                                            newsfeedAdapter.notifyItemChanged(newsfeedAdapter.getPosition(newsFeedMessage));
+                                        }
+                                    }, null);
+*/
+
+                            // Refresh comments in any case.
                             ArrayList<Comment> commentArrayList = new ArrayList<>();
                         try {
                             JSONArray arr2 = new JSONArray(obj.getString("comments")); //get comments
@@ -158,7 +158,7 @@ public class NewsFeedAsyncTask extends AsyncTask<Void,String,JSONObject> {
                         newsFeedMessage.setCommentArrayList(commentArrayList);
 
                         // Add it no the array list only if it doesn't exists.
-                        if(!isCached)
+                        //if(!isCached)
 
 
                         publishProgress();

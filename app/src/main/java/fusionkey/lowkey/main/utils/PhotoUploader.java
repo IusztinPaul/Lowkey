@@ -29,7 +29,7 @@ public class PhotoUploader implements IS3Uploader{
     private final String PHOTOS_NAME_FOLDER = "photos" + File.separator;
 
     private AmazonS3Client s3Client;
-
+    private File fileTO;
     private Bitmap photo;
 
     public PhotoUploader() {
@@ -121,7 +121,7 @@ public class PhotoUploader implements IS3Uploader{
                         stream.close();
 
                         photo = new BitMapOperator().unserialize(bytes);
-
+                        fileTO = file;
                         if (successCallback != null)
                             successCallback.handle();
                     } catch (IOException e) {
@@ -142,6 +142,10 @@ public class PhotoUploader implements IS3Uploader{
                    failCallback.handle();
             }
         });
+    }
+
+    public File getFileTO(){
+        return fileTO;
     }
 
     public Bitmap getPhoto() {
