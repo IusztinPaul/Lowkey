@@ -82,7 +82,9 @@ public class NewsFeedAsyncTask extends AsyncTask<Void, String, JSONObject> {
                     JSONArray arr = new JSONArray(response.getString("data"));
 
                     // Try to find the items in the existing array list.
-                    if (!isNew && arr.length() > 0) {
+                    if (!isNew && isStart && arr.length() > 0) {
+                        cachedIndex = newsFeedMessageArrayList.indexOf(new NewsFeedMessage(referenceTimestamp));
+                    } else if(!isNew && !isStart && arr.length() > 0) {
                         long timestamp = arr.getJSONObject(0).getLong("postTStamp");
                         cachedIndex = newsFeedMessageArrayList.indexOf(new NewsFeedMessage(timestamp));
                     }
@@ -182,8 +184,8 @@ public class NewsFeedAsyncTask extends AsyncTask<Void, String, JSONObject> {
                         newsFeedMessage.setCommentArrayList(commentArrayList);
 
                         publishProgress();
-
                     }
+
                 } catch (JSONException e) {
                     Log.e(NewsFeedRequest.GET_QUESTION_STRING, e.toString());
                 }

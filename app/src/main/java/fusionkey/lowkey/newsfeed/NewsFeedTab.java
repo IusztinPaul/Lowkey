@@ -276,11 +276,12 @@ public class NewsFeedTab extends Fragment{
 
     public void refreshNewsFeed() {
         for(int i = 0; i < messages.size(); i += NEWS_FEED_PAGE_SIZE)
-            new NewsFeedAsyncTaskFactory(newsFeedRequest, messages, msgRecyclerView, adapter)
-                    .addIsStart()
-                    .addReferenceTimeSTamp(messages.get(i).getTimeStamp())
-                    .build()
-                    .execute();
+            if(messages.get(i) != null)
+                new NewsFeedAsyncTaskFactory(newsFeedRequest, messages, msgRecyclerView, adapter)
+                        .addIsStart()
+                        .addReferenceTimeSTamp(messages.get(i).getTimeStamp())
+                        .build()
+                        .execute();
     }
 
     public static void expand(final View v, int duration, int targetHeight) {
