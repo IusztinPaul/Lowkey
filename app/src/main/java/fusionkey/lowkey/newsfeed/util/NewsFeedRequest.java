@@ -188,11 +188,11 @@ public class NewsFeedRequest {
 
 
 
-    public void postComment(String time,Boolean anon,String text){
+    public void postComment(Long time,Boolean anon,String text){
 
         HashMap<String,String> queryParameters = new HashMap<>();
 
-        queryParameters.put(TIME_API_QUERY_STRING,time);
+        queryParameters.put(TIME_API_QUERY_STRING,time.toString());
 
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 

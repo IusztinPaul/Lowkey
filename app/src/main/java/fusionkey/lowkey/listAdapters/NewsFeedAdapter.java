@@ -1,6 +1,7 @@
 package fusionkey.lowkey.listAdapters;
 
 import android.content.Context;
+import android.graphics.BitmapFactory;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -97,6 +98,7 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             if(msgDto.getType().equals(NewsFeedMessage.NORMAL)) {
                 chatTabViewHolder.type.setVisibility(View.VISIBLE);
                 chatTabViewHolder.bindDelete(chatTabViewHolder,del);
+                chatTabViewHolder.image.setImageBitmap(LowKeyApplication.profilePhoto);
             }else {
                 chatTabViewHolder.type.setVisibility(View.GONE);
             }
@@ -104,10 +106,12 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             //chatTabViewHolder.image.setImageBitmap(msgDto.getUserPhoto());
             if (!msgDto.getAnon()) {
                 chatTabViewHolder.name.setText(msgDto.getUser());
+                Picasso.get().load(msgDto.getFile()).into(chatTabViewHolder.image);
                 //Its the same thing like getUsername in here
                 //UserAttributeManager attributeManager = new UserAttributeManager(msgDto.getId());
                 //holder.name.setText(attributeManager.getUsername());
             } else {
+                Picasso.get().load(R.drawable.avatar_placeholder).into(chatTabViewHolder.image);
                 chatTabViewHolder.name.setText(ANON_STRING);
             }
             chatTabViewHolder.lastmsg.setText(msgDto.getContent());
@@ -121,7 +125,7 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             chatTabViewHolder.bind(chatTabViewHolder, listener);
 
             //Picasso doing the Cached Magic
-            Picasso.get().load(msgDto.getFile()).into(chatTabViewHolder.image);
+
 
 
 

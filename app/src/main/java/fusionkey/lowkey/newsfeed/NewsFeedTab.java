@@ -168,7 +168,6 @@ public class NewsFeedTab extends Fragment{
                     intent.putExtra("timestampID",m.getTimeStamp());
 
                 }
-
                 startActivityForResult(intent, COMMENT_ACTIVITY_REQUEST_CODE);
                 getActivity().overridePendingTransition(0, 0);
             }
@@ -237,7 +236,7 @@ public class NewsFeedTab extends Fragment{
                 Bundle b = data.getExtras();
                 try {
                     MyParcelable object = b.getParcelable("NewComments");
-                    String timestampID = b.getString("ItemID");
+                    Long timestampID = b.getLong("ItemID");
                     List<Comment> commentArrayList = object.getArrList();
                     for (NewsFeedMessage m : messages) {
                             if (m.getTimeStamp().equals(timestampID)) {

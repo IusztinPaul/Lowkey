@@ -94,6 +94,7 @@ public class GetYourQuestionsAsyncTask extends AsyncTask<Void,String,JSONObject>
                         }catch (JSONException e){
                             Log.e("Comments","The post has no comments");
                         }
+
                         newsFeedMessage.setCommentArrayList(commentArrayList);
                         newsFeedMessageArrayList.add(newsFeedMessage);
                         publishProgress();
@@ -112,7 +113,6 @@ public class GetYourQuestionsAsyncTask extends AsyncTask<Void,String,JSONObject>
     protected void onProgressUpdate(String... values) {
 
         int newMsgPosition = newsFeedMessageArrayList.size() - 1;
-
         newsFeedAdapter.notifyItemInserted(newMsgPosition);
         newsFeedAdapter.notifyDataSetChanged();
 
