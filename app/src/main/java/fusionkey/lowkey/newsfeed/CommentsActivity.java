@@ -30,7 +30,7 @@ import fusionkey.lowkey.auth.utils.UserAttributesEnum;
 import fusionkey.lowkey.listAdapters.CommentAdapters.CommentAdapter;
 import fusionkey.lowkey.newsfeed.interfaces.NewsFeedCallBack;
 import fusionkey.lowkey.newsfeed.models.Comment;
-import fusionkey.lowkey.newsfeed.util.NewsfeedRequest;
+import fusionkey.lowkey.newsfeed.util.NewsFeedRequest;
 
 public class CommentsActivity extends AppCompatActivity {
     public static final String ARG_DRAWING_START_LOCATION = "arg_drawing_start_location";
@@ -81,7 +81,7 @@ public class CommentsActivity extends AppCompatActivity {
                     Map<String, String> attributes = LowKeyApplication.userManager.getUserDetails().getAttributes().getAttributes();
                     final String uniqueID = attributes.get(UserAttributesEnum.EMAIL.toString());
                     final String username = attributes.get(UserAttributesEnum.USERNAME.toString());
-                    new NewsfeedRequest(username).postComment( getIntent().getStringExtra("timestampID"), true, inputTxt.getText().toString());
+                    new NewsFeedRequest(username).postComment( getIntent().getStringExtra("timestampID"), true, inputTxt.getText().toString());
                     commentArrayList.add(new Comment("true",String.valueOf(timestamp.getTime()),inputTxt.getText().toString(),username));
                     commentsSentList.add(new Comment("true",String.valueOf(timestamp.getTime()),inputTxt.getText().toString(),username));
 

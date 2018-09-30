@@ -29,7 +29,8 @@ import fusionkey.lowkey.entryActivity.EntryActivity;
 import fusionkey.lowkey.R;
 
 import fusionkey.lowkey.listAdapters.ChatTabViewHolder;
-import fusionkey.lowkey.listAdapters.NewsfeedAdapter;
+//import fusionkey.lowkey.listAdapters.NewsfeedAdapter;
+import fusionkey.lowkey.listAdapters.NewsFeedAdapter;
 import fusionkey.lowkey.main.menu.Menu;
 
 import fusionkey.lowkey.main.menu.profile.EditUserActivity;
@@ -38,7 +39,8 @@ import fusionkey.lowkey.main.utils.NetworkManager;
 import fusionkey.lowkey.newsfeed.asynctasks.GetYourQuestionsAsyncTask;
 import fusionkey.lowkey.newsfeed.models.Comment;
 import fusionkey.lowkey.newsfeed.models.NewsFeedMessage;
-import fusionkey.lowkey.newsfeed.util.NewsfeedRequest;
+//import fusionkey.lowkey.newsfeed.util.NewsfeedRequest;
+import fusionkey.lowkey.newsfeed.util.NewsFeedRequest;
 import fusionkey.lowkey.pointsAlgorithm.PointsCalculator;
 
 
@@ -52,11 +54,11 @@ public class ProfileTab extends Fragment {
     TextView showall;
     ProgressBar paymentBar;
     ProgressBar expBar;
-    NewsfeedAdapter adapter;
+    NewsFeedAdapter adapter;
     ArrayList<NewsFeedMessage> messages;
     String uniqueID;
     private RecyclerView msgRecyclerView;
-    NewsfeedRequest newsfeedRequest;
+    NewsFeedRequest newsfeedRequest;
 
     private static int showVar;
 
@@ -84,11 +86,11 @@ public class ProfileTab extends Fragment {
         uniqueID = (attributes.get(UserAttributesEnum.EMAIL.toString()));
 
         messages = new ArrayList<>();
-        adapter = new NewsfeedAdapter(messages,getActivity().getApplicationContext(),msgRecyclerView);
+        adapter = new NewsFeedAdapter(messages,getActivity().getApplicationContext(),msgRecyclerView);
         msgRecyclerView.setAdapter(adapter);
-        newsfeedRequest = new NewsfeedRequest(uniqueID);
+        newsfeedRequest = new NewsFeedRequest(uniqueID);
 
-        adapter.setListener(new NewsfeedAdapter.OnItemClickListenerNews() {
+        adapter.setListener(new NewsFeedAdapter.OnItemClickListenerNews() {
             @Override
             public void onItemClick(ChatTabViewHolder item, View v) {
                 int position = item.getAdapterPosition();
@@ -103,19 +105,19 @@ public class ProfileTab extends Fragment {
                     object.setMyInt(m.getCommentArrayList().size());
                     intent.putExtra("parcel", object);
 
-                    intent.putExtra("timestampID",m.getDate());
+                    intent.putExtra("timestampID",m.getTimeStamp());
                 }
 
                 startActivityForResult(intent,1);
                 getActivity().overridePendingTransition(0, 0);
             }
         });
-        adapter.setDeleteListener(new NewsfeedAdapter.OnDeleteItem() {
+        adapter.setDeleteListener(new NewsFeedAdapter.OnDeleteItem() {
             @Override
             public void deleteItem(ChatTabViewHolder item, View v) {
                 int position = item.getAdapterPosition();
                 NewsFeedMessage m = adapter.getMsg(position);
-                new NewsfeedRequest(uniqueID).deleteQuestion(m.getDate());
+                new NewsFeedRequest(uniqueID).deleteQuestion(m.getTimeStamp().toString());
                 adapter.removeItem(position);
             }
         });
@@ -264,7 +266,7 @@ public class ProfileTab extends Fragment {
                     List<Comment> commentArrayList = object.getArrList();
                     for (NewsFeedMessage m : messages) {
                         Log.e("GETHERE", "HERE FOR ");
-                        if (m.getDate().equals(timestampID)) {
+                        if (m.getTimeStamp().toString().equals(timestampID)) {
                             Log.e("GETHERE", "HERE IF");
                             for (Comment c : commentArrayList)
                                 m.addCommentToList(c);

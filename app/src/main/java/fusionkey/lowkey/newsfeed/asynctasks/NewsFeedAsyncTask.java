@@ -5,61 +5,59 @@ import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
-import com.amazonaws.services.cognitoidentityprovider.model.AttributeType;
-import com.amazonaws.services.cognitoidentityprovider.model.UserType;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 import fusionkey.lowkey.LowKeyApplication;
 
 import fusionkey.lowkey.R;
+import fusionkey.lowkey.auth.utils.UserAttributeManager;
 import fusionkey.lowkey.auth.utils.UserAttributesEnum;
 
 import fusionkey.lowkey.auth.utils.UserManager;
-import fusionkey.lowkey.listAdapters.NewsfeedAdapter;
+import fusionkey.lowkey.listAdapters.NewsFeedAdapter;
 import fusionkey.lowkey.main.utils.Callback;
 import fusionkey.lowkey.main.utils.ProfilePhotoUploader;
-import fusionkey.lowkey.newsfeed.NewsFeedTab;
-import fusionkey.lowkey.newsfeed.util.NewsfeedRequest;
-import fusionkey.lowkey.newsfeed.interfaces.NewsfeedVolleyCallBack;
+import fusionkey.lowkey.newsfeed.interfaces.IGenericConsumer;
+import fusionkey.lowkey.newsfeed.util.NewsFeedRequest;
+import fusionkey.lowkey.newsfeed.interfaces.NewsFeedVolleyCallBack;
 import fusionkey.lowkey.newsfeed.models.Comment;
 import fusionkey.lowkey.newsfeed.models.NewsFeedMessage;
 
-public class NewsFeedAsyncTask extends AsyncTask<Void,String,JSONObject> {
+public class NewsFeedAsyncTask extends AsyncTask<Void, String, JSONObject> {
 
     private ArrayList<NewsFeedMessage> newsFeedMessageArrayList;
     private WeakReference<RecyclerView> recyclerView;
-    private NewsfeedAdapter newsfeedAdapter;
-    private NewsfeedRequest newsfeedRequest;
-    private List<UserType> userTypeList = LowKeyApplication.userManager.getUsers(UserAttributesEnum.EMAIL, null);
-    Map<String, String> attributes = LowKeyApplication.userManager.getUserDetails().getAttributes().getAttributes();
-    final String uniqueId = attributes.get(UserAttributesEnum.EMAIL.toString());
+    private NewsFeedAdapter newsFeedAdapter;
+    private NewsFeedRequest newsFeedRequest;
+    private String userEmail;
 
+    private Long referenceTimestamp;
+    private IGenericConsumer<Long> setter;
+    private boolean isNew;
+    private boolean isStart;
 
-    /**
-     * @TODO: Prin parametrul asta m-am gandit sa impartim toata lista in segment de lungimea
-     * paginilor care vin din API (this.getNextPageNumber() da lungimea intervalului). Asa oarecum putem sa tinem si evidenta a itemelor care sunt deja
-     * si alea care vin noi (am facut eu o implementare mai jos pe logica asta) -> asa nu se mai incarca
-     * toate datele la fiecare refresh, eu am lasat doar comment-urile sa se mai reincarce, dar na asta
-     * se schimba rapid dupa. Asa ai putea sa creezi un AsyncTask pentru fiecare interval si sa faci
-     * ceva computation in paralel pentru fiecare interval (deja la 5>= pagini eu zic ca se merita
-     * sa split-ui asa treaba.
-     */
-    private int page;
-
-    public NewsFeedAsyncTask(ArrayList<NewsFeedMessage> newsFeedMessageArrayList,RecyclerView recyclerView,NewsfeedAdapter newsfeedAdapter,NewsfeedRequest newsfeedRequest,int page){
-        this.newsFeedMessageArrayList=newsFeedMessageArrayList;
+    public NewsFeedAsyncTask(ArrayList<NewsFeedMessage> newsFeedMessageArrayList,
+                             RecyclerView recyclerView,
+                             NewsFeedAdapter newsFeedAdapter,
+                             NewsFeedRequest newsFeedRequest,
+                             Long referenceTimestamp,
+                             IGenericConsumer<Long> setter,
+                             boolean isNew,
+                             boolean isStart) {
+        this.newsFeedMessageArrayList = newsFeedMessageArrayList;
         this.recyclerView = new WeakReference<>(recyclerView);
-        this.newsfeedAdapter = newsfeedAdapter;
-        this.newsfeedRequest = newsfeedRequest;
-        this.page=page;
+        this.newsFeedAdapter = newsFeedAdapter;
+        this.newsFeedRequest = newsFeedRequest;
+        this.referenceTimestamp = referenceTimestamp;
+        this.setter = setter;
+        this.userEmail = LowKeyApplication.userManager.getUserDetails().getAttributes().getAttributes().get(UserAttributesEnum.EMAIL.toString());
+        this.isNew = isNew;
+        this.isStart = isStart;
     }
 
     @Override
@@ -70,60 +68,52 @@ public class NewsFeedAsyncTask extends AsyncTask<Void,String,JSONObject> {
 
     @Override
     protected JSONObject doInBackground(Void... voids) {
-        newsfeedRequest.getNewsfeed(page, new NewsfeedVolleyCallBack() {
+        newsFeedRequest.getNewsFeed(referenceTimestamp, isStart, new NewsFeedVolleyCallBack() {
             @Override
             public void onError(String message) {
-                    Log.e(NewsfeedRequest.RESPONSE_ERROR, message);
+                Log.e(NewsFeedRequest.RESPONSE_ERROR, message);
             }
 
             @Override
             public void onResponse(JSONObject response) {
                 try {
-                    Log.e("RESPONSE :",response.toString());
-                    // If the page is smaller than the actual size of the list it means that the
-                    // current set of items already exists -> it's cached.
-                    //boolean isCached = true;
-                   // if (page >= newsFeedMessageArrayList.size())
-                    //    isCached = false;
+                    int cachedIndex = -1;
 
                     JSONArray arr = new JSONArray(response.getString("data"));
-                        for (int i = 0; i < arr.length(); i++) {
-                            JSONObject obj = arr.getJSONObject(i);
 
-                            Log.e("for", i+"");
-                            if(obj==null)
-                                Log.e("don't add","!!");
+                    // Try to find the items in the existing array list.
+                    if (!isNew && arr.length() > 0) {
+                        long timestamp = arr.getJSONObject(0).getLong("postTStamp");
+                        cachedIndex = newsFeedMessageArrayList.indexOf(new NewsFeedMessage(timestamp));
+                    }
 
-                            String email = obj.getString("userId");
-                            final NewsFeedMessage newsFeedMessage;
-                         //     if(isCached)
-                       //          newsFeedMessage = newsFeedMessageArrayList.get(page+i);
-                       //      else
-                                newsFeedMessage = new NewsFeedMessage();
+                    if(setter != null) {
+                        if(arr.length() > 0)
+                            setter.consume(arr.getJSONObject(arr.length() - 1).getLong("postTStamp"));
+                        else
+                            setter.consume(null);
+                    }
 
-                            // Create post only if it doesn't exists.
-                            //if(!isCached) {
-                                String anon = obj.getString("isAnonymous");
-                                // Set photo logic.
-                                newsFeedMessage.setWeekDay(obj.getInt("weekDay"));
-                                newsFeedMessage.setId(obj.getString("userId"));
-                                newsFeedMessage.setContent(obj.getString("postTxt"));
-                                newsFeedMessage.setDate(obj.getString("postTStamp"));
-                                newsFeedMessage.setTitle(obj.getString("postTitle"));
-                                newsFeedMessage.setUser(getUsername(obj.getString("userId")));
-                                if (newsFeedMessage.getId().equals(uniqueId))
-                                    newsFeedMessage.setType(NewsFeedMessage.NORMAL);
-                                else
-                                    newsFeedMessage.setType(NewsFeedMessage.OTHER_QUESTIONS);
-                                if (anon.equalsIgnoreCase("true") || anon.equalsIgnoreCase("true"))
-                                    newsFeedMessage.setAnon(Boolean.valueOf(anon));
-                                else
-                                    newsFeedMessage.setAnon(false);
+                    for (int i = 0; i < arr.length(); i++) {
+                        JSONObject obj = arr.getJSONObject(i);
 
-                                newsFeedMessageArrayList.add(newsFeedMessage);
+                        if (obj == null)
+                            Log.e("don't add", "!!");
 
-                            //}/*
-  /*                          newsFeedMessage.setUserPhoto(BitmapFactory.decodeResource(
+                        String email = obj.getString("userId");
+
+                        final NewsFeedMessage newsFeedMessage;
+                        if (cachedIndex != -1)
+                            newsFeedMessage = newsFeedMessageArrayList.get(cachedIndex + i);
+                        else
+                            newsFeedMessage = new NewsFeedMessage();
+
+                        // Update post only if it doesn't exists.
+                        if (cachedIndex == -1) {
+                            String anon = obj.getString("isAnonymous");
+
+                            // Set photo logic.
+                            newsFeedMessage.setUserPhoto(BitmapFactory.decodeResource(
                                     LowKeyApplication.instance.getResources(),
                                     R.drawable.avatar_placeholder)
                             );
@@ -133,39 +123,69 @@ public class NewsFeedAsyncTask extends AsyncTask<Void,String,JSONObject> {
                                         @Override
                                         public void handle() {
                                             Log.e("PHOTO", "photo downloaded");
-                                            newsFeedMessage.setUserPhoto(photoUploader.getPhoto());
-                                            newsfeedAdapter.notifyItemChanged(newsfeedAdapter.getPosition(newsFeedMessage));
+                                            newsFeedMessage.setFile(photoUploader.getFileTO());
+                                            newsFeedAdapter.notifyDataSetChanged();
                                         }
                                     }, null);
-*/
 
-                            // Refresh comments in any case.
-                            ArrayList<Comment> commentArrayList = new ArrayList<>();
+
+                            UserAttributeManager userAttributeManager = new UserAttributeManager(email);
+                            newsFeedMessage.setWeekDay(obj.getInt("weekDay"));
+                            newsFeedMessage.setId(obj.getString("userId"));
+                            newsFeedMessage.setContent(obj.getString("postTxt"));
+                            newsFeedMessage.setTimeStamp(obj.getLong("postTStamp"));
+                            newsFeedMessage.setTitle(obj.getString("postTitle"));
+                            newsFeedMessage.setUser(userAttributeManager.getUsername());
+                            if (newsFeedMessage.getId().equals(userEmail))
+                                newsFeedMessage.setType(NewsFeedMessage.NORMAL);
+                            else
+                                newsFeedMessage.setType(NewsFeedMessage.OTHER_QUESTIONS);
+                            if (anon.equalsIgnoreCase("true") || anon.equalsIgnoreCase("true"))
+                                newsFeedMessage.setAnon(Boolean.valueOf(anon));
+                            else
+                                newsFeedMessage.setAnon(false);
+                            /*
+                            final ProfilePhotoUploader photoUploader = new ProfilePhotoUploader();
+                            photoUploader.download(UserManager.parseEmailToPhotoFileName(m1.getId()),
+                                    new Callback() {
+                                        @Override
+                                        public void handle() {
+                                            Log.e("PHOTO", "photo downloaded");
+                                            m1.setFile(photoUploader.getFileTO());
+                                            //the newsfeedmessage it's added when the downloading it's finished and the file it's exist
+                                            messages.add(m1);
+                                            adapter.notifyDataSetChanged();
+                                        }
+                                    }, null);
+                            */
+                            newsFeedMessageArrayList.add(newsFeedMessage);
+
+                        }
+
+                        // Refresh comments in any case.
+                        ArrayList<Comment> commentArrayList = new ArrayList<>();
+
                         try {
                             JSONArray arr2 = new JSONArray(obj.getString("comments")); //get comments
                             for (int j = 0; j < arr2.length(); j++) {
                                 JSONObject comment = arr2.getJSONObject(j);
-                                    Comment commentObj = new Comment(
-                                            comment.getString("commentIsAnonymous"),
-                                            comment.getString("commentTStamp"),
-                                            comment.getString("commentTxt"),
-                                            comment.getString("commentUserId"));
-                                    commentArrayList.add(commentObj);
+                                Comment commentObj = new Comment(
+                                        comment.getString("commentIsAnonymous"),
+                                        comment.getString("commentTStamp"),
+                                        comment.getString("commentTxt"),
+                                        comment.getString("commentUserId"));
+                                commentArrayList.add(commentObj);
                             }
-                        }catch (JSONException e){
-                            Log.e("Comments","The post has no comments");
+                        } catch (JSONException e) {
+                            Log.e("Comments", "The post has no comments");
                         }
                         newsFeedMessage.setCommentArrayList(commentArrayList);
-
-                        // Add it no the array list only if it doesn't exists.
-                        //if(!isCached)
-
 
                         publishProgress();
 
                     }
-                }catch(JSONException e){
-                    Log.e(NewsfeedRequest.GET_QUESTION_STRING, e.toString());
+                } catch (JSONException e) {
+                    Log.e(NewsFeedRequest.GET_QUESTION_STRING, e.toString());
                 }
             }
         });
@@ -176,7 +196,7 @@ public class NewsFeedAsyncTask extends AsyncTask<Void,String,JSONObject> {
     @Override
     protected void onProgressUpdate(String... values) {
         int newMsgPosition = newsFeedMessageArrayList.size() - 1;
-        newsfeedAdapter.notifyItemInserted(newMsgPosition);
+        newsFeedAdapter.notifyItemInserted(newMsgPosition);
 
 
     }
@@ -188,24 +208,6 @@ public class NewsFeedAsyncTask extends AsyncTask<Void,String,JSONObject> {
 
     @Override
     protected void onPostExecute(JSONObject jsonObject) {
-        newsfeedAdapter.setLoaded();
-
-    }
-
-    private String getUsername(String id) {
-        for (UserType e : userTypeList) {
-            List<AttributeType> attributeTypeList = e.getAttributes();
-            for(AttributeType a : attributeTypeList){
-                if(a.getValue().equals(id)){
-                    for(AttributeType b : attributeTypeList)
-                        if(b.getName().equals("nickname"))
-                            return b.getValue();
-                }}
-        }
-        return "User not found";
-    }
-
-    private int getNextPageNumber() {
-        return page + NewsFeedTab.NEWS_FEED_PAGE_SIZE;
+        newsFeedAdapter.setLoaded();
     }
 }

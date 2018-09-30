@@ -16,7 +16,7 @@ public class NewsFeedMessage extends Observable {
 
 
     private String content;
-    private String date;
+    private Long timeStamp;
     private String user;
     private String answers;
     private String title;
@@ -26,7 +26,16 @@ public class NewsFeedMessage extends Observable {
     private String type;
     private ArrayList<Comment> commentArrayList;
     private Bitmap userPhoto;
+
     private File file;
+
+
+    public NewsFeedMessage() {
+    }
+
+    public NewsFeedMessage(Long timeStamp) {
+        this.timeStamp = timeStamp;
+    }
 
     public String getContent() {
         return content;
@@ -36,12 +45,12 @@ public class NewsFeedMessage extends Observable {
         this.content = content;
     }
 
-    public String getDate() {
-        return date;
+    public Long getTimeStamp() {
+        return timeStamp;
     }
 
-    public void setDate(String date) {
-        this.date = date;
+    public void setTimeStamp(Long timeStamp) {
+        this.timeStamp = timeStamp;
     }
 
     public String getUser() {
@@ -112,11 +121,13 @@ public class NewsFeedMessage extends Observable {
     public void setType(String type) {
         this.type = type;
     }
-    public Bitmap getUserPhoto(){
-            return userPhoto;
+
+    public Bitmap getUserPhoto() {
+        return userPhoto;
     }
-    public void setUserPhoto(Bitmap userPhoto){
-            this.userPhoto = userPhoto;
+
+    public void setUserPhoto(Bitmap userPhoto) {
+        this.userPhoto = userPhoto;
     }
 
     public File getFile() {

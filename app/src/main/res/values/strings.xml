@@ -149,4 +149,7 @@
     <string name="forgot_p_old_pass_wrong_toast">Your old password does not match!</string>
     <string name="forgot_p_old_pass_wrong_error">Not matching old password</string>
     <string name="forgot_p_on_success_message_">Password changed successfully!</string>
+    <!-- News feed -->
+    <string name="nf_no_posts">There are no available posts.</string>
+    <string name="nf_no_more_posts">There are no more posts available.</string>
 </resources>

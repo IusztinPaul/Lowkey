@@ -16,14 +16,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-import fusionkey.lowkey.newsfeed.interfaces.NewsfeedVolleyCallBack;
+import fusionkey.lowkey.newsfeed.interfaces.NewsFeedVolleyCallBack;
 
 import static com.android.volley.Request.Method.DELETE;
 import static com.android.volley.Request.Method.GET;
 import static com.android.volley.Request.Method.POST;
 import static fusionkey.lowkey.LowKeyApplication.requestQueueSingleton;
 
-public class NewsfeedRequest {
+public class NewsFeedRequest {
 
     private String id;
 
@@ -39,7 +39,8 @@ public class NewsfeedRequest {
     private static final String ANON_API_QUERY_STRING ="isAnonymous";
     private static final String POST_TITLE_API_QUERY_STRING = "postTitle";
     private static final String POST_TEXT_API_QUERY_STRING = "postTxt";
-    private static final String PAGE_NUMBER_API_QUERY_STRING = "pageNumber";
+    private static final String REFERENCE_TIMESTAMP_API_QUERY_STRING = "referenceTimestamp";
+    private static final String IS_START_API_QUERY_STRING = "isStart";
 
     private static final String POST_QUESTION_STRING ="postQuestion";
     public static final String GET_QUESTION_STRING ="getQuestion";
@@ -51,26 +52,24 @@ public class NewsfeedRequest {
     public static final String DATA_JSON_KEY = "data";
     public static final String NO_DATA = "the response has no data";
 
-    public NewsfeedRequest(String id){
+    public NewsFeedRequest(String id){
         this.setId(id);
     }
-
-
 
     public void postQuestion(Long time,Boolean anon,String title,String text){
 
         HashMap<String,String> queryParameters = new HashMap<>();
-        queryParameters.put(USER_API_QUERY_STRING, getId());
-        queryParameters.put(TIME_API_QUERY_STRING,String.valueOf(time));
+        queryParameters.put(USER_API_QUERY_STRING, this.id);
+        queryParameters.put(TIME_API_QUERY_STRING, String.valueOf(time));
 
         Map<String, String> params = new HashMap<String, String>();
-        params.put(ANON_API_QUERY_STRING,Boolean.toString(anon));
+        params.put(ANON_API_QUERY_STRING, Boolean.toString(anon));
         params.put(POST_TITLE_API_QUERY_STRING, title);
         params.put(POST_TEXT_API_QUERY_STRING, text);
 
         String URL = getAbsoluteUrlWithQueryString(queryParameters, POST_RELATIVE_URL);
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(POST, URL,new JSONObject(params),
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(POST, URL, new JSONObject(params),
                 new Response.Listener<JSONObject>() {
 
                     @Override
@@ -106,25 +105,29 @@ public class NewsfeedRequest {
 
 
 
-    public void getNewsfeed(int number,final NewsfeedVolleyCallBack listener){
-        HashMap<String,String> queryParameters = new HashMap<>();
-        queryParameters.put(PAGE_NUMBER_API_QUERY_STRING, String.valueOf(number));
+    public void getNewsFeed(Long timestamp, boolean isStart, final NewsFeedVolleyCallBack listener){
+        Map<String,String> queryParameters = new HashMap<>();
+        queryParameters.put(IS_START_API_QUERY_STRING, String.valueOf(isStart));
+        if(timestamp != null)
+            queryParameters.put(REFERENCE_TIMESTAMP_API_QUERY_STRING, String.valueOf(timestamp));
 
         String URL = getAbsoluteUrlWithQueryString(queryParameters, POST_RELATIVE_URL);
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(GET, URL,null,
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(GET, URL, null,
                 new Response.Listener<JSONObject>() {
 
                     @Override
                     public void onResponse(JSONObject response) {
-                        listener.onResponse(response);
+                        if(listener != null)
+                            listener.onResponse(response);
                     }
                 },
                 new Response.ErrorListener() {
 
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        listener.onError(error.toString());
+                        if(listener != null)
+                            listener.onError(error.toString());
                     }
 
                 }) {
@@ -240,7 +243,7 @@ public class NewsfeedRequest {
 
 
 
-    public void getYourQuestions(final NewsfeedVolleyCallBack listener){
+    public void getYourQuestions(final NewsFeedVolleyCallBack listener){
         HashMap<String,String> queryParameters = new HashMap<>();
         queryParameters.put(USER_API_QUERY_STRING, getId());
 
@@ -277,14 +280,17 @@ public class NewsfeedRequest {
 
     private String getAbsoluteUrlWithQueryString(Map<?, ?> queryParameters, String relativeUrl) {
         StringBuilder sb = new StringBuilder();
-        for (Map.Entry<?, ?> entry : queryParameters.entrySet()) {
-            if (sb.length() > 0) {
-                sb.append("&");
+
+        if(queryParameters != null) {
+            for (Map.Entry<?, ?> entry : queryParameters.entrySet()) {
+                if (sb.length() > 0) {
+                    sb.append("&");
+                }
+                sb.append(String.format("%s=%s",
+                        urlEncodeUTF8(entry.getKey().toString()),
+                        urlEncodeUTF8(entry.getValue().toString())
+                ));
             }
-            sb.append(String.format("%s=%s",
-                    urlEncodeUTF8(entry.getKey().toString()),
-                    urlEncodeUTF8(entry.getValue().toString())
-            ));
         }
 
         return getAbsoluteUrl(relativeUrl) + "?" + sb.toString();

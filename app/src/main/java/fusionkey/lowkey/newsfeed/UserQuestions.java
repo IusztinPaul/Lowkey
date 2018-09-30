@@ -18,18 +18,18 @@ import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.R;
 import fusionkey.lowkey.auth.utils.UserAttributesEnum;
 import fusionkey.lowkey.listAdapters.ChatTabViewHolder;
-import fusionkey.lowkey.listAdapters.NewsfeedAdapter;
+import fusionkey.lowkey.listAdapters.NewsFeedAdapter;
 import fusionkey.lowkey.newsfeed.asynctasks.GetYourQuestionsAsyncTask;
 import fusionkey.lowkey.newsfeed.models.Comment;
 import fusionkey.lowkey.newsfeed.models.NewsFeedMessage;
-import fusionkey.lowkey.newsfeed.util.NewsfeedRequest;
+import fusionkey.lowkey.newsfeed.util.NewsFeedRequest;
 
 public class UserQuestions extends AppCompatActivity {
-    NewsfeedAdapter adapter;
+    NewsFeedAdapter adapter;
     ArrayList<NewsFeedMessage> messages;
     String uniqueID;
     private RecyclerView msgRecyclerView;
-    NewsfeedRequest newsfeedRequest;
+    NewsFeedRequest newsFeedRequest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,11 +46,11 @@ public class UserQuestions extends AppCompatActivity {
         uniqueID = (attributes.get(UserAttributesEnum.EMAIL.toString()));
 
         messages = new ArrayList<NewsFeedMessage>();
-        adapter = new NewsfeedAdapter(messages,this,msgRecyclerView);
+        adapter = new NewsFeedAdapter(messages,this,msgRecyclerView);
         msgRecyclerView.setAdapter(adapter);
-        newsfeedRequest = new NewsfeedRequest(uniqueID);
+        newsFeedRequest = new NewsFeedRequest(uniqueID);
 
-        adapter.setListener(new NewsfeedAdapter.OnItemClickListenerNews() {
+        adapter.setListener(new NewsFeedAdapter.OnItemClickListenerNews() {
             @Override
             public void onItemClick(ChatTabViewHolder item, View v) {
                 int position = item.getAdapterPosition();
@@ -65,19 +65,19 @@ public class UserQuestions extends AppCompatActivity {
                     object.setMyInt(m.getCommentArrayList().size());
                     intent.putExtra("parcel", object);
 
-                    intent.putExtra("timestampID",m.getDate());
+                    intent.putExtra("timestampID",m.getTimeStamp());
                 }
 
                 startActivityForResult(intent,1);
                 overridePendingTransition(0, 0);
             }
         });
-        adapter.setDeleteListener(new NewsfeedAdapter.OnDeleteItem() {
+        adapter.setDeleteListener(new NewsFeedAdapter.OnDeleteItem() {
             @Override
             public void deleteItem(ChatTabViewHolder item, View v) {
                 int position = item.getAdapterPosition();
                 NewsFeedMessage m = adapter.getMsg(position);
-                new NewsfeedRequest(uniqueID).deleteQuestion(m.getDate());
+                new NewsFeedRequest(uniqueID).deleteQuestion(String.valueOf(m.getTimeStamp()));
                 adapter.removeItem(position);
             }
         });
@@ -93,7 +93,7 @@ public class UserQuestions extends AppCompatActivity {
     }
 
     public void refreshNewsfeed(){
-        GetYourQuestionsAsyncTask getYourQuestionsAsyncTask = new GetYourQuestionsAsyncTask(messages,msgRecyclerView,adapter,newsfeedRequest);
+        GetYourQuestionsAsyncTask getYourQuestionsAsyncTask = new GetYourQuestionsAsyncTask(messages,msgRecyclerView,adapter, newsFeedRequest);
         getYourQuestionsAsyncTask.execute();
         adapter.notifyDataSetChanged();
     }
@@ -111,7 +111,7 @@ public class UserQuestions extends AppCompatActivity {
                     List<Comment> commentArrayList = object.getArrList();
                     for (NewsFeedMessage m : messages) {
                         Log.e("GETHERE", "HERE FOR ");
-                        if (m.getDate().equals(timestampID)) {
+                        if (m.getTimeStamp().equals(timestampID)) {
                             Log.e("GETHERE", "HERE IF");
                             for (Comment c : commentArrayList)
                                 m.addCommentToList(c);
