@@ -17,9 +17,9 @@ import java.util.List;
 
 import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.auth.utils.UserAttributesEnum;
-import fusionkey.lowkey.listAdapters.NewsfeedAdapter;
-import fusionkey.lowkey.newsfeed.util.NewsfeedRequest;
-import fusionkey.lowkey.newsfeed.interfaces.NewsfeedVolleyCallBack;
+import fusionkey.lowkey.listAdapters.NewsFeedAdapter;
+import fusionkey.lowkey.newsfeed.util.NewsFeedRequest;
+import fusionkey.lowkey.newsfeed.interfaces.NewsFeedVolleyCallBack;
 import fusionkey.lowkey.newsfeed.models.Comment;
 import fusionkey.lowkey.newsfeed.models.NewsFeedMessage;
 
@@ -27,32 +27,32 @@ public class GetYourQuestionsAsyncTask extends AsyncTask<Void,String,JSONObject>
 
     private ArrayList<NewsFeedMessage> newsFeedMessageArrayList;
     private WeakReference<RecyclerView> recyclerView;
-    private NewsfeedAdapter newsfeedAdapter;
-    private NewsfeedRequest newsfeedRequest;
+    private NewsFeedAdapter newsFeedAdapter;
+    private NewsFeedRequest newsFeedRequest;
     private List<UserType> userTypeList = LowKeyApplication.userManager.getUsers(UserAttributesEnum.EMAIL, null);
 
 
 
-    public GetYourQuestionsAsyncTask(ArrayList<NewsFeedMessage> newsFeedMessageArrayList,RecyclerView recyclerView,NewsfeedAdapter newsfeedAdapter,NewsfeedRequest newsfeedRequest){
+    public GetYourQuestionsAsyncTask(ArrayList<NewsFeedMessage> newsFeedMessageArrayList, RecyclerView recyclerView, NewsFeedAdapter newsFeedAdapter, NewsFeedRequest newsFeedRequest){
         this.newsFeedMessageArrayList=newsFeedMessageArrayList;
         this.recyclerView = new WeakReference<>(recyclerView);
-        this.newsfeedAdapter = newsfeedAdapter;
-        this.newsfeedRequest = newsfeedRequest;
+        this.newsFeedAdapter = newsFeedAdapter;
+        this.newsFeedRequest = newsFeedRequest;
     }
 
     @Override
     protected void onPreExecute() {
-        newsfeedAdapter.clear();
-        newsfeedAdapter.notifyDataSetChanged();
+        newsFeedAdapter.clear();
+        newsFeedAdapter.notifyDataSetChanged();
 
     }
 
     @Override
     protected JSONObject doInBackground(Void... voids) {
-        newsfeedRequest.getYourQuestions(new NewsfeedVolleyCallBack() {
+        newsFeedRequest.getYourQuestions(new NewsFeedVolleyCallBack() {
             @Override
             public void onError(String message) {
-                Log.e(NewsfeedRequest.RESPONSE_ERROR, message);
+                Log.e(NewsFeedRequest.RESPONSE_ERROR, message);
             }
 
             @Override
@@ -66,7 +66,7 @@ public class GetYourQuestionsAsyncTask extends AsyncTask<Void,String,JSONObject>
                         NewsFeedMessage newsFeedMessage = new NewsFeedMessage();
                         newsFeedMessage.setWeekDay(obj.getInt("weekDay"));
                         newsFeedMessage.setId(obj.getString("userId"));
-                        newsFeedMessage.setContent(obj.getString("postTxt"));newsFeedMessage.setDate(obj.getString("postTStamp"));
+                        newsFeedMessage.setContent(obj.getString("postTxt"));newsFeedMessage.setTimeStamp(obj.getLong("postTStamp"));
                         newsFeedMessage.setTitle(obj.getString("postTitle"));
                         newsFeedMessage.setType(NewsFeedMessage.NORMAL);
                         newsFeedMessage.setUser(getUsername(obj.getString("userId")));
@@ -98,7 +98,7 @@ public class GetYourQuestionsAsyncTask extends AsyncTask<Void,String,JSONObject>
 
                     }
                 }catch(JSONException e){
-                    Log.e(NewsfeedRequest.GET_QUESTION_STRING, e.toString());
+                    Log.e(NewsFeedRequest.GET_QUESTION_STRING, e.toString());
                 }
             }
         });
@@ -110,8 +110,8 @@ public class GetYourQuestionsAsyncTask extends AsyncTask<Void,String,JSONObject>
     protected void onProgressUpdate(String... values) {
 
         int newMsgPosition = newsFeedMessageArrayList.size() - 1;
-        newsfeedAdapter.notifyItemInserted(newMsgPosition);
-        newsfeedAdapter.notifyDataSetChanged();
+        newsFeedAdapter.notifyItemInserted(newMsgPosition);
+        newsFeedAdapter.notifyDataSetChanged();
         recyclerView.get().scrollToPosition(newMsgPosition);
 
     }

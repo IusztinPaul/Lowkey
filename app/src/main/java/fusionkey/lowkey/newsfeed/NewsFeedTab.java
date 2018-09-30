@@ -3,19 +3,10 @@ package fusionkey.lowkey.newsfeed;
 import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.RectF;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -27,8 +18,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
-
-import com.amazonaws.auth.BasicAWSCredentials;
+import android.widget.Toast;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -36,21 +26,22 @@ import java.util.List;
 import java.util.Map;
 
 import fusionkey.lowkey.LowKeyApplication;
-import fusionkey.lowkey.auth.utils.AwsAccessKeys;
 import fusionkey.lowkey.auth.utils.UserAttributesEnum;
-import fusionkey.lowkey.listAdapters.NewsfeedAdapter;
+import fusionkey.lowkey.listAdapters.NewsFeedAdapter;
 import fusionkey.lowkey.listAdapters.ChatTabViewHolder;
 import fusionkey.lowkey.R;
-import fusionkey.lowkey.newsfeed.asynctasks.NewsFeedAsyncTask;
+import fusionkey.lowkey.newsfeed.asynctasks.NewsFeedAsyncTaskFactory;
+import fusionkey.lowkey.newsfeed.interfaces.IGenericConsumer;
 import fusionkey.lowkey.newsfeed.models.Comment;
 import fusionkey.lowkey.newsfeed.models.NewsFeedMessage;
-import fusionkey.lowkey.newsfeed.util.NewsfeedRequest;
+import fusionkey.lowkey.newsfeed.util.NewsFeedRequest;
 
 
 public class NewsFeedTab extends Fragment{
     public static final int NEWS_FEED_PAGE_SIZE = 4;
+    public static final int COMMENT_ACTIVITY_REQUEST_CODE = 1;
 
-    private NewsfeedAdapter adapter;
+    private NewsFeedAdapter adapter;
     private ArrayList<NewsFeedMessage> messages;
 
     private RecyclerView msgRecyclerView;
@@ -60,13 +51,11 @@ public class NewsFeedTab extends Fragment{
     private ImageView exp;
     private ImageView col;
     private CheckBox checkBox;
-    private NewsfeedRequest newsfeedRequest;
+    private NewsFeedRequest newsFeedRequest;
     private String uniqueID;
     public SwipeRefreshLayout swipeRefreshLayout;
 
-    int pageCounter=0;
-
-    private Paint p = new Paint();
+    private Long referenceTimestamp;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -85,22 +74,16 @@ public class NewsFeedTab extends Fragment{
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
         msgRecyclerView.setLayoutManager(linearLayoutManager);
 
-        //Getting user details from Cognito
+        // Getting user details from Cognito.
         Map<String, String> attributes = LowKeyApplication.userManager.getUserDetails().getAttributes().getAttributes();
         final String id = attributes.get(UserAttributesEnum.USERNAME.toString());
         uniqueID = (attributes.get(UserAttributesEnum.EMAIL.toString()));
 
         // Create the initial data list.
         messages = new ArrayList<>();
-        adapter = new NewsfeedAdapter(messages,getActivity().getApplicationContext(),msgRecyclerView);
+        adapter = new NewsFeedAdapter(messages,getActivity().getApplicationContext(),msgRecyclerView);
         msgRecyclerView.setAdapter(adapter);
-        newsfeedRequest = new NewsfeedRequest(uniqueID);
-
-        BasicAWSCredentials credentials =
-                new BasicAWSCredentials(
-                        AwsAccessKeys.ACCESS_KEY_ID,
-                        AwsAccessKeys.ACCESS_SECRET_KEY
-                );
+        newsFeedRequest = new NewsFeedRequest(uniqueID);
 
         exp.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -125,9 +108,9 @@ public class NewsFeedTab extends Fragment{
                     Timestamp timestamp = new Timestamp(System.currentTimeMillis());
                     NewsFeedMessage m11 = new NewsFeedMessage();
 
-                    newsfeedRequest.postQuestion(timestamp.getTime(),anon,String.valueOf(title.getText()),String.valueOf(body.getText()));
+                    newsFeedRequest.postQuestion(timestamp.getTime(),anon,String.valueOf(title.getText()),String.valueOf(body.getText()));
 
-                    m11.setAnon(anon);m11.setUser(id);m11.setDate(String.valueOf(timestamp.getTime()));
+                    m11.setAnon(anon);m11.setUser(id);m11.setTimeStamp(timestamp.getTime());
                     m11.setTitle(title.getText().toString());m11.setContent(String.valueOf(body.getText()));
                     m11.setId(uniqueID);
                     m11.setType(NewsFeedMessage.NORMAL);
@@ -142,12 +125,12 @@ public class NewsFeedTab extends Fragment{
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                refreshNewsfeed();
+                refreshNewsFeed();
                 swipeRefreshLayout.setRefreshing(false);
             }
         });
 
-        adapter.setListener(new NewsfeedAdapter.OnItemClickListenerNews() {
+        adapter.setListener(new NewsFeedAdapter.OnItemClickListenerNews() {
             @Override
             public void onItemClick(ChatTabViewHolder item,View v) {
                 int position = item.getAdapterPosition();
@@ -160,24 +143,24 @@ public class NewsFeedTab extends Fragment{
                     MyParcelable object = new MyParcelable();
                     object.setArrList(m.getCommentArrayList());
                     intent.putExtra("parcel", object);
-                    intent.putExtra("timestampID",m.getDate());
+                    intent.putExtra("timestampID",m.getTimeStamp());
                 }else {
                     MyParcelable object = new MyParcelable();
                     object.setArrList(new ArrayList<Comment>());
                     intent.putExtra("parcel", object);
-                    intent.putExtra("timestampID",m.getDate());
+                    intent.putExtra("timestampID",m.getTimeStamp());
 
                 }
 
-                startActivityForResult(intent,1);
+                startActivityForResult(intent, COMMENT_ACTIVITY_REQUEST_CODE);
                 getActivity().overridePendingTransition(0, 0);
             }
         });
 
-        refreshNewsfeed();
+        startPopulateNewsFeed();
         adapter.notifyDataSetChanged();
 
-        adapter.setOnLoadMoreListener(new NewsfeedAdapter.OnLoadMoreListener() {
+        adapter.setOnLoadMoreListener(new NewsFeedAdapter.OnLoadMoreListener() {
             @Override
             public void onLoadMore() {
                 final NewsFeedMessage m = null;
@@ -187,21 +170,36 @@ public class NewsFeedTab extends Fragment{
                         @Override
                         public void run() {
                             adapter.removeItem(messages.indexOf(m));
-                            // Generating more data.
-                            pageCounter += NEWS_FEED_PAGE_SIZE;
-                            NewsFeedAsyncTask newsFeedAsyncTask = new NewsFeedAsyncTask(messages,msgRecyclerView,adapter,newsfeedRequest,pageCounter);
-                            newsFeedAsyncTask.execute();
+
+                            // Generate the next set of items.
+                            new NewsFeedAsyncTaskFactory(newsFeedRequest, messages, msgRecyclerView, adapter)
+                                    .addArePostNew()
+                                    .addSetter(new IGenericConsumer<Long>() {
+                                        @Override
+                                        public void consume(Long item) {
+                                            if(item != null)
+                                                referenceTimestamp = item;
+                                            else
+                                                Toast.makeText(NewsFeedTab.this.getContext(),
+                                                        NewsFeedTab.this.getResources().getString(R.string.nf_no_more_posts),
+                                                        Toast.LENGTH_SHORT).show();
+                                        }
+                                    })
+                                    .addReferenceTimeSTamp(referenceTimestamp)
+                                    .build()
+                                    .execute();
+
                         }
                     }, 5000);
 
             }
         });
-        adapter.setDeleteListener(new NewsfeedAdapter.OnDeleteItem() {
+        adapter.setDeleteListener(new NewsFeedAdapter.OnDeleteItem() {
             @Override
             public void deleteItem(ChatTabViewHolder item, View v) {
                 int position = item.getAdapterPosition();
                 NewsFeedMessage m = adapter.getMsg(position);
-                new NewsfeedRequest(uniqueID).deleteQuestion(m.getDate());
+                new NewsFeedRequest(uniqueID).deleteQuestion(String.valueOf(m.getTimeStamp()));
                 adapter.removeItem(position);
             }
         });
@@ -218,7 +216,7 @@ public class NewsFeedTab extends Fragment{
     @Override
     public void onActivityResult(int requestCode,int resultCode,Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-             if (requestCode == 1) {
+             if (requestCode == COMMENT_ACTIVITY_REQUEST_CODE) {
                  if(resultCode == Activity.RESULT_OK){
                 Bundle b = data.getExtras();
                 try {
@@ -226,7 +224,7 @@ public class NewsFeedTab extends Fragment{
                     String timestampID = b.getString("ItemID");
                     List<Comment> commentArrayList = object.getArrList();
                     for (NewsFeedMessage m : messages) {
-                            if (m.getDate().equals(timestampID)) {
+                            if (m.getTimeStamp().equals(timestampID)) {
                                     for (Comment c : commentArrayList)
                                         m.addCommentToList(c);
                             adapter.notifyDataSetChanged();
@@ -241,11 +239,32 @@ public class NewsFeedTab extends Fragment{
 
     }
 
-    public void refreshNewsfeed(){
-        for(int i=0; i <= pageCounter; i += NEWS_FEED_PAGE_SIZE) {
-            NewsFeedAsyncTask newsFeedAsyncTask = new NewsFeedAsyncTask(messages, msgRecyclerView, adapter, newsfeedRequest, i);
-            newsFeedAsyncTask.execute();
-        }
+    public void startPopulateNewsFeed() {
+        new NewsFeedAsyncTaskFactory(newsFeedRequest, messages, msgRecyclerView, adapter)
+                .addIsStart()
+                .addArePostNew()
+                .addSetter(new IGenericConsumer<Long>() {
+                    @Override
+                    public void consume(Long item) {
+                        if(item != null)
+                            referenceTimestamp = item;
+                        else
+                            Toast.makeText(NewsFeedTab.this.getContext(),
+                                    NewsFeedTab.this.getResources().getString(R.string.nf_no_posts),
+                                    Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .build()
+                .execute();
+    }
+
+    public void refreshNewsFeed() {
+        for(int i = 0; i < messages.size(); i += NEWS_FEED_PAGE_SIZE)
+            new NewsFeedAsyncTaskFactory(newsFeedRequest, messages, msgRecyclerView, adapter)
+                    .addIsStart()
+                    .addReferenceTimeSTamp(messages.get(i).getTimeStamp())
+                    .build()
+                    .execute();
     }
 
     public static void expand(final View v, int duration, int targetHeight) {
@@ -297,7 +316,7 @@ public class NewsFeedTab extends Fragment{
                 if (direction == ItemTouchHelper.LEFT){
                     adapter.removeItem(position);
                         if(m.getId().equals(uniqueID))
-                            new NewsfeedRequest(uniqueID).deleteQuestion(m.getDate());
+                            new NewsFeedRequest(uniqueID).deleteQuestion(m.getTimeStamp());
                 } else {
                     //removeView();
                     adapter.removeItem(position);

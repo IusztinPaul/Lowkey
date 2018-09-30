@@ -33,7 +33,7 @@ public class ChatTabViewHolder extends RecyclerView.ViewHolder {
         if(itemView!=null) {
             name = (TextView) itemView.findViewById(R.id.name);
             lastmsg = (TextView) itemView.findViewById(R.id.lastmsg);
-            date = (TextView) itemView.findViewById(R.id.date);
+            date = (TextView) itemView.findViewById(R.id.timeStamp);
             title = (TextView) itemView.findViewById(R.id.Title);
             answers = (TextView) itemView.findViewById(R.id.answers);
             image = (CircleImageView) itemView.findViewById(R.id.circleImageView);
@@ -41,7 +41,7 @@ public class ChatTabViewHolder extends RecyclerView.ViewHolder {
 
         }
     }
-    public void bind(final ChatTabViewHolder item, final NewsfeedAdapter.OnItemClickListenerNews listener) {
+    public void bind(final ChatTabViewHolder item, final NewsFeedAdapter.OnItemClickListenerNews listener) {
 
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
@@ -49,7 +49,7 @@ public class ChatTabViewHolder extends RecyclerView.ViewHolder {
             }
         });
     }
-    public void bindDelete(final ChatTabViewHolder item, final NewsfeedAdapter.OnDeleteItem listener){
+    public void bindDelete(final ChatTabViewHolder item, final NewsFeedAdapter.OnDeleteItem listener){
         type.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

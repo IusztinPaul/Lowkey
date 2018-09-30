@@ -1,11 +1,7 @@
 package fusionkey.lowkey.auth.utils;
 
-import android.util.Log;
-
 import com.amazonaws.services.cognitoidentityprovider.model.AttributeType;
 import com.amazonaws.services.cognitoidentityprovider.model.UserType;
-
-import java.util.List;
 
 import fusionkey.lowkey.LowKeyApplication;
 

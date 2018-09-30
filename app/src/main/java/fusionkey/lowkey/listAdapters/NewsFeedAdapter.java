@@ -17,7 +17,7 @@ import java.util.TimeZone;
 import fusionkey.lowkey.R;
 import fusionkey.lowkey.newsfeed.models.NewsFeedMessage;
 
-public class NewsfeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class NewsFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private final int VIEW_TYPE_ITEM = 0;
     private final int VIEW_TYPE_LOADING = 1;
@@ -33,7 +33,7 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private int lastVisibleItem, totalItemCount;
     private boolean isLoading;
 
-    public NewsfeedAdapter(List<NewsFeedMessage> mMessages, Context context, RecyclerView recyclerView) {
+    public NewsFeedAdapter(List<NewsFeedMessage> mMessages, Context context, RecyclerView recyclerView) {
         this.mMessages = mMessages;
         this.mcontext = context;
         final LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
@@ -102,7 +102,7 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 chatTabViewHolder.name.setText(ANON_STRING);
             }
             chatTabViewHolder.lastmsg.setText(msgDto.getContent());
-            chatTabViewHolder.date.setText(localTime(msgDto.getDate()));
+            chatTabViewHolder.date.setText(localTime(msgDto.getTimeStamp()));
             if (msgDto.getCommentArrayList() != null) {
                 chatTabViewHolder.answers.setText(msgDto.getCommentArrayList().size() + " Answers");
             } else {
@@ -129,7 +129,7 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         isLoading = false;
     }
 
-    public NewsfeedAdapter(ArrayList users) {
+    public NewsFeedAdapter(ArrayList users) {
         mMessages = users;
     }
 
@@ -150,12 +150,12 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public void setOnLoadMoreListener(OnLoadMoreListener mOnLoadMoreListener) { this.onLoadMoreListener = mOnLoadMoreListener; }
 
-    private String localTime(String time) {
+    private String localTime(Long time) {
         Calendar cal = Calendar.getInstance();
         TimeZone tz = cal.getTimeZone();
         SimpleDateFormat sf = new SimpleDateFormat("dd MMMMM - HH:mm");
         sf.setTimeZone(tz);
-        Date date = new Date(Long.parseLong(time));
+        Date date = new Date(time);
         return sf.format(date);
     }
 

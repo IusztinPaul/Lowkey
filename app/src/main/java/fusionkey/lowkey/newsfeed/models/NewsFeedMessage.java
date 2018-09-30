@@ -15,7 +15,7 @@ public class NewsFeedMessage extends Observable {
 
 
     private String content;
-    private String date;
+    private Long timeStamp;
     private String user;
     private String answers;
     private String title;
@@ -26,6 +26,11 @@ public class NewsFeedMessage extends Observable {
     private ArrayList<Comment> commentArrayList;
     private Bitmap userPhoto;
 
+    public NewsFeedMessage() {}
+
+    public NewsFeedMessage(Long timeStamp) {
+        this.timeStamp = timeStamp;
+    }
 
     public String getContent() {
         return content;
@@ -35,12 +40,12 @@ public class NewsFeedMessage extends Observable {
         this.content = content;
     }
 
-    public String getDate() {
-        return date;
+    public Long getTimeStamp() {
+        return timeStamp;
     }
 
-    public void setDate(String date) {
-        this.date = date;
+    public void setTimeStamp(Long timeStamp) {
+        this.timeStamp = timeStamp;
     }
 
     public String getUser() {
@@ -118,4 +123,8 @@ public class NewsFeedMessage extends Observable {
             this.userPhoto = userPhoto;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        return (obj instanceof NewsFeedMessage) && ((NewsFeedMessage) obj).timeStamp.equals(this.timeStamp);
+    }
 }
