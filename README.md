@@ -13,10 +13,12 @@ can be mapped into real cash $$$ ('.') $$$ as a reward for helping our society.
 * Chat
 
 ### Technologies
-* Frontend -> `Android Studio` (Java)
-* Backend -> `Aws Lambdas` (Python and JavaScript) and `API Gateway` for communication 
-          -> `DynamoDB`, `Redis Cache` and `S3` for storage
-          -> `Sns` for notifications
-          -> `Cognito` for authentification and user logic
+##### Frontend 
+* `Android Studio` (Java)
+##### Backend 
+* `Aws Lambdas` (Python and JavaScript) and `API Gateway` for communication 
+* `DynamoDB`, `Redis Cache` and `S3` for storage
+* `Sns` for notifications
+* `Cognito` for authentification and user logic
                                                               
 
