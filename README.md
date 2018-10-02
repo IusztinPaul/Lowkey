@@ -18,3 +18,4 @@ can be mapped into real cash $$$ ('.') $$$ as a reward for helping our society.
           -> `DynamoDB`, `Redis Cache` and `S3` for storage
           -> `Sns` for notifications
           -> `Cognito` for authentification and user logic
+
