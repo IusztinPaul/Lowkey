@@ -28,12 +28,20 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.services.s3.model.Region;
+import com.amazonaws.services.sns.AmazonSNS;
+import com.amazonaws.services.sns.AmazonSNSAsyncClient;
+import com.amazonaws.services.sns.AmazonSNSClient;
+import com.amazonaws.services.sns.model.CreateTopicRequest;
+
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import fusionkey.lowkey.LowKeyApplication;
+import fusionkey.lowkey.auth.utils.AwsAccessKeys;
 import fusionkey.lowkey.auth.utils.UserAttributesEnum;
 import fusionkey.lowkey.auth.utils.UserManager;
 import fusionkey.lowkey.listAdapters.ChatTabViewHolder;
@@ -127,6 +135,7 @@ public class NewsFeedTab extends Fragment{
 
                     newsFeedRequest.postQuestion(timestamp.getTime(),anon,String.valueOf(title.getText()),String.valueOf(body.getText()));
 
+
                     m11.setAnon(anon);m11.setUser(id);m11.setTimeStamp(timestamp.getTime());
                     m11.setTitle(title.getText().toString());m11.setContent(String.valueOf(body.getText()));
                     m11.setId(uniqueID);
@@ -160,11 +169,13 @@ public class NewsFeedTab extends Fragment{
                     MyParcelable object = new MyParcelable();
                     object.setArrList(m.getCommentArrayList());
                     intent.putExtra("parcel", object);
+                    intent.putExtra("SNStopic",m.getSNStopic());
                     intent.putExtra("timestampID",m.getTimeStamp());
                 }else {
                     MyParcelable object = new MyParcelable();
                     object.setArrList(new ArrayList<Comment>());
                     intent.putExtra("parcel", object);
+                    intent.putExtra("SNStopic",m.getSNStopic());
                     intent.putExtra("timestampID",m.getTimeStamp());
 
                 }

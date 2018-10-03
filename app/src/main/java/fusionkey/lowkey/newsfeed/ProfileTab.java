@@ -18,6 +18,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.iid.FirebaseInstanceId;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -42,6 +44,7 @@ import fusionkey.lowkey.newsfeed.models.NewsFeedMessage;
 //import fusionkey.lowkey.newsfeed.util.NewsfeedRequest;
 import fusionkey.lowkey.newsfeed.util.NewsFeedRequest;
 import fusionkey.lowkey.pointsAlgorithm.PointsCalculator;
+
 
 
 public class ProfileTab extends Fragment {
@@ -144,6 +147,7 @@ public class ProfileTab extends Fragment {
         settings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Log.e("token : ",FirebaseInstanceId.getInstance().getToken());
 
                 getActivity().startActivity(new Intent(getContext().getApplicationContext(), Menu.class));
             }

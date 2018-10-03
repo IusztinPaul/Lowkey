@@ -137,6 +137,7 @@ public class NewsFeedAsyncTask extends AsyncTask<Void, String, JSONObject> {
                             newsFeedMessage.setContent(obj.getString("postTxt"));
                             newsFeedMessage.setTimeStamp(obj.getLong("postTStamp"));
                             newsFeedMessage.setTitle(obj.getString("postTitle"));
+                            newsFeedMessage.setSNStopic(obj.getString("snsTopic"));
                             newsFeedMessage.setUser(userAttributeManager.getUsername());
                             if (newsFeedMessage.getId().equals(userEmail))
                                 newsFeedMessage.setType(NewsFeedMessage.NORMAL);

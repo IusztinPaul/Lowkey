@@ -81,7 +81,7 @@ public class CommentsActivity extends AppCompatActivity {
                     Map<String, String> attributes = LowKeyApplication.userManager.getUserDetails().getAttributes().getAttributes();
                     final String uniqueID = attributes.get(UserAttributesEnum.EMAIL.toString());
                     final String username = attributes.get(UserAttributesEnum.USERNAME.toString());
-                    new NewsFeedRequest(username).postComment( getIntent().getLongExtra("timestampID",0), true, inputTxt.getText().toString());
+                    new NewsFeedRequest(username).postComment(getIntent().getLongExtra("timestampID",0), true, inputTxt.getText().toString(),getIntent().getStringExtra("SNStopic"));
                     commentArrayList.add(new Comment("true",String.valueOf(timestamp.getTime()),inputTxt.getText().toString(),username));
                     commentsSentList.add(new Comment("true",String.valueOf(timestamp.getTime()),inputTxt.getText().toString(),username));
 

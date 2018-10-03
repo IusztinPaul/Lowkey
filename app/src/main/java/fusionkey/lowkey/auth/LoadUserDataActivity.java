@@ -15,6 +15,7 @@ import fusionkey.lowkey.entryActivity.EntryActivity;
 import fusionkey.lowkey.main.Main2Activity;
 import fusionkey.lowkey.main.utils.Callback;
 import fusionkey.lowkey.main.utils.ProfilePhotoUploader;
+import fusionkey.lowkey.pushnotifications.RegisterSNS;
 
 public class LoadUserDataActivity extends AppCompatActivity {
 
@@ -36,6 +37,7 @@ public class LoadUserDataActivity extends AppCompatActivity {
 
         @Override
         protected Void doInBackground(Void... voids) {
+            new RegisterSNS().registerWithSNS();
             // First wait for the user details which are loaded from the login login.
             while (LowKeyApplication.userManager.getUserDetails() == null) ;
 
@@ -45,7 +47,7 @@ public class LoadUserDataActivity extends AppCompatActivity {
                     new ProfilePhotoUploader();
             profilePhotoUploader.download(
                     /**
-                     * @TO-DO la linia asta e eroare
+                     * @TODO la linia asta e eroare
                      *      Caused by: java.lang.NullPointerException: Attempt to invoke virtual method 'java.lang.String com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUser.getUserId()'
                      *      on a null object reference
                      */

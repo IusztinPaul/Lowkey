@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
+import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.newsfeed.interfaces.NewsFeedVolleyCallBack;
 
 import static com.android.volley.Request.Method.DELETE;
@@ -41,6 +42,7 @@ public class NewsFeedRequest {
     private static final String POST_TEXT_API_QUERY_STRING = "postTxt";
     private static final String REFERENCE_TIMESTAMP_API_QUERY_STRING = "referenceTimestamp";
     private static final String IS_START_API_QUERY_STRING = "isStart";
+    private static final String ENDPOINT_API_QUERY_STRING = "endpoint";
 
     private static final String POST_QUESTION_STRING ="postQuestion";
     public static final String GET_QUESTION_STRING ="getQuestion";
@@ -66,6 +68,7 @@ public class NewsFeedRequest {
         params.put(ANON_API_QUERY_STRING, Boolean.toString(anon));
         params.put(POST_TITLE_API_QUERY_STRING, title);
         params.put(POST_TEXT_API_QUERY_STRING, text);
+        params.put(ENDPOINT_API_QUERY_STRING, LowKeyApplication.endpointArn);
 
         String URL = getAbsoluteUrlWithQueryString(queryParameters, POST_RELATIVE_URL);
 
@@ -188,7 +191,7 @@ public class NewsFeedRequest {
 
 
 
-    public void postComment(Long time,Boolean anon,String text){
+    public void postComment(Long time,Boolean anon,String text,String SNStopic){
 
         HashMap<String,String> queryParameters = new HashMap<>();
 
@@ -202,6 +205,7 @@ public class NewsFeedRequest {
             jsonBody.put("commentUserId", getId());
             jsonBody.put("commentTStamp", String.valueOf(timestamp.getTime()));
             jsonBody.put("commentIsAnonymous", Boolean.toString(anon));
+            jsonBody.put("snsTopic",SNStopic);
         }catch (JSONException e) {
             e.printStackTrace();
         }

@@ -26,7 +26,7 @@ public class NewsFeedMessage extends Observable {
     private String type;
     private ArrayList<Comment> commentArrayList;
     private Bitmap userPhoto;
-
+    private String SNStopic;
     private File file;
 
 
@@ -136,5 +136,13 @@ public class NewsFeedMessage extends Observable {
 
     public void setFile(File file) {
         this.file = file;
+    }
+
+    public String getSNStopic() {
+        return SNStopic;
+    }
+
+    public void setSNStopic(String SNStopic) {
+        this.SNStopic = SNStopic;
     }
 }
