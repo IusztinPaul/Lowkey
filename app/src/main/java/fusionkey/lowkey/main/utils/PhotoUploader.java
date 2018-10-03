@@ -3,7 +3,6 @@ package fusionkey.lowkey.main.utils;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.mobile.client.AWSMobileClient;
