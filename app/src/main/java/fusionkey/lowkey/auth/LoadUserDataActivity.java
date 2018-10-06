@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.lang.ref.WeakReference;
 
@@ -38,38 +39,45 @@ public class LoadUserDataActivity extends AppCompatActivity {
         @Override
         protected Void doInBackground(Void... voids) {
             new RegisterSNS().registerWithSNS();
+
             // First wait for the user details which are loaded from the login login.
             while (LowKeyApplication.userManager.getUserDetails() == null) ;
 
             // Now access the S3 photo with the new user details.
-            loadingPhoto = true;
-            final ProfilePhotoUploader profilePhotoUploader =
-                    new ProfilePhotoUploader();
-            profilePhotoUploader.download(
-                    /**
-                     * @TODO la linia asta e eroare
-                     *      Caused by: java.lang.NullPointerException: Attempt to invoke virtual method 'java.lang.String com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUser.getUserId()'
-                     *      on a null object reference
-                     */
-                    LowKeyApplication.userManager.getPhotoFileName(),
-                    new Callback() {
-                        @Override
-                        public void handle() {
-                            loadingPhoto = false;
-                            Log.e("success", "successHandler");
+            try {
+                loadingPhoto = true;
+                final ProfilePhotoUploader profilePhotoUploader =
+                        new ProfilePhotoUploader();
+                profilePhotoUploader.download(
+                        /**
+                         * @TODO la linia asta e eroare
+                         *      Caused by: java.lang.NullPointerException: Attempt to invoke virtual method 'java.lang.String com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUser.getUserId()'
+                         *      on a null object reference
+                         */
+                        LowKeyApplication.userManager.getPhotoFileName(),
+                        new Callback() {
+                            @Override
+                            public void handle() {
+                                loadingPhoto = false;
+                                Log.e("success", "successHandler");
+                            }
+                        },
+                        new Callback() {
+                            @Override
+                            public void handle() {
+                                loadingPhoto = false;
+                                Log.e("fail", "failHandler");
+                            }
                         }
-                    },
-                    new Callback() {
-                        @Override
-                        public void handle() {
-                            loadingPhoto = false;
-                            Log.e("fail", "failHandler");
-                        }
-                    }
-            );
-            while (loadingPhoto);
+                );
+                while (loadingPhoto) ;
 
-            LowKeyApplication.profilePhoto = profilePhotoUploader.getPhoto();
+                LowKeyApplication.profilePhoto = profilePhotoUploader.getPhoto();
+            } catch (NullPointerException e) {
+                Log.e("LoadUserDataAc bg task", e.getMessage());
+                Toast.makeText(activityWeakReference.get(), e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+
             return null;
         }
 
