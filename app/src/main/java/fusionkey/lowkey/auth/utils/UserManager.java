@@ -408,6 +408,10 @@ public class UserManager {
         return cognitoPoolUtils.getUserSession().getIdToken().getJWTToken();
     }
 
+    public String getUserId() {
+        return cognitoPoolUtils.getUser().getUserId();
+    }
+
     /**
      * Pass null to both values if you don't want any filtering.
      */

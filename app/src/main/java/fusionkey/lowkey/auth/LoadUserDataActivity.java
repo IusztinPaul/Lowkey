@@ -41,7 +41,8 @@ public class LoadUserDataActivity extends AppCompatActivity {
             new RegisterSNS().registerWithSNS();
 
             // First wait for the user details which are loaded from the login login.
-            while (LowKeyApplication.userManager.getUserDetails() == null) ;
+            while (LowKeyApplication.userManager.getUserDetails() == null
+                    || LowKeyApplication.userManager.getUserId() == null) ;
 
             // Now access the S3 photo with the new user details.
             try {
@@ -74,6 +75,7 @@ public class LoadUserDataActivity extends AppCompatActivity {
 
                 LowKeyApplication.profilePhoto = profilePhotoUploader.getPhoto();
             } catch (NullPointerException e) {
+                // Forced try...catch so the app wont crash.
                 Log.e("LoadUserDataAc bg task", e.getMessage());
                 Toast.makeText(activityWeakReference.get(), e.getMessage(), Toast.LENGTH_SHORT).show();
             }
