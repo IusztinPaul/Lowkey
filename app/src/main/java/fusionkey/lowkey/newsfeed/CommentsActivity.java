@@ -160,7 +160,7 @@ public class CommentsActivity extends AppCompatActivity {
         retrieveData.putExtra("NewComments", object);
         retrieveData.putExtra("ItemID",getIntent().getLongExtra("timestampID",0));
         setResult(Activity.RESULT_OK,retrieveData);
-        finish();
+
 
         contentRoot.animate()
                 .translationY(Resources.getSystem().getDisplayMetrics().heightPixels)
@@ -168,12 +168,14 @@ public class CommentsActivity extends AppCompatActivity {
                 .setListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
-                        CommentsActivity.super.onBackPressed();
                         overridePendingTransition(0, 0);
+
                     }
                 })
                 .start();
 
+        super.onBackPressed();
+        this.finish();
     }
 
 }
