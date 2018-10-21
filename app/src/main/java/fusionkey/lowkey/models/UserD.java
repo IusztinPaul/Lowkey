@@ -59,9 +59,7 @@ public class UserD {
     }
 
     public void addMessages(ArrayList<MessageTO> listMessage){
-        for(MessageTO s : listMessage){
-            this.listMessage.add(s);
-        }
+        this.listMessage.addAll(listMessage);
     }
 
     public int getUid() {
