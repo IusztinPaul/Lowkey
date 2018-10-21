@@ -8,7 +8,7 @@ import java.util.List;
 
 @DynamoDBTable(tableName = "lowkey-mobilehub-1217601830-Users")
 public class UserDB {
-    private String _userId;
+    private String _userId; // User email. Not parsed.
     private Long _score;
     private List<Long> _timeStamps;
 

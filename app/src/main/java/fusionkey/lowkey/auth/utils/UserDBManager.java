@@ -60,6 +60,10 @@ public class UserDBManager {
        }).start();
     }
 
+    public static void update(UserDB userDB) {
+        update(userDB.getUserId(), userDB.getScore(), userDB.getTimeStamps());
+    }
+
     public static void delete(final String userId) {
         if(dynamoDBMapper == null)
             dynamoDBMapper = createDynamoDBMapper();

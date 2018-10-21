@@ -38,6 +38,7 @@ import fusionkey.lowkey.ROOMdatabase.AppDatabase;
 import fusionkey.lowkey.ROOMdatabase.UserDao;
 import fusionkey.lowkey.auth.utils.AuthCallback;
 import fusionkey.lowkey.auth.utils.UserAttributesEnum;
+import fusionkey.lowkey.auth.utils.UserDBManager;
 import fusionkey.lowkey.chat.Runnables.DisconnectedRunnable;
 import fusionkey.lowkey.chat.Runnables.InChatRunnable;
 import fusionkey.lowkey.chat.models.MessageTOFactory;
@@ -46,6 +47,7 @@ import fusionkey.lowkey.chat.models.MessageTO;
 import fusionkey.lowkey.main.utils.PhotoUploader;
 import fusionkey.lowkey.main.utils.PhotoUtils;
 import fusionkey.lowkey.models.UserD;
+import fusionkey.lowkey.models.UserDB;
 import fusionkey.lowkey.pointsAlgorithm.PointsCalculator;
 
 /**
@@ -247,24 +249,13 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void updatePoints(){
-        Map<String, String> attributes = LowKeyApplication.userManager.getUserDetails().getAttributes().getAttributes();
-        String actualPoints = attributes.get(UserAttributesEnum.SCORE.toString());
-        Double actualP = Double.parseDouble(actualPoints);
+        String currentUserEmail = LowKeyApplication.userManager.getCurrentUserEmail();
+        UserDB user = UserDBManager.getUserData(currentUserEmail);
 
-        HashMap<UserAttributesEnum, String> attributesToUpdate = new HashMap<>();
-        attributesToUpdate.put(UserAttributesEnum.SCORE, String.valueOf(actualP+PointsCalculator.calculateStringsValue(stringCounter,stringL,clock)));
-        LowKeyApplication.userManager.updateUserAttributes(attributesToUpdate, this, new AuthCallback() {
-            @Override
-            public void execute() {
-                Log.e("PointsUpdate",String.valueOf(PointsCalculator.calculateStringsValue(stringCounter,stringL,clock)));
-            }
-        }, new AuthCallback() {
-            @Override
-            public void execute() {
-                Log.e("PointsUpdate:","FAIL");
-            }
-        });
-        LowKeyApplication.userManager.requestUserDetails(ChatActivity.this, null);
+        long newScore = user.getScore() + (long) PointsCalculator.calculateStringsValue(stringCounter,stringL,clock);
+        user.setScore(newScore);
+
+        UserDBManager.update(user);
     }
 
     private void startRunnable(){
