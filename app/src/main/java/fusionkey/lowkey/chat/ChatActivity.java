@@ -206,7 +206,7 @@ public class ChatActivity extends AppCompatActivity {
 
 
         if(msgDtoList!=null && msgDtoList.size() > 0) {
-            UserD userD = new UserD(userRequest, (String) msgDtoList.get(msgDtoList.size() - 1).getContent(), msgDtoList,role);
+            UserD userD = new UserD(userRequest, msgDtoList.get(msgDtoList.size() - 1).getRawContent(), msgDtoList,role);
             AppDatabase database = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "user-database")
                     .allowMainThreadQueries()   //Allows room to do operation on main thread
                     .build();

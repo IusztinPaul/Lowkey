@@ -47,6 +47,10 @@ public class MessageTO extends AbstractMessageTO {
         }
     }
 
+    public String getRawContent() {
+        return this.content;
+    }
+
     public void createView(ChatAppMsgViewHolder holder) {
         switch (getContentType()) {
             case PHOTO:
