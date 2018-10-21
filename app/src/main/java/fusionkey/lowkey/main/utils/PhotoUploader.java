@@ -22,10 +22,12 @@ import java.io.IOException;
 import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.auth.utils.AwsAccessKeys;
 
+import static fusionkey.lowkey.main.utils.PhotoUtils.PHOTOS_PATH_DIR;
+
 public class PhotoUploader implements IS3Uploader{
 
     private final String PHOTO_NAME_FILE = "photo";
-    private final String PHOTOS_NAME_FOLDER = "photos" + File.separator;
+    public final String PHOTOS_NAME_FOLDER = "photos" + File.separator;
     private static int fileID;
     private AmazonS3Client s3Client;
     private File fileTO;
@@ -95,7 +97,7 @@ public class PhotoUploader implements IS3Uploader{
     public void download(String path,final Callback successCallback,
                             final Callback failCallback) {
         fileID++;
-        final File file = new File(LowKeyApplication.instance.getApplicationContext().getFilesDir(), path+fileID);
+        final File file = new File(LowKeyApplication.instance.getApplicationContext().getFilesDir(), "photoffs"+fileID);
 
         TransferUtility transferUtility =
                 TransferUtility.builder()
@@ -191,4 +193,22 @@ public class PhotoUploader implements IS3Uploader{
             this.photo = photo;
         }
     }
+    public static void deleteFolder()
+    {
+        String folder = LowKeyApplication.instance.getApplicationContext().getFilesDir().getPath() + File.separator + PHOTOS_PATH_DIR;
+        recursiveDelete(new File(folder));
+    }
+    private static void recursiveDelete(File file){
+        if(!file.exists())
+            Log.e("Delete f/d Error : ","path doesn't exist");
+        if(file.isDirectory()){
+            for(File f : file.listFiles()){
+                recursiveDelete(f);
+            }
+        }
+        file.delete();
+        Log.e("Deleted file or folder:",file.getAbsolutePath());
+    }
+
+
 }

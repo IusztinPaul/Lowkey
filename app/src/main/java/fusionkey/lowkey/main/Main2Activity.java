@@ -1,7 +1,6 @@
 package fusionkey.lowkey.main;
 
 import android.arch.lifecycle.LifecycleObserver;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
@@ -25,9 +24,9 @@ import com.amazonaws.mobile.client.AWSMobileClient;
 import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.R;
 
+import fusionkey.lowkey.main.utils.PhotoUploader;
 import fusionkey.lowkey.newsfeed.NewsFeedTab;
 import fusionkey.lowkey.newsfeed.ProfileTab;
-import fusionkey.lowkey.newsfeed.UserQuestions;
 
 
 public class Main2Activity extends AppCompatActivity implements LifecycleObserver,MainCallback {
@@ -74,18 +73,12 @@ public class Main2Activity extends AppCompatActivity implements LifecycleObserve
         progressBar = (ProgressBar) findViewById(R.id.paymentBar);
         searchCard = (CardView) findViewById(R.id.searchCard);
         imageView = findViewById(R.id.imageView8);
-        fab = findViewById(R.id.fab);
+
 
         // AWSMobileClient enables AWS user credentials to access your table
         AWSMobileClient.getInstance().initialize(this).execute();
 
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), UserQuestions.class);
-                startActivity(intent);
-            }
-        });
+
     }
     @Override
     public void searchForHelp() {
@@ -198,6 +191,7 @@ public class Main2Activity extends AppCompatActivity implements LifecycleObserve
             loadingAsyncTask.cancel(true);
             searchCard.setVisibility(View.INVISIBLE);
         }
+        PhotoUploader.deleteFolder();
         super.onPause();
     }
 

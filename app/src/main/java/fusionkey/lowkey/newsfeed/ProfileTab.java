@@ -3,13 +3,18 @@ package fusionkey.lowkey.newsfeed;
 import android.app.Activity;
 import android.content.Intent;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import android.preference.PreferenceManager;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -30,14 +35,12 @@ import fusionkey.lowkey.auth.utils.UserAttributesEnum;
 import fusionkey.lowkey.entryActivity.EntryActivity;
 import fusionkey.lowkey.R;
 
-import fusionkey.lowkey.listAdapters.ChatTabViewHolder;
 //import fusionkey.lowkey.listAdapters.NewsfeedAdapter;
 import fusionkey.lowkey.listAdapters.NewsFeedAdapter;
-import fusionkey.lowkey.main.menu.Menu;
 
 import fusionkey.lowkey.main.menu.profile.EditUserActivity;
+import fusionkey.lowkey.main.menu.settings.SettingsActivity;
 import fusionkey.lowkey.main.utils.NetworkManager;
-
 import fusionkey.lowkey.newsfeed.asynctasks.GetYourQuestionsAsyncTask;
 import fusionkey.lowkey.newsfeed.models.Comment;
 import fusionkey.lowkey.newsfeed.models.NewsFeedMessage;
@@ -68,8 +71,15 @@ public class ProfileTab extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.activity_chat, container, false);
+        View rootView = inflater.inflate(R.layout.profile_reload, container, false);
         final Button logOut = (Button) rootView.findViewById(R.id.button);
+        final ImageView imageViewEdit = rootView.findViewById(R.id.imageViewEdit);
+        final ViewPager pager=(ViewPager)rootView.findViewById(R.id.pager);
+        TabLayout tabLayout = (TabLayout) rootView.findViewById(R.id.tabDots);
+        pager.setAdapter(buildAdapter());
+        tabLayout.setupWithViewPager(pager, true);
+        final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext().getApplicationContext());
+        /*
         points = rootView.findViewById(R.id.points);
         helped = rootView.findViewById(R.id.helped);
         money = rootView.findViewById(R.id.money);
@@ -142,44 +152,47 @@ public class ProfileTab extends Fragment {
                 }
             }
         });
+        */
         ImageView settings = (ImageView) rootView.findViewById(R.id.settingsImg);
         populateUI();
         settings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.e("token : ",FirebaseInstanceId.getInstance().getToken());
+                Log.e("token : ", FirebaseInstanceId.getInstance().getToken());
 
-                getActivity().startActivity(new Intent(getContext().getApplicationContext(), Menu.class));
+                getActivity().startActivity(new Intent(getContext().getApplicationContext(), fusionkey.lowkey.main.menu.Menu.class));
             }
         });
 
+        int notif = preferences.getInt("newnotif",0);
+        if(notif==1){
+            imageViewEdit.setBackgroundResource(R.drawable.notif);
+        }else
+            imageViewEdit.setBackgroundResource(R.drawable.nonotif);
 
-        logOut.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(NetworkManager.isNetworkAvailable())
-                logOut();
-                else Toast.makeText(getActivity(), "Check if you're connected to the Internet", Toast.LENGTH_SHORT).show();
 
-            }
-        });
-
-        final ImageView imageViewEdit = rootView.findViewById(R.id.imageViewEdit);
         imageViewEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            Intent intent = new Intent(ProfileTab.this.getContext(), EditUserActivity.class);
-            startActivity(intent);
+                imageViewEdit.setBackgroundResource(R.drawable.nonotif);
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putInt("newnotif",0);
+                editor.apply();
+                pager.setCurrentItem(2);
             }
         });
 
-        final CircleImageView circleImageView = rootView.findViewById(R.id.circleImageView);
+        final CircleImageView circleImageView = rootView.findViewById(R.id.circleImageView3);
         if(LowKeyApplication.profilePhoto != null)
             circleImageView.setImageBitmap(LowKeyApplication.profilePhoto);
         else
             circleImageView.setBackgroundResource(R.drawable.avatar_placeholder);
-
+        populateUI();
         return rootView;
+    }
+
+    private PagerAdapter buildAdapter() {
+        return(new ProfileSampleAdapter(getActivity(),getChildFragmentManager()));
     }
 
     private void logOut(){
@@ -189,22 +202,9 @@ public class ProfileTab extends Fragment {
     public void populateUI(){
         try {
             Map<String, String> attributes = LowKeyApplication.userManager.getUserDetails().getAttributes().getAttributes();
-            String usernameS = attributes.get(UserAttributesEnum.USERNAME.toString()),
-                    pointsS = attributes.get(UserAttributesEnum.SCORE.toString());
-            if(pointsS==null)
-                pointsS = "0";
-            Double experience = Double.parseDouble(pointsS);
-
+            String usernameS = attributes.get(UserAttributesEnum.USERNAME.toString());
             username.setText(usernameS != null ? usernameS : "");
-            points.setText(pointsS != null ? pointsS : "");
 
-            paymentBar.setMax(2500);
-            paymentBar.setProgress((int)experience.doubleValue());
-            setExpBar((int)experience.doubleValue());
-            String moneyS = String.valueOf(PointsCalculator.calculatePointsForMoney(Double.parseDouble(pointsS)))+"$";
-            money.setText(moneyS != null ? moneyS : "");
-            String p = "Chat points gained: "+ pointsS + " / 2,500";
-            payment.setText(p);
         } catch (NullPointerException e) {
             Log.e("NullPointerExp", "User details not loaded yet");
         }

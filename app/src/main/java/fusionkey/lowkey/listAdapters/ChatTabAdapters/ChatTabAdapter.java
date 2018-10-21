@@ -54,20 +54,10 @@ public class ChatTabAdapter extends RecyclerView.Adapter<ChatTabViewHolder> {
 
             // If the message is a received message.
             // Show received message in left linearlayout.
-            holder.leftMsgLayout.setVisibility(LinearLayout.VISIBLE);
-
             holder.name.setText(userDto.getUsername());
             holder.lastmsg.setText(userDto.getLast_message());
             holder.bind(mUsers.get(position), listener);
-            if(userDto.getState().equals("helper")) {
-                holder.imageStateGetHelp.setVisibility(View.INVISIBLE);
-                holder.imageStateHelped.setVisibility(View.VISIBLE);
-            }
-                else{
-                holder.imageStateGetHelp.setVisibility(View.VISIBLE);
-                holder.imageStateHelped.setVisibility(View.INVISIBLE);
 
-            }
             // Remove left linearlayout.The value should be GONE, can not be INVISIBLE
             // Otherwise each iteview's distance is too big.
 

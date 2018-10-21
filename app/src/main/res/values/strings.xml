@@ -2,6 +2,10 @@
     <string name="app_name">lowkeyfinal</string>
 
     <!-- Strings related to login -->
+    <string name="get_help_string">The person you will be talking is a person like you , a volunteer who chose to help, listen,
+    and motivate. You can talk about any issues you have, any minor or major problem that makes you sad, any struggle you are going or even
+    what your cat is doing. You can end the conversation anytime you want if you think the person you're talking to doesn't has the same thinking
+    like you do.</string>
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password (optional)</string>
     <string name="action_sign_in">Sign in or register</string>
@@ -158,14 +162,14 @@
     <!-- Licensed under the Apache License, Version 2.0 (the "License"). You may not use this file except in compliance with the License. A copy of the License is located at -->
     <!-- http://aws.amazon.com/apache2.0/ -->
     <!-- or in the "license" file accompanying this file. This file is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License. -->
-        <!-- TODO: Enter your project number -->
-        <string name="project_number"></string>
-        <string name="introduction">Welcome! </string>
-        <string name="clear_screen">Clear Screen</string>
-        <string name="first_launch">First Launch</string>
-        <string name="num_of_missed_messages">MissedMessageCount</string>
-        <string name="lines_of_message_count">LinesOfMessageCount</string>
-        <string name="preferences">PreferencesFile</string>
-        <string name="notification_number">1337</string>
+    <!-- TODO: Enter your project number -->
+    <string name="project_number"></string>
+    <string name="introduction">Welcome! </string>
+    <string name="clear_screen">Clear Screen</string>
+    <string name="first_launch">First Launch</string>
+    <string name="num_of_missed_messages">MissedMessageCount</string>
+    <string name="lines_of_message_count">LinesOfMessageCount</string>
+    <string name="preferences">PreferencesFile</string>
+    <string name="notification_number">1337</string>
 
 </resources>

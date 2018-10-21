@@ -129,12 +129,10 @@ public class ChatActivity extends AppCompatActivity {
                     if (str.equals("disconnected")) {
                         Log.e("Checking DISCONNECT", "checking");
                         chatbox.setVisibility(View.INVISIBLE);
-                        Drawable drawable = getApplicationContext().getResources().getDrawable(R.drawable.red_dot);
-                        connectDot.setBackground(drawable);
+
                     }
                     else {
-                        Drawable drawable = getApplicationContext().getResources().getDrawable(R.drawable.green_dot);
-                        connectDot.setBackground(drawable);
+
                     }
                 } catch(NullPointerException e){
 

@@ -1,67 +1,177 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<android.support.design.widget.CoordinatorLayout android:id="@+id/contentRoot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    >
+    android:layout_below="@id/toolbar"
+    android:background="@android:color/white"
+    android:elevation="@dimen/cardview_default_elevation"
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <LinearLayout
-        android:id="@+id/contentRoot"
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rvComments"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/toolbar"
-        android:background="@android:color/white"
-        android:elevation="@dimen/cardview_default_elevation"
-        android:orientation="vertical">
+        android:layout_below="@+id/llAddComment"
+        android:layout_marginBottom="55dp"
+        android:layout_weight="1"
+        android:scrollbars="none"
+        app:layout_anchor="@+id/llAddComment"
+        tools:listitem="@layout/newsfeed_comment_item">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rvComments"
+    </android.support.v7.widget.RecyclerView>
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="20dp"
+        app:elevation="20dp"
+        android:layout_gravity="top|start"
+        android:background="@android:color/transparent"
+        android:fitsSystemWindows="true"
+        android:theme="@style/ThemeOverlay.AppCompat.Light">
+
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/collapsingToolbar"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:scrollbars="none"
-            tools:listitem="@layout/newsfeed_comment_item">
-        </android.support.v7.widget.RecyclerView>
+            android:layout_height="match_parent"
+            android:fitsSystemWindows="true"
+            app:contentScrim="#334455"
+            app:expandedTitleMarginEnd="64dp"
+            app:expandedTitleMarginStart="48dp"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:title="fsadfs">
 
-        <LinearLayout
-            android:id="@+id/llAddComment"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:background="@drawable/roundedlayout"
-            android:backgroundTint="#FFFFFF"
-            android:elevation="25dp"
-            android:minHeight="48dp"
-
-            android:orientation="horizontal"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent">
-
-            <EditText
-                android:id="@+id/chat_input_msg"
+            <android.support.v7.widget.CardView
+                android:id="@+id/cardView10"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_weight="1"
-                android:background="@android:color/transparent"
-                android:hint="Type a message"
-                android:maxLines="6" />
+                android:layout_height="wrap_content"
 
-            <Button
-                android:id="@+id/sendComment"
-                android:layout_width="64dp"
-                android:layout_height="48dp"
-                android:layout_gravity="bottom"
-                android:background="?attr/selectableItemBackground"
-                android:clickable="true"
-                android:gravity="center"
-                android:text="SEND"
-                android:textSize="14dp" />
+                app:cardElevation="40dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-        </LinearLayout>
+                <android.support.constraint.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent">
+
+                    <android.support.v7.widget.CardView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        app:cardBackgroundColor="#383232"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <android.support.constraint.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <TextView
+                                android:id="@+id/username2"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="8dp"
+                                android:layout_marginStart="8dp"
+                                android:layout_marginTop="16dp"
+                                android:elevation="30dp"
+                                android:paddingBottom="8dp"
+                                android:text="Sandru Sebastian"
+                                android:textColor="@android:color/white"
+                                android:textSize="18sp"
+                                android:textStyle="bold"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/body"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="8dp"
+                                android:layout_marginEnd="8dp"
+                                android:layout_marginLeft="8dp"
+                                android:layout_marginRight="8dp"
+
+                                android:layout_marginStart="8dp"
+                                android:layout_marginTop="8dp"
+                                android:elevation="30dp"
+                                android:fontFamily="serif"
+                                android:paddingBottom="8dp"
+                                android:text="fsddddddddddddddddddddddddddfsdddddddddddddddddddddddddddfsdddddddddddddddddddddddddddfsdddddddddddddddddddddddddddfsdddddddddddddddddddddddddddfsdddddddddddddddddddddddddddfsdddddddddddddddddddddddddddfsdddddddddddddddddddddddddddfsdddddddddddddddddddddddddddfsdddddddddddddddddddddddddddfsdddddddddddddddddddddddddddfsdddddddddddddddddddddddddddd"
+                                android:textColor="@android:color/white"
+                                android:textSize="14sp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintHorizontal_bias="0.0"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/posted" />
+
+                            <TextView
+                                android:id="@+id/posted"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="8dp"
+                                android:layout_marginStart="8dp"
+                                android:text="posted by Sandru Sebastian"
+                                android:textColor="@android:color/darker_gray"
+                                android:textSize="12sp"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/username2" />
+                        </android.support.constraint.ConstraintLayout>
+
+                    </android.support.v7.widget.CardView>
+
+                </android.support.constraint.ConstraintLayout>
+
+            </android.support.v7.widget.CardView>
+        </android.support.design.widget.CollapsingToolbarLayout>
+    </android.support.design.widget.AppBarLayout>
+
+    <LinearLayout
+        android:id="@+id/llAddComment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/roundedlayout"
+        android:backgroundTint="#FFFFFF"
+        android:elevation="25dp"
+        android:minHeight="48dp"
+
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
+
+        <EditText
+            android:id="@+id/chat_input_msg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:hint="Type a message"
+            android:maxLines="6" />
+
+        <Button
+            android:id="@+id/sendComment"
+            android:layout_width="64dp"
+            android:layout_height="48dp"
+            android:layout_gravity="bottom"
+            android:clickable="true"
+            android:gravity="center"
+            android:text="SEND"
+            android:textSize="14dp" />
 
     </LinearLayout>
-</RelativeLayout>
+
+
+    </android.support.design.widget.CoordinatorLayout>

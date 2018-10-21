@@ -6,10 +6,13 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -18,6 +21,7 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -35,13 +39,16 @@ import fusionkey.lowkey.newsfeed.util.NewsFeedRequest;
 public class CommentsActivity extends AppCompatActivity {
     public static final String ARG_DRAWING_START_LOCATION = "arg_drawing_start_location";
 
-
-    LinearLayout contentRoot;
+    TextView body;
+    TextView posted;
+    TextView title;
+    CoordinatorLayout contentRoot;
     RecyclerView rvComments;
     Button button;
     EditText inputTxt;
     LinearLayout llAddComment;
     NewsFeedCallBack newsFeedCallBack;
+    CardView questionInfo;
     List<Comment> commentArrayList;
     ArrayList<Comment> commentsSentList = new ArrayList<>();
     private CommentAdapter commentsAdapter;
@@ -56,6 +63,11 @@ public class CommentsActivity extends AppCompatActivity {
         rvComments = findViewById(R.id.rvComments);
         llAddComment = findViewById(R.id.llAddComment);
         button = findViewById(R.id.sendComment);
+        title = findViewById(R.id.username2);
+        body = findViewById(R.id.body);
+        questionInfo = findViewById(R.id.cardView10);
+        posted = findViewById(R.id.posted);
+
         inputTxt = findViewById(R.id.chat_input_msg);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         rvComments.setLayoutManager(linearLayoutManager);
@@ -108,6 +120,10 @@ public class CommentsActivity extends AppCompatActivity {
             MyParcelable object = b.getParcelable("parcel");
             commentArrayList = object.getArrList();
             commentsAdapter = new CommentAdapter(commentArrayList,this);
+            title.setText(getIntent().getStringExtra("title"));
+            body.setText(getIntent().getStringExtra("body"));
+            String aux = "posted by " + getIntent().getStringExtra("username");
+            posted.setText(aux);
             rvComments.setAdapter(commentsAdapter);
         }catch(NullPointerException e){
             Log.e("Error","parcelable object failed");

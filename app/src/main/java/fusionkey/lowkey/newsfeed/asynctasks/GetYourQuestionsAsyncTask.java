@@ -1,5 +1,6 @@
 package fusionkey.lowkey.newsfeed.asynctasks;
 
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -16,8 +17,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fusionkey.lowkey.LowKeyApplication;
+import fusionkey.lowkey.R;
 import fusionkey.lowkey.auth.utils.UserAttributesEnum;
+import fusionkey.lowkey.auth.utils.UserManager;
 import fusionkey.lowkey.listAdapters.NewsFeedAdapter;
+import fusionkey.lowkey.main.utils.Callback;
+import fusionkey.lowkey.main.utils.ProfilePhotoUploader;
 import fusionkey.lowkey.newsfeed.util.NewsFeedRequest;
 import fusionkey.lowkey.newsfeed.interfaces.NewsFeedVolleyCallBack;
 import fusionkey.lowkey.newsfeed.models.Comment;
@@ -65,14 +70,33 @@ public class GetYourQuestionsAsyncTask extends AsyncTask<Void,String,JSONObject>
                     JSONArray arr = new JSONArray(response.getString("data"));
                     for (int i = 0; i < arr.length(); i++) {
                         JSONObject obj = arr.getJSONObject(i);
-                        NewsFeedMessage newsFeedMessage = new NewsFeedMessage();
+                        final NewsFeedMessage newsFeedMessage = new NewsFeedMessage();
                         newsFeedMessage.setWeekDay(obj.getInt("weekDay"));
                         newsFeedMessage.setId(obj.getString("userId"));
                         newsFeedMessage.setContent(obj.getString("postTxt"));newsFeedMessage.setTimeStamp(obj.getLong("postTStamp"));
                         newsFeedMessage.setTitle(obj.getString("postTitle"));
                         newsFeedMessage.setType(NewsFeedMessage.NORMAL);
+                        newsFeedMessage.setSNStopic(obj.getString("snsTopic"));
                         newsFeedMessage.setUser(getUsername(obj.getString("userId")));
+                        newsFeedMessage.setUserPhoto(LowKeyApplication.profilePhoto);
                         String anon = (obj.getString("isAnonymous"));
+                        String email = obj.getString("userId");
+                        // Set photo logic.
+                        newsFeedMessage.setUserPhoto(BitmapFactory.decodeResource(
+                                LowKeyApplication.instance.getResources(),
+                                R.drawable.avatar_placeholder)
+                        );
+                        final ProfilePhotoUploader photoUploader = new ProfilePhotoUploader();
+                        photoUploader.download(UserManager.parseEmailToPhotoFileName(email),
+                                new Callback() {
+                                    @Override
+                                    public void handle() {
+                                        Log.e("PHOTO", "photo downloaded");
+                                        newsFeedMessage.setFile(photoUploader.getFileTO());
+                                        newsFeedAdapter.notifyDataSetChanged();
+                                    }
+                                }, null);
+
                         if(anon.equalsIgnoreCase("true")|| anon.equalsIgnoreCase("true"))
                             newsFeedMessage.setAnon(Boolean.valueOf(anon));
                         else

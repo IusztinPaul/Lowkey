@@ -40,8 +40,7 @@
         <activity android:name=".auth.ForgotPasswordActivity" />
         <activity
             android:name=".newsfeed.CommentsActivity"
-            android:theme="@style/AppTheme.CommentsActivity">
-        </activity>
+            android:theme="@style/AppTheme.CommentsActivity"></activity>
         <activity android:name=".ROOMdatabase.MessagesActivity" />
         <activity android:name=".main.menu.profile.EditUserActivity" />
         <activity
@@ -57,7 +56,6 @@
         <activity android:name=".main.menu.about.About" />
         <activity android:name=".main.menu.Menu" />
         <activity android:name=".main.menu.license.LicenseActivity" />
-        <activity android:name=".newsfeed.UserQuestions"></activity>
 
         <service android:name=".pushnotifications.MyFirebaseMessagingService">
             <intent-filter>
@@ -65,19 +63,22 @@
             </intent-filter>
         </service>
 
-        <!-- Set custom default icon. This is used when no icon is set for incoming notification messages.
-             See README(https://goo.gl/l4GJaQ) for more. -->
+        <!--
+             Set custom default icon. This is used when no icon is set for incoming notification messages.
+             See README(https://goo.gl/l4GJaQ) for more.
+        -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/ic_launcher_foreground" />
-        <!-- Set color used with incoming notification messages. This is used when no color is set for the incoming
-             notification message. See README(https://goo.gl/6BKBk7) for more. -->
+        <!--
+             Set color used with incoming notification messages. This is used when no color is set for the incoming
+             notification message. See README(https://goo.gl/6BKBk7) for more.
+        -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/colorAccent" />
 
+        <activity android:name=".newsfeed.Askaquestion"></activity>
     </application>
 
 </manifest>
-
-

@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.LinearLayout;
 
+import org.ocpsoft.prettytime.PrettyTime;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -110,10 +112,11 @@ public class CommentAdapter extends  RecyclerView.Adapter<CommentViewHolder>{
     private String localTime(String time){
         Calendar cal = Calendar.getInstance();
         TimeZone tz = cal.getTimeZone();
-        SimpleDateFormat sf = new SimpleDateFormat("HH:mm");
+        SimpleDateFormat sf = new SimpleDateFormat("dd MMMMM - HH:mm");
         sf.setTimeZone(tz);
         Date date = new Date(Long.parseLong(time));
-        return sf.format(date);
+        PrettyTime t = new PrettyTime(date);
+        return t.format(new Date());
     }
 
 }

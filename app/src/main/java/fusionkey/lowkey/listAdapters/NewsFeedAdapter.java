@@ -11,6 +11,8 @@ import android.view.ViewGroup;
 
 import com.squareup.picasso.Picasso;
 
+import org.ocpsoft.prettytime.PrettyTime;
+
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -98,7 +100,7 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             if(msgDto.getType().equals(NewsFeedMessage.NORMAL)) {
                 chatTabViewHolder.type.setVisibility(View.VISIBLE);
                 chatTabViewHolder.bindDelete(chatTabViewHolder,del);
-                chatTabViewHolder.image.setImageBitmap(LowKeyApplication.profilePhoto);
+                chatTabViewHolder.image.setImageBitmap(msgDto.getUserPhoto());
             }else {
                 chatTabViewHolder.type.setVisibility(View.GONE);
             }
@@ -178,7 +180,8 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         SimpleDateFormat sf = new SimpleDateFormat("dd MMMMM - HH:mm");
         sf.setTimeZone(tz);
         Date date = new Date(time);
-        return sf.format(date);
+        PrettyTime t = new PrettyTime(date);
+        return t.format(new Date());
     }
 
     public void removeItem(int position) {

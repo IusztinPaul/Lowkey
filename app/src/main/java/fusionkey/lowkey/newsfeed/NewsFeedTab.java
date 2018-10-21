@@ -17,7 +17,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +28,8 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amazonaws.auth.BasicAWSCredentials;
@@ -37,9 +41,11 @@ import com.amazonaws.services.sns.model.CreateTopicRequest;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.auth.utils.AwsAccessKeys;
 import fusionkey.lowkey.auth.utils.UserAttributesEnum;
@@ -75,26 +81,23 @@ public class NewsFeedTab extends Fragment{
     private ImageView exp;
     private ImageView col;
     private CheckBox checkBox;
+    private Button button;
     private NewsFeedRequest newsFeedRequest;
     private String uniqueID;
     public SwipeRefreshLayout swipeRefreshLayout;
-
+    private CircleImageView circleImageView;
     private Long referenceTimestamp;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.activity_newsfeed, container, false);
 
         msgRecyclerView = (RecyclerView) rootView.findViewById(R.id.chat_listview);
-        final View v2 = rootView.findViewById(R.id.v2);
-        exp = rootView.findViewById(R.id.expand);
-        col = rootView.findViewById(R.id.collapse);
-        title = rootView.findViewById(R.id.title);
-        send = rootView.findViewById(R.id.button2);
-        body = rootView.findViewById(R.id.body);
-        checkBox = rootView.findViewById(R.id.checkBox);
+        button = rootView.findViewById(R.id.email_sign_in_button2);
+
         swipeRefreshLayout = rootView.findViewById(R.id.swipe);
+
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
         msgRecyclerView.setLayoutManager(linearLayoutManager);
         // Getting user details from Cognito.
@@ -104,26 +107,15 @@ public class NewsFeedTab extends Fragment{
 
         // Create the initial data list.
 
+
+
         messages = new ArrayList<>();
         adapter = new NewsFeedAdapter(messages,getActivity().getApplicationContext(),msgRecyclerView);
         msgRecyclerView.setAdapter(adapter);
         newsFeedRequest = new NewsFeedRequest(uniqueID);
 
 
-        exp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                expand(v2,500,670);
-            }
-        });
-
-        col.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                collapse(v2,500,1);
-            }
-        });
-
+        /*
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -146,7 +138,17 @@ public class NewsFeedTab extends Fragment{
                     collapse(v2,1000,1);
                 }
             }
+        });*/
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final Intent intent = new Intent(NewsFeedTab.this.getContext(), Askaquestion.class);
+                getActivity().overridePendingTransition(0, 0);
+                startActivity(intent);
+            }
         });
+
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -171,12 +173,18 @@ public class NewsFeedTab extends Fragment{
                     intent.putExtra("parcel", object);
                     intent.putExtra("SNStopic",m.getSNStopic());
                     intent.putExtra("timestampID",m.getTimeStamp());
+                    intent.putExtra("body",m.getContent());
+                    intent.putExtra("title",m.getTitle());
+                    intent.putExtra("username",m.getUser());
                 }else {
                     MyParcelable object = new MyParcelable();
                     object.setArrList(new ArrayList<Comment>());
                     intent.putExtra("parcel", object);
                     intent.putExtra("SNStopic",m.getSNStopic());
                     intent.putExtra("timestampID",m.getTimeStamp());
+                    intent.putExtra("body",m.getContent());
+                    intent.putExtra("title",m.getTitle());
+                    intent.putExtra("username",m.getUser());
 
                 }
                 startActivityForResult(intent, COMMENT_ACTIVITY_REQUEST_CODE);

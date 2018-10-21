@@ -10,225 +10,42 @@
     <android.support.v7.widget.CardView
         android:id="@+id/card"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        app:cardCornerRadius="20dp"
+        android:layout_height="50dp"
+        app:cardBackgroundColor="@android:color/white"
+        app:cardElevation="5dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-            <android.support.constraint.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+            <Button
+                android:id="@+id/email_sign_in_button2"
+                style="?android:textAppearanceSmall"
+                android:layout_width="0dp"
+                android:layout_height="35dp"
+                android:layout_gravity="center"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="64dp"
+                android:layout_marginLeft="64dp"
+                android:layout_marginRight="64dp"
+                android:layout_marginStart="64dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/roundedbutton"
+                android:backgroundTint="@color/lightGreen"
+                android:elevation="15dp"
+                android:text="ask a question"
+                android:textColor="@android:color/white"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-                <View
-                    android:id="@+id/v1"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
+        </android.support.constraint.ConstraintLayout>
 
-                </View>
-
-                <ImageView
-                    android:id="@+id/expand"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:layout_marginBottom="8dp"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@android:drawable/arrow_down_float" />
-
-                <TextView
-                    android:id="@+id/textView21"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginRight="8dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:text="Ask a question"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/expand"
-                    app:layout_constraintTop_toTopOf="parent" />
-            </android.support.constraint.ConstraintLayout>
-
-            <android.support.constraint.ConstraintLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-
-                <ScrollView
-                    android:id="@+id/login_form"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_marginBottom="64dp"
-                    android:layout_marginTop="8dp"
-                    android:elevation="10dp"
-                    app:layout_constraintBottom_toBottomOf="@+id/v2"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/v2">>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="8dp"
-                        android:layout_marginStart="8dp"
-                        android:background="@drawable/frame"
-                        android:orientation="vertical"
-                        app:layout_constraintBottom_toBottomOf="@+id/v2"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.0"
-                        app:layout_constraintStart_toStartOf="@+id/v2">
-
-                        <android.support.constraint.ConstraintLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:paddingBottom="8dp"
-                            android:paddingTop="8dp">
-
-                            <de.hdodenhof.circleimageview.CircleImageView
-                                android:id="@+id/circleImageView2"
-                                android:layout_width="50dp"
-                                android:layout_height="50dp"
-                                android:layout_marginLeft="8dp"
-                                android:layout_marginStart="8dp"
-                                android:layout_marginTop="8dp"
-                                android:elevation="15dp"
-                                android:src="@drawable/fff"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent" />
-
-                            <TextView
-                                android:id="@+id/textView4"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginLeft="8dp"
-                                android:layout_marginStart="8dp"
-                                android:layout_marginTop="16dp"
-                                android:text="username"
-                                android:textColor="@android:color/black"
-                                app:layout_constraintStart_toEndOf="@+id/circleImageView2"
-                                app:layout_constraintTop_toTopOf="parent" />
-
-                            <TextView
-                                android:id="@+id/textView14"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginBottom="8dp"
-                                android:layout_marginLeft="8dp"
-                                android:layout_marginStart="8dp"
-                                android:text="12:30"
-                                android:textColor="@android:color/darker_gray"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintStart_toEndOf="@+id/circleImageView2"
-                                app:layout_constraintTop_toBottomOf="@+id/textView4" />
-                        </android.support.constraint.ConstraintLayout>
-
-
-                        <EditText
-                            android:id="@+id/title"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:background="@android:color/transparent"
-                            android:hint="Type your question title"
-                            android:maxLines="6"
-                            android:padding="8dp"
-                            android:textColor="@color/lightGreen"
-                            android:textStyle="bold" />
-
-                        <EditText
-                            android:id="@+id/body"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:background="@android:color/transparent"
-                            android:hint="Type your question"
-                            android:textColor="@android:color/darker_gray"
-                            android:maxLines="6"
-                            android:padding="8dp" />
-
-                        <CheckBox
-                            android:id="@+id/checkBox"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="8dp"
-                            android:layout_marginTop="8dp"
-                            android:layout_weight="1"
-                            android:padding="8dp"
-                            android:text="Post Annonymous?" />
-
-                        <Button
-                            android:id="@+id/button2"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="8dp"
-                            android:layout_marginLeft="80dp"
-                            android:layout_marginRight="80dp"
-                            android:layout_marginTop="8dp"
-                            android:layout_weight="1"
-                            android:background="@drawable/roundedbutton"
-                            android:text="Send Question"
-                            android:textColor="@android:color/white"
-                            android:visibility="visible"
-                            tools:layout_editor_absoluteX="272dp"
-                            tools:layout_editor_absoluteY="52dp" />
-                    </LinearLayout>
-                </ScrollView>
-
-                <View
-                    android:id="@+id/v2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="1dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-
-
-                </View>
-
-                <ImageView
-                    android:id="@+id/collapse"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:layout_marginBottom="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginRight="8dp"
-                    android:layout_marginStart="8dp"
-                    android:visibility="visible"
-                    app:layout_constraintBottom_toBottomOf="@+id/v2"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.501"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:srcCompat="@android:drawable/arrow_up_float" />
-
-
-            </android.support.constraint.ConstraintLayout>
-
-        </LinearLayout>
     </android.support.v7.widget.CardView>
 
     <android.support.constraint.ConstraintLayout
@@ -236,6 +53,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="8dp"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -255,10 +73,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
 
+                android:clipChildren="true"
+                android:clipToPadding="true"
                 app:layout_constraintBottom_toBottomOf="parent"
+
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-
                 app:layout_constraintTop_toTopOf="parent"
                 tools:listitem="@layout/chat_item">
 

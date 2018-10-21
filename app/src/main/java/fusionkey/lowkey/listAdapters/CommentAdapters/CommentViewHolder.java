@@ -15,7 +15,6 @@ public class CommentViewHolder extends RecyclerView.ViewHolder {
     TextView name;
     TextView answers;
     String uniqueID;
-    CircleImageView image;
     public View view;
 
     public CommentViewHolder(View itemView) {

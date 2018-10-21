@@ -12,7 +12,7 @@ import fusionkey.lowkey.LowKeyApplication;
 
 public class PhotoUtils {
 
-    private static final String PHOTOS_PATH_DIR = "photos" + File.separator;
+    public static final String PHOTOS_PATH_DIR = "photos" + File.separator;
     private static final String PROFILE_PHOTOS_DIR = "profile" + File.separator;
 
     private static String getFullPath() {
@@ -50,4 +50,5 @@ public class PhotoUtils {
         options.inSampleSize = 8;
         return BitmapFactory.decodeFile(getFullPath() + PHOTOS_PATH_DIR + path, options);
     }
+
 }
