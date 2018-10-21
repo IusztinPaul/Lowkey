@@ -5,7 +5,8 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 
 import java.util.ArrayList;
-import java.util.List;
+
+import fusionkey.lowkey.chat.models.MessageTO;
 
 @Entity(tableName = "user")
 public class UserD {

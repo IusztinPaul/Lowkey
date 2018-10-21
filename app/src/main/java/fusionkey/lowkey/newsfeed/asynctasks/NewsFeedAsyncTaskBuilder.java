@@ -9,7 +9,7 @@ import fusionkey.lowkey.newsfeed.interfaces.IGenericConsumer;
 import fusionkey.lowkey.newsfeed.models.NewsFeedMessage;
 import fusionkey.lowkey.newsfeed.util.NewsFeedRequest;
 
-public class NewsFeedAsyncTaskFactory {
+public class NewsFeedAsyncTaskBuilder {
     private final long START_REFERENCE_TIMESTAMP_VALUE = -1L;
 
     private NewsFeedRequest newsFeedRequest;
@@ -22,7 +22,7 @@ public class NewsFeedAsyncTaskFactory {
     private boolean isNew = false;
     private boolean isStart = false;
 
-    public NewsFeedAsyncTaskFactory(NewsFeedRequest newsFeedRequest,
+    public NewsFeedAsyncTaskBuilder(NewsFeedRequest newsFeedRequest,
                                     ArrayList<NewsFeedMessage> messages,
                                     RecyclerView recyclerView,
                                     NewsFeedAdapter newsFeedAdapter) {
@@ -33,12 +33,12 @@ public class NewsFeedAsyncTaskFactory {
         this.newsFeedAdapter = newsFeedAdapter;
     }
 
-    public NewsFeedAsyncTaskFactory addReferenceTimeSTamp(Long referenceTimestamp) {
+    public NewsFeedAsyncTaskBuilder addReferenceTimeSTamp(Long referenceTimestamp) {
         this.referenceTimestamp = referenceTimestamp;
         return this;
     }
 
-    public NewsFeedAsyncTaskFactory addSetter(IGenericConsumer<Long> setter) {
+    public NewsFeedAsyncTaskBuilder addSetter(IGenericConsumer<Long> setter) {
         this.setter = setter;
         return this;
     }
@@ -46,7 +46,7 @@ public class NewsFeedAsyncTaskFactory {
     /**
      * Used when new posts are added.
      */
-    public NewsFeedAsyncTaskFactory addArePostNew() {
+    public NewsFeedAsyncTaskBuilder addArePostNew() {
         this.isNew = true;
         return this;
     }
@@ -56,7 +56,7 @@ public class NewsFeedAsyncTaskFactory {
      * the next one relative to the referenceTimestamp/
      * If referenceTimestamp is START_REFERENCE_TIMESTAMP_VALUE this value is ignored.
      */
-    public NewsFeedAsyncTaskFactory addIsStart() {
+    public NewsFeedAsyncTaskBuilder addIsStart() {
         this.isStart = true;
         return this;
     }

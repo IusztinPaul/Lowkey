@@ -103,7 +103,7 @@ public class RegisterSNS {
                             .withPlatformApplicationArn(applicationArn)
                             .withToken(token);
             CreatePlatformEndpointResult cpeRes = client
-                    .createPlatformEndpoint(cpeReq);
+                     .createPlatformEndpoint(cpeReq);
             endpointArn = cpeRes.getEndpointArn();
         } catch (InvalidParameterException ipe) {
             String message = ipe.getErrorMessage();

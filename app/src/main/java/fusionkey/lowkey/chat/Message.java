@@ -93,6 +93,7 @@ public class Message extends AbstractChat {
         queryParameters.put(MessageFrom_QUERY_STRING,from);
         queryParameters.put(MessageTo_QUERY_STRING,to);
         queryParameters.put(LISTENER_API_QUERY_STRING, listener);
+        queryParameters.put(MessageIsPhoto_QUERY_STRING, is_photo);
         //creating the body request
         JSONObject jsonBody = new JSONObject();
         try {

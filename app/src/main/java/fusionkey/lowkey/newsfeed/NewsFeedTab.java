@@ -3,14 +3,6 @@ package fusionkey.lowkey.newsfeed;
 import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.RectF;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -32,13 +24,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.services.s3.model.Region;
-import com.amazonaws.services.sns.AmazonSNS;
-import com.amazonaws.services.sns.AmazonSNSAsyncClient;
-import com.amazonaws.services.sns.AmazonSNSClient;
-import com.amazonaws.services.sns.model.CreateTopicRequest;
-
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
@@ -47,19 +32,12 @@ import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import fusionkey.lowkey.LowKeyApplication;
-import fusionkey.lowkey.auth.utils.AwsAccessKeys;
 import fusionkey.lowkey.auth.utils.UserAttributesEnum;
-import fusionkey.lowkey.auth.utils.UserManager;
 import fusionkey.lowkey.listAdapters.ChatTabViewHolder;
 import fusionkey.lowkey.R;
-import fusionkey.lowkey.main.utils.Callback;
-import fusionkey.lowkey.main.utils.ProfilePhotoUploader;
-import fusionkey.lowkey.newsfeed.asynctasks.NewsFeedAsyncTask;
 
 import fusionkey.lowkey.listAdapters.NewsFeedAdapter;
-import fusionkey.lowkey.listAdapters.ChatTabViewHolder;
-import fusionkey.lowkey.R;
-import fusionkey.lowkey.newsfeed.asynctasks.NewsFeedAsyncTaskFactory;
+import fusionkey.lowkey.newsfeed.asynctasks.NewsFeedAsyncTaskBuilder;
 import fusionkey.lowkey.newsfeed.interfaces.IGenericConsumer;
 
 import fusionkey.lowkey.newsfeed.models.Comment;
@@ -206,7 +184,7 @@ public class NewsFeedTab extends Fragment{
                         public void run() {
                             adapter.removeItem(messages.indexOf(m));
                             // Generate the next set of items.
-                            new NewsFeedAsyncTaskFactory(newsFeedRequest, messages, msgRecyclerView, adapter)
+                            new NewsFeedAsyncTaskBuilder(newsFeedRequest, messages, msgRecyclerView, adapter)
                                     .addArePostNew()
                                     .addSetter(new IGenericConsumer<Long>() {
                                         @Override
@@ -274,7 +252,7 @@ public class NewsFeedTab extends Fragment{
     }
 
     public void startPopulateNewsFeed() {
-        new NewsFeedAsyncTaskFactory(newsFeedRequest, messages, msgRecyclerView, adapter)
+        new NewsFeedAsyncTaskBuilder(newsFeedRequest, messages, msgRecyclerView, adapter)
                 .addIsStart()
                 .addArePostNew()
                 .addSetter(new IGenericConsumer<Long>() {
@@ -295,7 +273,7 @@ public class NewsFeedTab extends Fragment{
     public void refreshNewsFeed() {
         for(int i = 0; i < messages.size(); i += NEWS_FEED_PAGE_SIZE)
             if(messages.get(i) != null)
-                new NewsFeedAsyncTaskFactory(newsFeedRequest, messages, msgRecyclerView, adapter)
+                new NewsFeedAsyncTaskBuilder(newsFeedRequest, messages, msgRecyclerView, adapter)
                         .addIsStart()
                         .addReferenceTimeSTamp(messages.get(i).getTimeStamp())
                         .build()
