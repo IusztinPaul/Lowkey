@@ -60,7 +60,7 @@ import fusionkey.lowkey.pointsAlgorithm.PointsCalculator;
  */
 public class ChatActivity extends AppCompatActivity {
     private final int GALLERY_REQUEST = 1;
-    private final int PHOTO_SCORE_POINTS = 100;
+    private final int PHOTO_SCORE_POINTS = 3;
 
     final long periodForT = 1000, periodForT1 =4000, delay=0;
     long last_text_edit=0;
