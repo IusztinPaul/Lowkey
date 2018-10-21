@@ -1,28 +1,24 @@
-package fusionkey.lowkey.models;
+package fusionkey.lowkey.chat.models;
 
-public class MessageTO {
-
+public abstract class AbstractMessageTO {
     public final static String MSG_TYPE_SENT = "MSG_TYPE_SENT";
 
     public final static String MSG_TYPE_RECEIVED = "MSG_TYPE_RECEIVED";
 
     public final static String MSG_TYPE_RECEIVED_LAST = "MSG_TYPE_RECEIVED_LAST";
 
-    private String sender;
-    private String receiver;
-    private String content;
-    private String date;
-    private String msgType;
+    protected String sender;
+    protected String receiver;
+    protected String date;
+    protected String msgType;
 
-    //default
-    public MessageTO(){}
+    public AbstractMessageTO() {}
 
-    public MessageTO(String sender, String receiver, String content, String date, String msgType){
-        this.setSender(sender);
-        this.setReceiver(receiver);
-        this.setContent(content);
-        this.setDate(date);
-        this.msgType=msgType;
+    public AbstractMessageTO(String sender, String receiver, String date, String msgType) {
+        this.sender = sender;
+        this.receiver = receiver;
+        this.date = date;
+        this.msgType = msgType;
     }
 
     public String getMsgType() {
@@ -49,14 +45,6 @@ public class MessageTO {
         this.receiver = receiver;
     }
 
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
     public String getDate() {
         return date;
     }
@@ -66,7 +54,6 @@ public class MessageTO {
     }
 
     public String toString(){
-        return getDate() + " : " + getContent();
+        return getDate() + " : ";
     }
-
 }

@@ -1,6 +1,5 @@
 package fusionkey.lowkey.ROOMdatabase;
 
-import android.app.Activity;
 import android.arch.persistence.room.Room;
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,14 +11,9 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-
 import fusionkey.lowkey.R;
-import fusionkey.lowkey.chat.ChatActivity;
-import fusionkey.lowkey.chat.Message;
 import fusionkey.lowkey.listAdapters.ChatServiceAdapters.ChatAppMsgAdapter;
 import fusionkey.lowkey.main.Main2Activity;
-import fusionkey.lowkey.models.MessageTO;
 import fusionkey.lowkey.models.UserD;
 
 public class MessagesActivity extends AppCompatActivity {
@@ -35,7 +29,6 @@ public class MessagesActivity extends AppCompatActivity {
         chatLayout.setVisibility(View.GONE);
         upperText = findViewById(R.id.isWritting);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        final ArrayList<MessageTO> msgDtoList = new ArrayList<MessageTO>();
         final RecyclerView msgRecyclerView = (RecyclerView)findViewById(R.id.reyclerview_message_list);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         msgRecyclerView.setLayoutManager(linearLayoutManager);
@@ -49,10 +42,8 @@ public class MessagesActivity extends AppCompatActivity {
         final UserDao userDAO = database.userDao();
         upperText.setText("Chat you had with " + username);
         UserD user = userDAO.findByName(username);
-        for(MessageTO s : user.getListMessage())
-            msgDtoList.add(new MessageTO(s.getSender(),s.getReceiver(),s.getContent(),s.getDate(),s.getMsgType()));
 
-        final ChatAppMsgAdapter chatAppMsgAdapter = new ChatAppMsgAdapter(msgDtoList);
+        final ChatAppMsgAdapter chatAppMsgAdapter = new ChatAppMsgAdapter(user.getListMessage());
         msgRecyclerView.setAdapter(chatAppMsgAdapter);
 
         database.close();

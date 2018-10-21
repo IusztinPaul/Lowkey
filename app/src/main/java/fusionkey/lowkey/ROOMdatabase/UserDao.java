@@ -15,7 +15,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-import fusionkey.lowkey.models.MessageTO;
+import fusionkey.lowkey.chat.models.MessageTO;
 import fusionkey.lowkey.models.UserD;
 
 

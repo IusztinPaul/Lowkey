@@ -2,6 +2,7 @@ package fusionkey.lowkey.main.utils;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Base64;
 import android.util.Log;
 
 import com.amazonaws.auth.BasicAWSCredentials;
@@ -18,6 +19,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 
 import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.auth.utils.AwsAccessKeys;
@@ -175,12 +178,23 @@ public class PhotoUploader implements IS3Uploader{
             return stream.toByteArray();
         }
 
+        public String serializeToString() {
+            return Base64.encodeToString(serialize(), Base64.DEFAULT);
+        }
+
         public Bitmap unserialize(byte[] bytes) {
             if(bytes == null)
                 throw new RuntimeException("No photo to unserialize");
 
             photo = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
             return photo;
+        }
+
+        public Bitmap unserialize(String photo) {
+            if(photo == null)
+                throw new RuntimeException("No photo to unserialize");
+
+            return this.unserialize(Base64.decode(photo, Base64.DEFAULT));
         }
 
         public Bitmap getPhoto() {

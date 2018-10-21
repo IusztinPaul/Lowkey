@@ -35,15 +35,11 @@ import fusionkey.lowkey.auth.utils.AuthCallback;
 import fusionkey.lowkey.auth.utils.UserAttributesEnum;
 import fusionkey.lowkey.main.Main2Activity;
 import fusionkey.lowkey.main.utils.Callback;
+import fusionkey.lowkey.main.utils.PhotoUtils;
 import fusionkey.lowkey.main.utils.ProfilePhotoUploader;
 
 public class EditUserActivity extends AppCompatActivity {
 
-    private final float SCALE_RATIO = 0.01f;
-
-    private final float PHOTO_SCALE_RATIO_BIG = 0.07f;
-    private final float PHOTO_SCALE_RATIO_SMALL = 0.2f;
-    private final int PHOTO_THRESHOLD = 2000;
 
     private final String BIRTH_DATE_SEPARATOR = "/";
     private final int GALLERY_REQUEST = 1;
@@ -115,7 +111,7 @@ public class EditUserActivity extends AppCompatActivity {
                     try {
                         Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
                         // Resize image before saving it.
-                        bitmap = resizeBitmap(bitmap);
+                        bitmap = PhotoUtils.resizeBitmap(bitmap);
 
                         newImage = bitmap;
                         ivProfile.setImageBitmap(newImage);
@@ -294,23 +290,6 @@ public class EditUserActivity extends AppCompatActivity {
         svForm.setVisibility(loading ? View.GONE : View.VISIBLE);
     }
 
-    private Bitmap resizeBitmap(Bitmap bitmap) {
-        int width = scaleValue(bitmap.getWidth(), bitmap),
-            height = scaleValue(bitmap.getHeight(), bitmap);
 
-        bitmap = Bitmap.createScaledBitmap(bitmap,
-                width,
-                height,
-                true);
-
-        return bitmap;
-    }
-
-    private int scaleValue(int value, Bitmap photo) {
-        if(photo.getWidth() >= PHOTO_THRESHOLD || photo.getHeight() >= PHOTO_THRESHOLD)
-            return Math.round(PHOTO_SCALE_RATIO_BIG * value);
-        else
-            return Math.round(PHOTO_SCALE_RATIO_SMALL * value);
-    }
 
 }
