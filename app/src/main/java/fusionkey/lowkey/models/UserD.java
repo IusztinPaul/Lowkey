@@ -26,7 +26,7 @@ public class UserD {
     @ColumnInfo(name = "state")
     private String state;
 
-    public UserD(String username, String last_message, ArrayList<MessageTO> listMessage,String state){
+    public UserD(String username, String last_message, ArrayList<MessageTO> listMessage, String state){
         this.setUsername(username);
         this.setLast_message(last_message);
         this.setListMessage(listMessage);
