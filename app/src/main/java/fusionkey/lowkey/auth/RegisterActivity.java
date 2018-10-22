@@ -16,6 +16,7 @@ import fusionkey.lowkey.R;
 import fusionkey.lowkey.auth.utils.AttributesValidator;
 import fusionkey.lowkey.auth.utils.AuthCallback;
 import fusionkey.lowkey.auth.utils.UserAttributesEnum;
+import fusionkey.lowkey.auth.utils.UserDBManager;
 import fusionkey.lowkey.main.utils.NetworkManager;
 
 public class RegisterActivity extends AppCompatActivity {
@@ -52,7 +53,7 @@ public class RegisterActivity extends AppCompatActivity {
         etPass.setError(null);
         etPass2.setError(null);
 
-        String email = etEmail.getText().toString().trim(),
+        final String email = etEmail.getText().toString().trim(),
                username = etUsername.getText().toString().trim(),
                password = etPass.getText().toString().trim(),
                password2 = etPass2.getText().toString().trim();
@@ -89,6 +90,9 @@ public class RegisterActivity extends AppCompatActivity {
                 new AuthCallback() {
                     @Override
                     public void execute() {
+                        // Create an user instance in DynamoDB for extra information.
+                        UserDBManager.create(email);
+
                         Intent intent = new Intent(RegisterActivity.this, ConfirmCodeActivity.class);
                         intent.putExtra(ConfirmCodeActivity.STEP ,2);
                         startActivity(intent);

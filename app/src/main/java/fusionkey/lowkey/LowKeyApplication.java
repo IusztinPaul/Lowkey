@@ -3,7 +3,6 @@ package fusionkey.lowkey;
 import android.app.Application;
 import android.graphics.Bitmap;
 
-import fusionkey.lowkey.auth.utils.UserDBManager;
 import fusionkey.lowkey.auth.utils.UserManager;
 import fusionkey.lowkey.queue.RequestQueueSingleton;
 

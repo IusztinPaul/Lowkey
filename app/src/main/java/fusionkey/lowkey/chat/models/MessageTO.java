@@ -27,7 +27,7 @@ public class MessageTO extends AbstractMessageTO {
         this.is_photo = is_photo;
     }
 
-    private int getContentType() {
+    public int getContentType() {
         if (is_photo)
             return PHOTO;
         else

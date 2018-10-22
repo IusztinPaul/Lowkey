@@ -1,7 +1,9 @@
 package fusionkey.lowkey.chat;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.arch.persistence.room.Room;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
@@ -38,6 +40,7 @@ import fusionkey.lowkey.ROOMdatabase.AppDatabase;
 import fusionkey.lowkey.ROOMdatabase.UserDao;
 import fusionkey.lowkey.auth.utils.AuthCallback;
 import fusionkey.lowkey.auth.utils.UserAttributesEnum;
+import fusionkey.lowkey.auth.utils.UserDBManager;
 import fusionkey.lowkey.chat.Runnables.DisconnectedRunnable;
 import fusionkey.lowkey.chat.Runnables.InChatRunnable;
 import fusionkey.lowkey.chat.models.MessageTOFactory;
@@ -46,6 +49,7 @@ import fusionkey.lowkey.chat.models.MessageTO;
 import fusionkey.lowkey.main.utils.PhotoUploader;
 import fusionkey.lowkey.main.utils.PhotoUtils;
 import fusionkey.lowkey.models.UserD;
+import fusionkey.lowkey.models.UserDB;
 import fusionkey.lowkey.pointsAlgorithm.PointsCalculator;
 
 /**
@@ -58,7 +62,7 @@ import fusionkey.lowkey.pointsAlgorithm.PointsCalculator;
  */
 public class ChatActivity extends AppCompatActivity {
     private final int GALLERY_REQUEST = 1;
-    private final int PHOTO_SCORE_POINTS = 100;
+    private final int PHOTO_SCORE_POINTS = 3;
 
     final long periodForT = 1000, periodForT1 =4000, delay=0;
     long last_text_edit=0;
@@ -191,7 +195,7 @@ public class ChatActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onBackPressed();
+                showDialog();
             }
         });
     }
@@ -204,8 +208,14 @@ public class ChatActivity extends AppCompatActivity {
 
 
         if(msgDtoList!=null && msgDtoList.size() > 0) {
+            String lastMessage;
+            if((msgDtoList.get(msgDtoList.size()-1).getContentType())==1)
+                lastMessage = "user sent a photo";
+            else
+                lastMessage = msgDtoList.get(msgDtoList.size()-1).getRawContent();
 
-            UserD userD = new UserD(userRequest, msgDtoList.get(msgDtoList.size() - 1).getContent().toString(), msgDtoList,role);
+            UserD userD = new UserD(userRequest, lastMessage, msgDtoList,role);
+
             AppDatabase database = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "user-database")
                     .allowMainThreadQueries()   //Allows room to do operation on main thread
                     .build();
@@ -220,7 +230,8 @@ public class ChatActivity extends AppCompatActivity {
             }
             database.close();
         }
-        updatePoints();
+       // updatePoints();
+       // showDialog();
         super.onBackPressed();
     }
 
@@ -246,25 +257,51 @@ public class ChatActivity extends AppCompatActivity {
             }
     }
 
-    private void updatePoints(){
-        Map<String, String> attributes = LowKeyApplication.userManager.getUserDetails().getAttributes().getAttributes();
-        String actualPoints = attributes.get(UserAttributesEnum.SCORE.toString());
-        Double actualP = Double.parseDouble(actualPoints);
+    private void showDialog(){
+        AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
+        builder1.setMessage("Was this helpful ?");
+        builder1.setCancelable(true);
 
-        HashMap<UserAttributesEnum, String> attributesToUpdate = new HashMap<>();
-        attributesToUpdate.put(UserAttributesEnum.SCORE, String.valueOf(actualP+PointsCalculator.calculateStringsValue(stringCounter,stringL,clock)));
-        LowKeyApplication.userManager.updateUserAttributes(attributesToUpdate, this, new AuthCallback() {
-            @Override
-            public void execute() {
-                Log.e("PointsUpdate",String.valueOf(PointsCalculator.calculateStringsValue(stringCounter,stringL,clock)));
-            }
-        }, new AuthCallback() {
-            @Override
-            public void execute() {
-                Log.e("PointsUpdate:","FAIL");
-            }
-        });
-        LowKeyApplication.userManager.requestUserDetails(ChatActivity.this, null);
+        builder1.setPositiveButton(
+                "Yes",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                        //rebuild the email
+                        StringBuilder stringBuilder = new StringBuilder();
+                        stringBuilder.append(userRequest);
+                        stringBuilder.insert(stringBuilder.length()-3,'.');
+                        stringBuilder.insert(stringBuilder.length()-9,'@');
+                        Log.e("string ",stringBuilder.toString());
+                        //UserDB user = UserDBManager.getUserData(stringBuilder.toString());
+                        //user.setScore(user.getScore() + 5);
+                        //UserDBManager.update(user);
+                        onBackPressed();
+                    }
+                });
+
+        builder1.setNegativeButton(
+                "No",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                        onBackPressed();
+                    }
+                });
+
+        AlertDialog alert11 = builder1.create();
+        alert11.show();
+    }
+
+    private void updatePoints(){
+        String currentUserEmail = LowKeyApplication.userManager.getCurrentUserEmail();
+        // @TODO TO @PAUL :: nullpointer la user, probabil nu sunt in Table  !
+        UserDB user = UserDBManager.getUserData(currentUserEmail);
+
+        long newScore = user.getScore() + (long) PointsCalculator.calculateStringsValue(stringCounter,stringL,clock);
+        user.setScore(newScore);
+
+        UserDBManager.update(user);
     }
 
     private void startRunnable(){
