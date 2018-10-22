@@ -57,19 +57,19 @@
 
         <ImageView
             android:id="@+id/chat_left_iv"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:visibility="gone"
             android:layout_marginBottom="8dp"
             android:layout_marginLeft="8dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="44dp"
-            android:padding="8dp"
+            android:layout_marginTop="8dp"
             android:elevation="5dp"
             android:maxWidth="240dp"
+            android:padding="8dp"
+            android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@+id/text_message_timeLeft"
             app:layout_constraintStart_toEndOf="@+id/circleImageView"
-            app:layout_constraintTop_toTopOf="@+id/text_message_name"/>
+            app:layout_constraintTop_toTopOf="@+id/text_message_name" />
 
         <TextView
             android:id="@+id/text_message_timeLeft"
@@ -112,18 +112,19 @@
 
         <ImageView
             android:id="@+id/chat_last_iv"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:visibility="gone"
             android:layout_marginBottom="8dp"
-            android:layout_marginLeft="61dp"
-            android:layout_marginStart="61dp"
-            android:padding="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
             android:elevation="5dp"
             android:maxWidth="240dp"
+            android:padding="8dp"
+            android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@+id/lastdate"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/lastdate"
@@ -167,18 +168,18 @@
 
         <ImageView
             android:id="@+id/chat_right_iv"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="8dp"
             android:layout_marginRight="8dp"
-            android:padding="8dp"
+            android:layout_marginTop="8dp"
             android:elevation="5dp"
             android:maxWidth="240dp"
-            app:layout_constraintBottom_toTopOf="@+id/text_message_timeRight"
+            android:padding="8dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/text_message_timeRight"

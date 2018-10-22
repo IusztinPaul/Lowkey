@@ -131,7 +131,7 @@ public class NewsFeedTab extends Fragment{
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                refreshNewsFeed();
+                //refreshNewsFeed();
                 swipeRefreshLayout.setRefreshing(false);
             }
         });
