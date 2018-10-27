@@ -19,6 +19,7 @@ import java.util.Map;
 
 import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.R;
+import fusionkey.lowkey.auth.models.UserDB;
 import fusionkey.lowkey.auth.utils.UserAttributesEnum;
 import fusionkey.lowkey.listAdapters.ChatTabViewHolder;
 import fusionkey.lowkey.listAdapters.NewsFeedAdapter;
@@ -70,9 +71,9 @@ public class questionsFragment extends Fragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
         msgRecyclerView.setLayoutManager(linearLayoutManager);
 
-        Map<String, String> attributes = LowKeyApplication.userManager.getUserDetails().getAttributes().getAttributes();
-        final String id = attributes.get(UserAttributesEnum.USERNAME.toString());
-        uniqueID = (attributes.get(UserAttributesEnum.EMAIL.toString()));
+        UserDB attributes = LowKeyApplication.userManager.getUserDetails();
+        final String id = attributes.getUsername();
+        uniqueID = attributes.getUserEmail();
 
         messages = new ArrayList<>();
         adapter = new NewsFeedAdapter(messages,getActivity().getApplicationContext(),msgRecyclerView);

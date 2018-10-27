@@ -30,6 +30,7 @@ import java.util.List;
 
 import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.auth.utils.AuthCallback;
+import fusionkey.lowkey.auth.utils.UserAttributesEnum;
 import fusionkey.lowkey.main.Main2Activity;
 import fusionkey.lowkey.R;
 import fusionkey.lowkey.main.utils.NetworkManager;
@@ -165,6 +166,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     public void execute() {
                         //OnSuccess
                         Intent myIntent = new Intent(LoginActivity.this, LoadUserDataActivity.class);
+                        myIntent.putExtra(UserAttributesEnum.EMAIL.toString(), email);
                         myIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         LoginActivity.this.startActivity(myIntent);
                         showProgress(false);

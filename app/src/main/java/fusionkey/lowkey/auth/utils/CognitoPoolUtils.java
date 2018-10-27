@@ -5,7 +5,6 @@ import android.util.Log;
 
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUser;
-import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUserDetails;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUserPool;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUserSession;
 import com.amazonaws.regions.Region;
@@ -31,7 +30,6 @@ public class CognitoPoolUtils {
 
     private CognitoUserPool userPool;
     private CognitoUser user;
-    private CognitoUserDetails userDetails;
     private CognitoUserSession userSession;
 
     CognitoPoolUtils (Context context)  {
@@ -63,14 +61,6 @@ public class CognitoPoolUtils {
         this.user = null;
     }
 
-    public CognitoUserDetails getUserDetails() {
-        return userDetails;
-    }
-
-    public synchronized void setUserDetails(CognitoUserDetails userDetails) {
-        this.userDetails = userDetails;
-    }
-
     public CognitoUserSession getUserSession() {
         return userSession;
     }
@@ -81,7 +71,6 @@ public class CognitoPoolUtils {
 
     public void setAllUserDataToNull() {
         user = null;
-        userDetails = null;
         userSession = null;
     }
 

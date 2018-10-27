@@ -30,6 +30,7 @@ import java.util.Map;
 
 import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.R;
+import fusionkey.lowkey.auth.models.UserDB;
 import fusionkey.lowkey.auth.utils.UserAttributesEnum;
 import fusionkey.lowkey.listAdapters.CommentAdapters.CommentAdapter;
 import fusionkey.lowkey.newsfeed.interfaces.NewsFeedCallBack;
@@ -90,9 +91,9 @@ public class CommentsActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(!TextUtils.isEmpty(inputTxt.getText().toString())) {
                     Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-                    Map<String, String> attributes = LowKeyApplication.userManager.getUserDetails().getAttributes().getAttributes();
-                    final String uniqueID = attributes.get(UserAttributesEnum.EMAIL.toString());
-                    final String username = attributes.get(UserAttributesEnum.USERNAME.toString());
+                    UserDB attributes = LowKeyApplication.userManager.getUserDetails();
+                    final String uniqueID = attributes.getUserEmail();
+                    final String username = attributes.getUsername();
                     new NewsFeedRequest(username).postComment(getIntent().getLongExtra("timestampID",0), true, inputTxt.getText().toString(),getIntent().getStringExtra("SNStopic"));
                     commentArrayList.add(new Comment("true",String.valueOf(timestamp.getTime()),inputTxt.getText().toString(),username));
                     commentsSentList.add(new Comment("true",String.valueOf(timestamp.getTime()),inputTxt.getText().toString(),username));

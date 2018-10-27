@@ -1,8 +1,5 @@
 package fusionkey.lowkey.newsfeed;
 
-import android.app.Notification;
-import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -17,22 +14,12 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Map;
 import java.util.TimeZone;
 
 import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.R;
-import fusionkey.lowkey.auth.utils.UserAttributesEnum;
-import fusionkey.lowkey.listAdapters.ChatTabViewHolder;
-import fusionkey.lowkey.listAdapters.NewsFeedAdapter;
 import fusionkey.lowkey.listAdapters.NotificationAdapters.NotificationAdapter;
-import fusionkey.lowkey.main.MainCallback;
 import fusionkey.lowkey.models.NotificationTO;
-import fusionkey.lowkey.newsfeed.CommentsActivity;
-import fusionkey.lowkey.newsfeed.MyParcelable;
-import fusionkey.lowkey.newsfeed.models.NewsFeedMessage;
-import fusionkey.lowkey.newsfeed.questionsFragment;
-import fusionkey.lowkey.newsfeed.util.NewsFeedRequest;
 
 public class notificationFragment extends Fragment {
     private static final String KEY_POSITION = "position";
@@ -42,8 +29,7 @@ public class notificationFragment extends Fragment {
     ArrayList<NotificationTO> mNotification = new ArrayList<>();
     private RecyclerView mRecyclerview;
 
-    Map<String, String> attributes = LowKeyApplication.userManager.getUserDetails().getAttributes().getAttributes();
-    String id = attributes.get(UserAttributesEnum.EMAIL.toString());
+    String id = LowKeyApplication.userManager.getCurrentUserEmail();
 
     static notificationFragment newInstance(int position) {
         notificationFragment frag = new notificationFragment();

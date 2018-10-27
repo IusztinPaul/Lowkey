@@ -9,26 +9,41 @@ import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
 
-import fusionkey.lowkey.models.UserDB;
+import fusionkey.lowkey.auth.models.UserDB;
 
 public class UserDBManager {
     private static DynamoDBMapper dynamoDBMapper;
 
-    public static void create(final String userId) {
-        create(userId, 0L, new ArrayList<Long>());
+    public static void create(final String userEmail,
+                              final String birthDate,
+                              final String gender,
+                              final String fullName,
+                              final String username,
+                              final String phone) {
+        create(userEmail, birthDate, gender, fullName, username, phone, 0L, new ArrayList<Long>());
     }
 
-    public static void create(final String userId, final long score, final List<Long> timeStamps) {
-        final UserDB userDB = new UserDB();
-        userDB.setUserId(userId);
-        userDB.setScore(score);
-        userDB.setTimeStamps(timeStamps);
+    public static void create(final String userEmail, final String userUsername) {
+        create(userEmail, null, null, null, userUsername, null);
+    }
+
+    public static void create(final String userEmail,
+                              final String birthDate,
+                              final String gender,
+                              final String fullName,
+                              final String username,
+                              final String phone,
+                              final long score,
+                              final List<Long> timeStamps) {
+        final UserDB userDB = new UserDB(userEmail, birthDate, gender,
+                fullName, username, phone, score, timeStamps);
 
         if(dynamoDBMapper == null)
             dynamoDBMapper = createDynamoDBMapper();
@@ -41,17 +56,13 @@ public class UserDBManager {
         }).start();
     }
 
-    public static void update(final String userId, final long score, final List<Long> timeStamps) {
+    public static void update(final UserDB userDB) {
         if(dynamoDBMapper == null)
             dynamoDBMapper = createDynamoDBMapper();
 
        new Thread(new Runnable() {
            @Override
            public void run() {
-               UserDB userDB = new UserDB();
-               userDB.setUserId(userId);
-               userDB.setScore(score);
-               userDB.setTimeStamps(timeStamps);
                dynamoDBMapper.save(userDB,
                        new DynamoDBMapperConfig(
                                DynamoDBMapperConfig.SaveBehavior.UPDATE_SKIP_NULL_ATTRIBUTES)
@@ -60,35 +71,46 @@ public class UserDBManager {
        }).start();
     }
 
-    public static void update(UserDB userDB) {
-        update(userDB.getUserId(), userDB.getScore(), userDB.getTimeStamps());
+    public static void update(Map<UserAttributesEnum, String> attributes) {
+        UserDB userDB = createUserDBFromMap(attributes);
+        update(userDB);
     }
 
-    public static void delete(final String userId) {
+    public static void delete(final String userEmail) {
         if(dynamoDBMapper == null)
             dynamoDBMapper = createDynamoDBMapper();
 
         new Thread(new Runnable() {
             @Override
             public void run() {
-                UserDB userDB = new UserDB();
-                userDB.setUserId(userId);
+                UserDB userDB = new UserDB(userEmail);
                 dynamoDBMapper.delete(userDB);
             }
         }).start();
     }
 
-    public static UserDB getUserData(final String userId) {
+    public static UserDB getUserData(final String userEmail) {
         if(dynamoDBMapper == null)
             dynamoDBMapper = createDynamoDBMapper();
 
         Callable<UserDB> callable = new Callable<UserDB>() {
             @Override
             public UserDB call() throws Exception {
-                return dynamoDBMapper.load(UserDB.class, userId);
+                return dynamoDBMapper.load(UserDB.class, userEmail);
             }
         };
         return runInBackground(callable);
+    }
+
+    public static UserDB createUserDBFromMap(Map<UserAttributesEnum, String> attributes) {
+        String userEmail = attributes.get(UserAttributesEnum.EMAIL);
+        String birthDate = attributes.get(UserAttributesEnum.BIRTH_DATE);
+        String gender = attributes.get(UserAttributesEnum.GENDER);
+        String fullName = attributes.get(UserAttributesEnum.FULL_NAME);
+        String username = attributes.get(UserAttributesEnum.USERNAME);
+        String phone = attributes.get(UserAttributesEnum.PHONE);
+
+        return new UserDB(userEmail, birthDate, gender, fullName, username, phone);
     }
 
     private static UserDB runInBackground(Callable<UserDB> callable) {

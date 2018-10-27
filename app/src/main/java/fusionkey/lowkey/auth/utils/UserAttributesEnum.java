@@ -1,15 +1,16 @@
 package fusionkey.lowkey.auth.utils;
 
 public enum UserAttributesEnum {
-    USERNAME("nickname"),
-    PHONE("phone_number"),
+    USERNAME("username"),
+    PHONE("phone"),
     ADDRESS("address"),
     GENDER("gender"),
-    BIRTH_DATE("birthdate"),
+    BIRTH_DATE("birthDate"),
     EMAIL("email"),
-    NAME("name"),
+    FULL_NAME("fullName"),
     PICTURE("picture"),
-    SCORE("custom:score")
+    SCORE("score"),
+    TIME_STAMPS("timeStamps")
     ;
 
     private final String attribute;

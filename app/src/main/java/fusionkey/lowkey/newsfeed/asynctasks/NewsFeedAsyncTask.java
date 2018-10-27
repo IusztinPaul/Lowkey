@@ -56,7 +56,7 @@ public class NewsFeedAsyncTask extends AsyncTask<Void, String, JSONObject> {
         this.newsFeedRequest = newsFeedRequest;
         this.referenceTimestamp = referenceTimestamp;
         this.setter = setter;
-        this.userEmail = LowKeyApplication.userManager.getUserDetails().getAttributes().getAttributes().get(UserAttributesEnum.EMAIL.toString());
+        this.userEmail = LowKeyApplication.userManager.getCurrentUserEmail();
         this.isNew = isNew;
         this.isStart = isStart;
     }

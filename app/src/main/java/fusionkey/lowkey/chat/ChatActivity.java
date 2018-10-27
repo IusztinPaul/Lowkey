@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.arch.persistence.room.Room;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -27,8 +26,6 @@ import android.widget.TextView;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -36,8 +33,6 @@ import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.R;
 import fusionkey.lowkey.ROOMdatabase.AppDatabase;
 import fusionkey.lowkey.ROOMdatabase.UserDao;
-import fusionkey.lowkey.auth.utils.AuthCallback;
-import fusionkey.lowkey.auth.utils.UserAttributesEnum;
 import fusionkey.lowkey.auth.utils.UserDBManager;
 import fusionkey.lowkey.chat.Runnables.DisconnectedRunnable;
 import fusionkey.lowkey.chat.Runnables.InChatRunnable;
@@ -47,7 +42,7 @@ import fusionkey.lowkey.chat.models.MessageTO;
 import fusionkey.lowkey.main.utils.PhotoUploader;
 import fusionkey.lowkey.main.utils.PhotoUtils;
 import fusionkey.lowkey.models.UserD;
-import fusionkey.lowkey.models.UserDB;
+import fusionkey.lowkey.auth.models.UserDB;
 import fusionkey.lowkey.pointsAlgorithm.PointsCalculator;
 
 /**

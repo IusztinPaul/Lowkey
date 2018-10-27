@@ -10,7 +10,6 @@ import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoDevice;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUser;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUserAttributes;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUserCodeDeliveryDetails;
-import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUserDetails;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUserSession;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.continuations.AuthenticationContinuation;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.continuations.AuthenticationDetails;
@@ -20,22 +19,16 @@ import com.amazonaws.mobileconnectors.cognitoidentityprovider.continuations.Mult
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.AuthenticationHandler;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.ForgotPasswordHandler;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.GenericHandler;
-import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.GetDetailsHandler;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.SignUpHandler;
-import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.UpdateAttributesHandler;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.VerificationHandler;
 import com.amazonaws.services.cognitoidentityprovider.model.UserType;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.R;
+import fusionkey.lowkey.auth.models.UserDB;
 
 public class UserManager {
 
@@ -44,6 +37,7 @@ public class UserManager {
     public static final String PASSWORD_SHARED_PREFERENCES = "password";
 
     private CognitoPoolUtils cognitoPoolUtils;
+    private UserDB currentUser;
 
     private static UserManager instance;
 
@@ -70,11 +64,9 @@ public class UserManager {
             public void onSuccess(CognitoUserSession userSession, CognitoDevice newDevice) {
                 Log.e("onSuccess", userSession.toString());
                 cognitoPoolUtils.setUserSession(userSession);
+
                 if (cacheCredentials)
                     cacheCredentials(email, password);
-
-                // On every login populate the user details.
-                requestUserDetails(null, null);
 
                 if (onSuccessCallback != null)
                     onSuccessCallback.execute();
@@ -114,15 +106,18 @@ public class UserManager {
         cognitoPoolUtils.getUser().getSessionInBackground(authenticationHandler);
     }
 
-    private boolean isLoggedIn(Activity activity) {
+    public String getCachedEmail() {
         SharedPreferences sharedPref =
                 LowKeyApplication.instance.getSharedPreferences(USER_SHARED_PREFERENCES, Context.MODE_PRIVATE);
-        String email = sharedPref.getString(UserAttributesEnum.EMAIL.toString(), null);
-        return email != null;
+        return sharedPref.getString(UserAttributesEnum.EMAIL.toString(), null);
     }
 
-    public boolean logInIfHasCredentials(Activity activity, AuthCallback onSuccessCallback) {
-        if (isLoggedIn(activity)) {
+    private boolean isLoggedIn() {
+        return getCachedEmail() != null;
+    }
+
+    public boolean logInIfHasCredentials(AuthCallback onSuccessCallback) {
+        if (isLoggedIn()) {
             SharedPreferences sharedPref =
                     LowKeyApplication.instance.getSharedPreferences(USER_SHARED_PREFERENCES, Context.MODE_PRIVATE);
             String email = sharedPref.getString(UserAttributesEnum.EMAIL.toString(), null);
@@ -157,9 +152,7 @@ public class UserManager {
     public boolean logout() {
         try {
             cognitoPoolUtils.getUser().signOut();
-            cognitoPoolUtils.setAllUserDataToNull();
-            clearCredentials();
-            LowKeyApplication.profilePhoto = null;
+            clearAllUserData();
             return true;
         } catch (NullPointerException e) {
             // The user has to be set up manually in the cognitoPoolUtils object. So if it wasn't
@@ -168,33 +161,28 @@ public class UserManager {
         }
     }
 
+    private void clearAllUserData() {
+        cognitoPoolUtils.setAllUserDataToNull();
+        this.currentUser = null;
+
+        clearCredentials();
+        LowKeyApplication.profilePhoto = null;
+    }
+
     /**
      * @param email:           userId
      * @param password:        password
-     * @param attributes:      Set to 'null' if no user attributes are required.
+     * @param username:      username
      * @param currentActivity: for Toasts
      */
-    public void register(String email, String password, HashMap<UserAttributesEnum, String> attributes,
+    public void register(final String email, String password, final String username,
                          final Activity currentActivity, final AuthCallback onSuccessCallback) {
-        CognitoUserAttributes userAttributes = new CognitoUserAttributes();
-
-        // Add an empty string to the attributes that were not added -> AWS does not like them empty.
-        Set<UserAttributesEnum> allAttributes = new HashSet<>(Arrays.asList(UserAttributesEnum.values()));
-        if (attributes != null)
-            allAttributes.removeAll(attributes.keySet());
-        for (UserAttributesEnum attribute : allAttributes)
-            userAttributes.addAttribute(attribute.toString(), "");
-
-        // Now add the attributes that have a actual value.
-        if (attributes != null)
-            for (Map.Entry<UserAttributesEnum, String> entry : attributes.entrySet())
-                userAttributes.addAttribute(entry.getKey().toString(), entry.getValue());
 
         SignUpHandler signUpCallback = new SignUpHandler() {
-
             @Override
             public void onSuccess(CognitoUser cognitoUser, boolean userConfirmed, CognitoUserCodeDeliveryDetails cognitoUserCodeDeliveryDetails) {
                 cognitoPoolUtils.setUser(cognitoUser);
+                setUpUser(email, username);
                 if (!userConfirmed) {
                     Toast.makeText(currentActivity,
                             currentActivity.getResources().getString(R.string.register_validation_message),
@@ -212,7 +200,13 @@ public class UserManager {
             }
         };
 
+        CognitoUserAttributes userAttributes = new CognitoUserAttributes();
         cognitoPoolUtils.getUserPool().signUpInBackground(email, password, userAttributes, null, signUpCallback);
+    }
+
+    private void setUpUser(String email, String username) {
+        this.currentUser = new UserDB(email, username);
+        UserDBManager.create(email, username);
     }
 
     public void confirmRegistrationWithCode(String confirmationCode, final Activity currentActivity, final AuthCallback onSuccessCallback) {
@@ -255,77 +249,30 @@ public class UserManager {
         return cognitoPoolUtils.getUser() != null;
     }
 
-    public void requestUserDetails(final Activity currentActivity, final AuthCallback callback) {
-        GetDetailsHandler handler = new GetDetailsHandler() {
-            @Override
-            public void onSuccess(final CognitoUserDetails list) {
-                if (callback != null)
-                    callback.execute();
+    public void requestUserDetails(String email, final AuthCallback callback) {
+        String checkedEmail;
 
-                cognitoPoolUtils.setUserDetails(list);
-            }
+        if(email != null)
+            checkedEmail = email;
+        else if(currentUser != null)
+            checkedEmail = currentUser.getUserEmail();
+        else
+            throw new RuntimeException("Current user or email is null! " +
+                    "Can't update it's attributes with no email");
 
-            @Override
-            public void onFailure(final Exception exception) {
-                if (currentActivity != null)
-                    Toast.makeText(currentActivity, exception.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        };
-        cognitoPoolUtils.getUser().getDetailsInBackground(handler);
+        currentUser = UserDBManager.getUserData(checkedEmail);
+        if(currentUser == null)
+            throw new RuntimeException("The requested user does not exist!");
+
+        if(callback != null)
+            callback.execute();
     }
 
     public void updateUserAttributes(HashMap<UserAttributesEnum, String> attributes,
-                                     final Activity currentActivity,
-                                     final AuthCallback successCallback, final  AuthCallback failCallback) {
-
-        CognitoUserAttributes userAttributes = new CognitoUserAttributes();
-        for (Map.Entry<UserAttributesEnum, String> entry : attributes.entrySet())
-            userAttributes.addAttribute(entry.getKey().toString(), entry.getValue());
-
-        UpdateAttributesHandler handler = new UpdateAttributesHandler() {
-            @Override
-            public void onSuccess(List<CognitoUserCodeDeliveryDetails> attributesVerificationList) {
-                if (successCallback != null)
-                    successCallback.execute();
-            }
-
-            @Override
-            public void onFailure(Exception exception) {
-                Log.e("updateAttributes", exception.getMessage());
-                if (currentActivity != null)
-                    Toast.makeText(currentActivity, exception.getMessage(), Toast.LENGTH_SHORT).show();
-
-                if(failCallback != null)
-                    failCallback.execute();
-            }
-        };
-
-        cognitoPoolUtils.getUser().updateAttributesInBackground(userAttributes, handler);
-    }
-
-    public void deleteUserAttributes(List<UserAttributesEnum> attributes,
-                                     final Activity currentActivity, final AuthCallback callback) {
-
-        List<String> attributesToString = new ArrayList<>();
-        for (UserAttributesEnum attribute : attributes)
-            attributesToString.add(attribute.toString());
-
-        GenericHandler handler = new GenericHandler() {
-            @Override
-            public void onSuccess() {
-                if (callback != null)
-                    callback.execute();
-            }
-
-            @Override
-            public void onFailure(Exception exception) {
-                Log.e("deleteAttributes", exception.getMessage());
-                if (currentActivity != null)
-                    Toast.makeText(currentActivity, exception.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        };
-
-        cognitoPoolUtils.getUser().deleteAttributesInBackground(attributesToString, handler);
+                                     final AuthCallback successCallback) {
+        UserDBManager.update(attributes);
+        if(successCallback != null)
+            successCallback.execute();
     }
 
     public void changeUserPassword(String oldPassword, String newPassword,
@@ -384,23 +331,26 @@ public class UserManager {
         return getParsedUserEmail();
     }
 
-    /**
-     * @TODO SI AICI CRAPA
-     * @return  Caused by: java.lang.NullPointerException: Attempt to invoke virtual method 'com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUserAttributes com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUserDetails.getAttributes()' on a null object reference
-    at fusionkey.lowkey.auth.utils.UserManager.getParsedUserEmail(UserManager.java:388)
-     */
     public String getCurrentUserEmail() {
-        return cognitoPoolUtils.getUserDetails().getAttributes().
-                getAttributes().get(UserAttributesEnum.EMAIL.toString());
+        return currentUser != null ? currentUser.getUserEmail() : null;
     }
 
     public String getParsedUserEmail() {
         String email = getCurrentUserEmail();
+
+        if(email == null)
+            throw new RuntimeException("There is no email on current user" +
+                ". Something is wrong!");
+
         return parseEmailToPhotoFileName(email);
     }
 
     public static String parseEmailToPhotoFileName(String email) {
         return email.replace("@", "").replace(".", "");
+    }
+
+    public UserDB getUserDetails() {
+        return this.currentUser;
     }
 
     public String getAccessToken() {
@@ -424,10 +374,6 @@ public class UserManager {
 
     public CognitoUser getUser() {
         return cognitoPoolUtils.getUser();
-    }
-
-    public CognitoUserDetails getUserDetails() {
-        return cognitoPoolUtils.getUserDetails();
     }
 
     public CognitoUserSession getSession() {

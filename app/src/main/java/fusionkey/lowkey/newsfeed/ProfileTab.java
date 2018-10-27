@@ -31,6 +31,7 @@ import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import fusionkey.lowkey.LowKeyApplication;
+import fusionkey.lowkey.auth.models.UserDB;
 import fusionkey.lowkey.auth.utils.UserAttributesEnum;
 import fusionkey.lowkey.entryActivity.EntryActivity;
 import fusionkey.lowkey.R;
@@ -201,8 +202,8 @@ public class ProfileTab extends Fragment {
     }
     public void populateUI(){
         try {
-            Map<String, String> attributes = LowKeyApplication.userManager.getUserDetails().getAttributes().getAttributes();
-            String usernameS = attributes.get(UserAttributesEnum.USERNAME.toString());
+            UserDB attributes = LowKeyApplication.userManager.getUserDetails();
+            String usernameS = attributes.getUsername();
             username.setText(usernameS != null ? usernameS : "");
 
         } catch (NullPointerException e) {

@@ -32,6 +32,7 @@ import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import fusionkey.lowkey.LowKeyApplication;
+import fusionkey.lowkey.auth.models.UserDB;
 import fusionkey.lowkey.auth.utils.UserAttributesEnum;
 import fusionkey.lowkey.listAdapters.ChatTabViewHolder;
 import fusionkey.lowkey.R;
@@ -79,9 +80,9 @@ public class NewsFeedTab extends Fragment{
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
         msgRecyclerView.setLayoutManager(linearLayoutManager);
         // Getting user details from Cognito.
-        Map<String, String> attributes = LowKeyApplication.userManager.getUserDetails().getAttributes().getAttributes();
-        final String id = attributes.get(UserAttributesEnum.USERNAME.toString());
-        uniqueID = (attributes.get(UserAttributesEnum.EMAIL.toString()));
+        UserDB attributes = LowKeyApplication.userManager.getUserDetails();
+        final String id = attributes.getUsername();
+        uniqueID = attributes.getUserEmail();
 
         // Create the initial data list.
 

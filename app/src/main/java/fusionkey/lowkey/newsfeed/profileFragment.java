@@ -19,6 +19,7 @@ import java.util.Map;
 import de.hdodenhof.circleimageview.CircleImageView;
 import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.R;
+import fusionkey.lowkey.auth.models.UserDB;
 import fusionkey.lowkey.auth.utils.UserAttributesEnum;
 import fusionkey.lowkey.listAdapters.NewsFeedAdapter;
 import fusionkey.lowkey.main.MainCallback;
@@ -83,32 +84,31 @@ public class profileFragment extends Fragment {
         showall = rootView.findViewById(R.id.showall);
 
 
-        Map<String, String> attributes = LowKeyApplication.userManager.getUserDetails().getAttributes().getAttributes();
-        final String id = attributes.get(UserAttributesEnum.USERNAME.toString());
-        uniqueID = (attributes.get(UserAttributesEnum.EMAIL.toString()));
+        UserDB attributes = LowKeyApplication.userManager.getUserDetails();
+        final String id = attributes.getUsername();
+        uniqueID = attributes.getUserEmail();
 
-    //    if(LowKeyApplication.profilePhoto != null)
-//            circleImageView.setImageBitmap(LowKeyApplication.profilePhoto);
-     //   else
-           // circleImageView.setBackgroundResource(R.drawable.avatar_placeholder);
         populateUI();
         return(rootView);
     }
 
     public void populateUI(){
         try {
-            Map<String, String> attributes = LowKeyApplication.userManager.getUserDetails().getAttributes().getAttributes();
-            String usernameS = attributes.get(UserAttributesEnum.USERNAME.toString()),
-                    pointsS = attributes.get(UserAttributesEnum.SCORE.toString());
+            UserDB attributes = LowKeyApplication.userManager.getUserDetails();
+            Long pointsS = attributes.getScore();
+            String usernameS = attributes.getUsername();
+
             if(pointsS==null)
-                pointsS = "0";
-            Double experience = Double.parseDouble(pointsS);
-            points.setText(pointsS != null ? pointsS : "");
+                pointsS = 0L;
+
+            Double experience = (double) pointsS;
+
+            points.setText(pointsS != 0L ? pointsS + "" : "");
 
             paymentBar.setMax(2500);
             paymentBar.setProgress((int)experience.doubleValue());
            // setExpBar((int)experience.doubleValue());
-            String moneyS = String.valueOf(PointsCalculator.calculatePointsForMoney(Double.parseDouble(pointsS)))+"$";
+            String moneyS = String.valueOf(PointsCalculator.calculatePointsForMoney(experience))+"$";
             money.setText(moneyS != null ? moneyS : "");
             String p = "Chat points gained: "+ pointsS + " / 2,500";
             payment.setText(p);

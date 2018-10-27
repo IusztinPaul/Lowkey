@@ -19,6 +19,7 @@ import fusionkey.lowkey.auth.LoginActivity;
 import fusionkey.lowkey.R;
 import fusionkey.lowkey.auth.RegisterActivity;
 import fusionkey.lowkey.auth.utils.AuthCallback;
+import fusionkey.lowkey.auth.utils.UserAttributesEnum;
 import fusionkey.lowkey.main.Main2Activity;
 
 public class EntryActivity extends AppCompatActivity {
@@ -100,15 +101,21 @@ public class EntryActivity extends AppCompatActivity {
     }
 
     private boolean isLoggedIn() {
-        return LowKeyApplication.userManager.logInIfHasCredentials(this,
+        return LowKeyApplication.userManager.logInIfHasCredentials(
                 new AuthCallback() {
                     @Override
                     public void execute() {
                         Intent myIntent = new Intent(EntryActivity.this, LoadUserDataActivity.class);
+
+                        String userEmail = LowKeyApplication.userManager.getCachedEmail();
+                        myIntent.putExtra(UserAttributesEnum.EMAIL.toString(), userEmail);
+
                         myIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         EntryActivity.this.startActivity(myIntent);
                     }
                 });
+
+
     }
 
     private void switchView(boolean loading) {
