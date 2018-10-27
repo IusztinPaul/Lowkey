@@ -78,6 +78,11 @@
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/colorAccent" />
 
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="[ca-app-pub-3205268820160972~9635375425]"/>
+
+
         <activity android:name=".newsfeed.Askaquestion"></activity>
     </application>
 
