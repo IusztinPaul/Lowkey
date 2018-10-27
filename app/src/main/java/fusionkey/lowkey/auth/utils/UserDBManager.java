@@ -18,6 +18,7 @@ import java.util.concurrent.FutureTask;
 
 import fusionkey.lowkey.auth.models.UserDB;
 
+
 public class UserDBManager {
     private static DynamoDBMapper dynamoDBMapper;
 
@@ -131,11 +132,12 @@ public class UserDBManager {
         AWSConfiguration configuration = AWSMobileClient.getInstance().getConfiguration();
 
 
-        AmazonDynamoDBClient dynamoDBClient = new AmazonDynamoDBClient(credentialsProvider);
+        AmazonDynamoDBClient dynamoDBClient =  new AmazonDynamoDBClient(credentialsProvider);
 
         return DynamoDBMapper.builder()
                 .dynamoDBClient(dynamoDBClient)
                 .awsConfiguration(configuration)
                 .build();
     }
+
 }

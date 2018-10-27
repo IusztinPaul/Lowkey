@@ -16,7 +16,11 @@ public class UserAttributeManager {
 
     public String getUsername() {
         getAttributes();
-        return userDB.getUsername();
+        try {
+            return userDB.getUsername();
+        } catch (NullPointerException e) {
+            return "";
+        }
     }
 
     public String getEmail() {

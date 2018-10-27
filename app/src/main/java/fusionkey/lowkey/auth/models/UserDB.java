@@ -17,6 +17,9 @@ public class UserDB {
     private Long _score;
     private List<Long> _timeStamps;
 
+    // Used by DynamoDB.
+    public UserDB() {}
+
     public UserDB(String _userEmail) {
         this._userEmail = _userEmail;
     }
@@ -54,8 +57,8 @@ public class UserDB {
         return _userEmail;
     }
 
-    public void setUserId(final String _userId) {
-        this._userEmail = _userId;
+    public void setUserEmail(final String _userEmail) {
+        this._userEmail = _userEmail;
     }
 
     @DynamoDBAttribute(attributeName = "birthDate")

@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.amazonaws.mobile.client.AWSMobileClient;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoDevice;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUser;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUserAttributes;
@@ -164,7 +165,6 @@ public class UserManager {
     private void clearAllUserData() {
         cognitoPoolUtils.setAllUserDataToNull();
         this.currentUser = null;
-
         clearCredentials();
         LowKeyApplication.profilePhoto = null;
     }
