@@ -59,8 +59,7 @@ public class UserManager {
     public void login(final String email, final String password,
                       final AuthCallback onSuccessCallback,
                       final AuthCallback onFailCallback,
-                      final boolean cacheCredentials,
-                      final Context context) {
+                      final boolean cacheCredentials) {
         // Prepare the user object.
         cognitoPoolUtils.setUser(email);
 
@@ -69,7 +68,6 @@ public class UserManager {
             public void onSuccess(CognitoUserSession userSession, CognitoDevice newDevice) {
                 Log.e("onSuccess", userSession.toString());
                 cognitoPoolUtils.setUserSession(userSession);
-                AWSMobileClient.getInstance().initialize(context).execute();
 
                 if (cacheCredentials)
                     cacheCredentials(email, password);
@@ -122,7 +120,7 @@ public class UserManager {
         return getCachedEmail() != null;
     }
 
-    public boolean logInIfHasCredentials(AuthCallback onSuccessCallback, Context context) {
+    public boolean logInIfHasCredentials(AuthCallback onSuccessCallback) {
         if (isLoggedIn()) {
             SharedPreferences sharedPref =
                     LowKeyApplication.instance.getSharedPreferences(USER_SHARED_PREFERENCES, Context.MODE_PRIVATE);
@@ -130,7 +128,7 @@ public class UserManager {
             String password = sharedPref.getString(PASSWORD_SHARED_PREFERENCES, null);
 
             if (email != null && password != null)
-                login(email, password, onSuccessCallback, null, false, context);
+                login(email, password, onSuccessCallback, null, false);
 
             return true;
         }
@@ -276,10 +274,9 @@ public class UserManager {
     public void updateCurrentUserAttributes(HashMap<UserAttributesEnum, String> attributes,
                                             final AuthCallback successCallback) {
 
-        if(emailNotOfCurrentUser(attributes.get(UserAttributesEnum.EMAIL)))
-            throw new RuntimeException("Update a different user than the current one with the wrong method");
-
+        attributes.put(UserAttributesEnum.EMAIL, currentUser.getUserEmail());
         UserDBManager.update(attributes);
+
         if(successCallback != null)
             successCallback.execute();
     }

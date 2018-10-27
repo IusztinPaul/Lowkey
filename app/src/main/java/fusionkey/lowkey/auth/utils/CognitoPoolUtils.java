@@ -24,9 +24,9 @@ import java.util.concurrent.Future;
 class CognitoPoolUtils {
    static final String REGION = "eu-central-1"; // Used by Java SDK.
    static final Regions REGIONS = Regions.EU_CENTRAL_1; // Used by Android SDK.
-   static final String USER_POOL_ID = "eu-central-1_TU6gnuPdq";
-   static final String CLIENT_ID = "4dt31qskgv09rtckvli0g6ikia";
-   static final String CLIENT_SECRET = "ecbl2apn2k54nl9terbqhvsrco5t780isc1fcusptci08jic7q1";
+   static final String USER_POOL_ID = "eu-central-1_FTGTblB3e";
+   static final String CLIENT_ID = "7qqhj3qvkkvflkmiaf6tc729ge";
+   static final String CLIENT_SECRET = "1silga4fuguanqm92nnbncb1dbsmeg8kj0kfhsttd996v5ltorfg";
 
     private CognitoUserPool userPool;
     private CognitoUser user;

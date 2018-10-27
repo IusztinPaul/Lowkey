@@ -246,7 +246,7 @@ public class NewsFeedTab extends Fragment{
                 } catch (NullPointerException e) {
                 Log.e("Error", "parcelable object failed");
                     }
-            }else { Log.e("IntentResult","No comments to update");
+            } else { Log.e("IntentResult","No comments to update");
                  }
              }
 
