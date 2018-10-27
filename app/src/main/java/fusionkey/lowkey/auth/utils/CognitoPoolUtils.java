@@ -21,7 +21,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-public class CognitoPoolUtils {
+class CognitoPoolUtils {
    static final String REGION = "eu-central-1"; // Used by Java SDK.
    static final Regions REGIONS = Regions.EU_CENTRAL_1; // Used by Android SDK.
    static final String USER_POOL_ID = "eu-central-1_TU6gnuPdq";

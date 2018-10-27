@@ -4,7 +4,6 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.View;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -17,7 +16,6 @@ import fusionkey.lowkey.LowKeyApplication;
 
 import fusionkey.lowkey.R;
 import fusionkey.lowkey.auth.utils.UserAttributeManager;
-import fusionkey.lowkey.auth.utils.UserAttributesEnum;
 
 import fusionkey.lowkey.auth.utils.UserManager;
 import fusionkey.lowkey.listAdapters.NewsFeedAdapter;
@@ -32,7 +30,6 @@ import fusionkey.lowkey.newsfeed.models.NewsFeedMessage;
 public class NewsFeedAsyncTask extends AsyncTask<Void, String, JSONObject> {
 
     private ArrayList<NewsFeedMessage> newsFeedMessageArrayList;
-    private WeakReference<RecyclerView> recyclerView;
     private NewsFeedAdapter newsFeedAdapter;
     private NewsFeedRequest newsFeedRequest;
     private String userEmail;
@@ -51,7 +48,6 @@ public class NewsFeedAsyncTask extends AsyncTask<Void, String, JSONObject> {
                              boolean isNew,
                              boolean isStart) {
         this.newsFeedMessageArrayList = newsFeedMessageArrayList;
-        this.recyclerView = new WeakReference<>(recyclerView);
         this.newsFeedAdapter = newsFeedAdapter;
         this.newsFeedRequest = newsFeedRequest;
         this.referenceTimestamp = referenceTimestamp;

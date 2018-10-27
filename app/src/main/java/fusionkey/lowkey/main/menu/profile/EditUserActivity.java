@@ -154,7 +154,7 @@ public class EditUserActivity extends AppCompatActivity {
         attributesToUpdate.put(UserAttributesEnum.GENDER, gender);
         attributesToUpdate.put(UserAttributesEnum.BIRTH_DATE, birth);
 
-        LowKeyApplication.userManager.updateUserAttributes(attributesToUpdate, new AuthCallback() {
+        LowKeyApplication.userManager.updateCurrentUserAttributes(attributesToUpdate, new AuthCallback() {
             @Override
             public void execute() {
                 if (newImage != null) {
@@ -190,7 +190,7 @@ public class EditUserActivity extends AppCompatActivity {
                 Toast.LENGTH_SHORT).show();
 
         // Reload the user details locally.
-        LowKeyApplication.userManager.requestUserDetails(null, null);
+        LowKeyApplication.userManager.requestCurrentUserDetails(null, null);
 
         Intent intent = new Intent(EditUserActivity.this, Main2Activity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

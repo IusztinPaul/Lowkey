@@ -33,7 +33,6 @@ import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.R;
 import fusionkey.lowkey.ROOMdatabase.AppDatabase;
 import fusionkey.lowkey.ROOMdatabase.UserDao;
-import fusionkey.lowkey.auth.utils.UserDBManager;
 import fusionkey.lowkey.chat.Runnables.DisconnectedRunnable;
 import fusionkey.lowkey.chat.Runnables.InChatRunnable;
 import fusionkey.lowkey.chat.models.MessageTOFactory;
@@ -244,13 +243,14 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void updatePoints(){
-        String currentUserEmail = LowKeyApplication.userManager.getCurrentUserEmail();
-        UserDB user = UserDBManager.getUserData(currentUserEmail);
-
+        UserDB user = LowKeyApplication.userManager.getUserDetails();
         long newScore = user.getScore() + (long) PointsCalculator.calculateStringsValue(stringCounter,stringL,clock);
-        user.setScore(newScore);
+        updateUserWithNewScore(user, newScore);
+    }
 
-        UserDBManager.update(user);
+    private void updateUserWithNewScore(UserDB userDB, long newScore) {
+        userDB.setScore(newScore);
+        LowKeyApplication.userManager.updateCurrentUserAttributes(userDB, null);
     }
 
     private void startRunnable(){

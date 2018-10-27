@@ -3,13 +3,11 @@ package fusionkey.lowkey.entryActivity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.amazonaws.mobile.client.AWSMobileClient;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -20,10 +18,8 @@ import fusionkey.lowkey.auth.LoadUserDataActivity;
 import fusionkey.lowkey.auth.LoginActivity;
 import fusionkey.lowkey.R;
 import fusionkey.lowkey.auth.RegisterActivity;
-import fusionkey.lowkey.auth.models.UserDB;
 import fusionkey.lowkey.auth.utils.AuthCallback;
 import fusionkey.lowkey.auth.utils.UserAttributesEnum;
-import fusionkey.lowkey.auth.utils.UserDBManager;
 import fusionkey.lowkey.main.Main2Activity;
 
 public class EntryActivity extends AppCompatActivity {
@@ -37,7 +33,7 @@ public class EntryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_entry);
 
-        AWSMobileClient.getInstance().initialize(this).execute();
+
 
         pBar = findViewById(R.id.pBar);
         switchView(true);
@@ -119,7 +115,7 @@ public class EntryActivity extends AppCompatActivity {
                         myIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         EntryActivity.this.startActivity(myIntent);
                     }
-                });
+                }, this);
 
 
     }

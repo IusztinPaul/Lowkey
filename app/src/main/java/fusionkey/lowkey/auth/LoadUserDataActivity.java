@@ -13,7 +13,6 @@ import java.lang.ref.WeakReference;
 import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.R;
 import fusionkey.lowkey.auth.utils.UserAttributesEnum;
-import fusionkey.lowkey.entryActivity.EntryActivity;
 import fusionkey.lowkey.main.Main2Activity;
 import fusionkey.lowkey.main.utils.Callback;
 import fusionkey.lowkey.main.utils.ProfilePhotoUploader;
@@ -44,13 +43,7 @@ public class LoadUserDataActivity extends AppCompatActivity {
         protected Void doInBackground(Void... voids) {
             new RegisterSNS().registerWithSNS();
 
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-
-            }
-
-           LowKeyApplication.userManager.requestUserDetails(userEmail, null);
+            LowKeyApplication.userManager.requestCurrentUserDetails(userEmail, null);
 
             // Now access the S3 photo with the new user details.
             try {

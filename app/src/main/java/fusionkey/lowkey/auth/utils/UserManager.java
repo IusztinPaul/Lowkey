@@ -31,6 +31,9 @@ import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.R;
 import fusionkey.lowkey.auth.models.UserDB;
 
+/**
+ * Class to interact with the current user.
+ */
 public class UserManager {
 
     public static final int PASSWORD_MIN_LENGTH = 6;
@@ -56,7 +59,8 @@ public class UserManager {
     public void login(final String email, final String password,
                       final AuthCallback onSuccessCallback,
                       final AuthCallback onFailCallback,
-                      final boolean cacheCredentials) {
+                      final boolean cacheCredentials,
+                      final Context context) {
         // Prepare the user object.
         cognitoPoolUtils.setUser(email);
 
@@ -65,6 +69,7 @@ public class UserManager {
             public void onSuccess(CognitoUserSession userSession, CognitoDevice newDevice) {
                 Log.e("onSuccess", userSession.toString());
                 cognitoPoolUtils.setUserSession(userSession);
+                AWSMobileClient.getInstance().initialize(context).execute();
 
                 if (cacheCredentials)
                     cacheCredentials(email, password);
@@ -117,7 +122,7 @@ public class UserManager {
         return getCachedEmail() != null;
     }
 
-    public boolean logInIfHasCredentials(AuthCallback onSuccessCallback) {
+    public boolean logInIfHasCredentials(AuthCallback onSuccessCallback, Context context) {
         if (isLoggedIn()) {
             SharedPreferences sharedPref =
                     LowKeyApplication.instance.getSharedPreferences(USER_SHARED_PREFERENCES, Context.MODE_PRIVATE);
@@ -125,7 +130,7 @@ public class UserManager {
             String password = sharedPref.getString(PASSWORD_SHARED_PREFERENCES, null);
 
             if (email != null && password != null)
-                login(email, password, onSuccessCallback, null, false);
+                login(email, password, onSuccessCallback, null, false, context);
 
             return true;
         }
@@ -249,7 +254,7 @@ public class UserManager {
         return cognitoPoolUtils.getUser() != null;
     }
 
-    public void requestUserDetails(String email, final AuthCallback callback) {
+    public void requestCurrentUserDetails(String email, final AuthCallback callback) {
         String checkedEmail;
 
         if(email != null)
@@ -268,11 +273,30 @@ public class UserManager {
             callback.execute();
     }
 
-    public void updateUserAttributes(HashMap<UserAttributesEnum, String> attributes,
-                                     final AuthCallback successCallback) {
+    public void updateCurrentUserAttributes(HashMap<UserAttributesEnum, String> attributes,
+                                            final AuthCallback successCallback) {
+
+        if(emailNotOfCurrentUser(attributes.get(UserAttributesEnum.EMAIL)))
+            throw new RuntimeException("Update a different user than the current one with the wrong method");
+
         UserDBManager.update(attributes);
         if(successCallback != null)
             successCallback.execute();
+    }
+
+    public void updateCurrentUserAttributes(UserDB userDB,
+                                            final AuthCallback successCallback) {
+
+        if(emailNotOfCurrentUser(userDB.getUserEmail()))
+            throw new RuntimeException("Update a different user than the current one with the wrong method");
+
+        UserDBManager.update(userDB);
+        if(successCallback != null)
+            successCallback.execute();
+    }
+
+    private boolean emailNotOfCurrentUser(String email) {
+        return currentUser == null || !currentUser.getUserEmail().equals(email);
     }
 
     public void changeUserPassword(String oldPassword, String newPassword,
@@ -351,6 +375,10 @@ public class UserManager {
 
     public UserDB getUserDetails() {
         return this.currentUser;
+    }
+
+    public void updateCurrentUser(UserDB userDB) {
+
     }
 
     public String getAccessToken() {
