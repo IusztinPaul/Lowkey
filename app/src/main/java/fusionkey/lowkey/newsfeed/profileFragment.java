@@ -103,7 +103,8 @@ public class profileFragment extends Fragment {
 
             Double experience = (double) pointsS;
 
-            points.setText(pointsS != 0L ? pointsS + "" : "");
+            String pointsDisplay = pointsS + "";
+            points.setText(pointsDisplay);
 
             paymentBar.setMax(2500);
             paymentBar.setProgress((int)experience.doubleValue());
