@@ -85,7 +85,6 @@ public class profileFragment extends Fragment {
 
 
         UserDB attributes = LowKeyApplication.userManager.getUserDetails();
-        final String id = attributes.getUsername();
         uniqueID = attributes.getUserEmail();
 
         populateUI();
@@ -96,7 +95,6 @@ public class profileFragment extends Fragment {
         try {
             UserDB attributes = LowKeyApplication.userManager.getUserDetails();
             Long pointsS = attributes.getScore();
-            String usernameS = attributes.getUsername();
 
             if(pointsS==null)
                 pointsS = 0L;

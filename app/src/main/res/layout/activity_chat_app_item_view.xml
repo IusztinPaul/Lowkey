@@ -16,11 +16,12 @@
             android:id="@+id/circleImageView"
             android:layout_width="45dp"
             android:layout_height="45dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginStart="8dp"
+            android:layout_marginBottom="8dp"
             android:layout_marginTop="8dp"
             android:elevation="10dp"
             android:src="@drawable/selp1"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -29,13 +30,13 @@
             android:id="@+id/text_message_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginStart="16dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
             android:text="SEBI"
             android:textSize="12sp"
-            app:layout_constraintTop_toTopOf="@id/circleImageView"
-            app:layout_constraintBottom_toTopOf="@+id/chat_left_msg_text_view"
-            app:layout_constraintStart_toEndOf="@+id/circleImageView" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/chat_left_msg_text_view"
@@ -44,42 +45,44 @@
             android:layout_marginBottom="8dp"
             android:layout_marginLeft="8dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="44dp"
+            android:layout_marginTop="32dp"
             android:background="@drawable/rounded_rectangle_orange"
             android:elevation="5dp"
             android:maxWidth="240dp"
             android:padding="8dp"
             android:text="hi man, how are you?"
             android:textColor="#ffffff"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/text_message_timeLeft"
             app:layout_constraintStart_toEndOf="@+id/circleImageView"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/chat_left_iv"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:visibility="gone"
             android:layout_marginBottom="8dp"
             android:layout_marginLeft="8dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="44dp"
-            android:padding="8dp"
+            android:layout_marginTop="8dp"
             android:elevation="5dp"
             android:maxWidth="240dp"
+            android:padding="8dp"
+            android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@+id/text_message_timeLeft"
             app:layout_constraintStart_toEndOf="@+id/circleImageView"
-            app:layout_constraintTop_toTopOf="@+id/text_message_name"/>
+            app:layout_constraintTop_toTopOf="@+id/text_message_name" />
 
         <TextView
             android:id="@+id/text_message_timeLeft"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="4dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
             android:text="11:40"
             android:textSize="10sp"
-            app:layout_constraintBottom_toBottomOf="@+id/chat_left_msg_text_view"
-            app:layout_constraintLeft_toRightOf="@+id/chat_left_msg_text_view" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
     </android.support.constraint.ConstraintLayout>
 
@@ -97,45 +100,45 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:layout_marginLeft="61dp"
-            android:layout_marginStart="61dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
             android:background="@drawable/rounded_rectangle_orange"
             android:elevation="5dp"
             android:maxWidth="240dp"
             android:padding="8dp"
             android:text="hi man, hhi man, hhi man, how are yoow are yoow are you?"
             android:textColor="#ffffff"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/lastdate"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
 
         <ImageView
             android:id="@+id/chat_last_iv"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:visibility="gone"
             android:layout_marginBottom="8dp"
-            android:layout_marginLeft="61dp"
-            android:layout_marginStart="61dp"
-            android:padding="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
             android:elevation="5dp"
             android:maxWidth="240dp"
+            android:padding="8dp"
+            android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@+id/lastdate"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/lastdate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="13dp"
-            android:layout_marginLeft="4dp"
-            android:layout_marginStart="4dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
             android:text="11:40"
             android:textSize="10sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/lastmsg" />
+            app:layout_constraintStart_toStartOf="parent" />
 
     </android.support.constraint.ConstraintLayout>
 
@@ -153,7 +156,7 @@
             android:id="@+id/chat_right_msg_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="8dp"
             android:layout_marginRight="8dp"
             android:background="@drawable/rounded_rectangle_green"
             android:elevation="5dp"
@@ -161,34 +164,36 @@
             android:padding="8dp"
             android:text="hello, hello!"
             android:textColor="@android:color/black"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/text_message_timeRight"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/chat_right_iv"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="8dp"
             android:layout_marginRight="8dp"
-            android:padding="8dp"
+            android:layout_marginTop="8dp"
             android:elevation="5dp"
             android:maxWidth="240dp"
+            android:padding="8dp"
+            android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@+id/text_message_timeRight"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/text_message_timeRight"
-            android:text="11:40"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:text="11:40"
             android:textSize="10sp"
-            android:layout_marginRight="4dp"
-            app:layout_constraintBottom_toBottomOf="@+id/chat_right_msg_text_view"
-            app:layout_constraintRight_toLeftOf="@+id/chat_right_msg_text_view" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
     </android.support.constraint.ConstraintLayout>
 

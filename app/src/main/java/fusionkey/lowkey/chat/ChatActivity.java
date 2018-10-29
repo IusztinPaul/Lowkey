@@ -1,9 +1,11 @@
 package fusionkey.lowkey.chat;
-
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.arch.persistence.room.Room;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -23,25 +25,37 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.R;
 import fusionkey.lowkey.ROOMdatabase.AppDatabase;
 import fusionkey.lowkey.ROOMdatabase.UserDao;
+import fusionkey.lowkey.auth.models.UserDB;
+import fusionkey.lowkey.auth.utils.AuthCallback;
+import fusionkey.lowkey.auth.utils.UserAttributesEnum;
+import fusionkey.lowkey.auth.utils.UserManager;
 import fusionkey.lowkey.chat.Runnables.DisconnectedRunnable;
 import fusionkey.lowkey.chat.Runnables.InChatRunnable;
 import fusionkey.lowkey.chat.models.MessageTOFactory;
 import fusionkey.lowkey.listAdapters.ChatServiceAdapters.ChatAppMsgAdapter;
 import fusionkey.lowkey.chat.models.MessageTO;
+import fusionkey.lowkey.auth.utils.*;
+import fusionkey.lowkey.main.utils.Callback;
+import fusionkey.lowkey.main.utils.EmailBuilder;
 import fusionkey.lowkey.main.utils.PhotoUploader;
 import fusionkey.lowkey.main.utils.PhotoUtils;
+import fusionkey.lowkey.main.utils.ProfilePhotoUploader;
 import fusionkey.lowkey.models.UserD;
-import fusionkey.lowkey.auth.models.UserDB;
 import fusionkey.lowkey.pointsAlgorithm.PointsCalculator;
 
 /**
@@ -56,7 +70,7 @@ public class ChatActivity extends AppCompatActivity {
     private final int GALLERY_REQUEST = 1;
     private final int PHOTO_SCORE_POINTS = 3;
 
-    final long periodForT = 1000, periodForT1 =4000, delay=0;
+    final long periodForT = 1000, periodForT1 =10000, delay=0;
     long last_text_edit=0;
 
     String role;
@@ -73,11 +87,12 @@ public class ChatActivity extends AppCompatActivity {
     EditText msgInputText;
     LinearLayout chatbox;
     String listenerRequest;
+    private CircleImageView image;
     String userRequest;
     ArrayList<MessageTO> msgDtoList;
 
     private int stringCounter,
-                clock;
+            clock;
     ArrayList<Integer> stringL;
 
     private static final String disconnectedDialog = "just disconnected from the chat !";
@@ -101,6 +116,7 @@ public class ChatActivity extends AppCompatActivity {
         final String user = getIntent().getStringExtra(userIntent);
         role = getIntent().getStringExtra(roleIntent);
         chatbox = findViewById(R.id.layout_chatbox);
+        image = findViewById(R.id.circleImageView2);
         msgInputText = findViewById(R.id.chat_input_msg);
         listenerRequest = listener.replace("[", "").replace("]", "").replace("\"","");
         userRequest = user.replace("[", "").replace("]", "").replace("\"","");
@@ -121,6 +137,19 @@ public class ChatActivity extends AppCompatActivity {
 
         //Object that makes request and updates the UI if the user is/isn't connected/writting
         inChatRunnable = new InChatRunnable(state,chatRoom);
+
+        String email = EmailBuilder.buildEmail(userRequest);
+
+        final ProfilePhotoUploader photoUploader = new ProfilePhotoUploader();
+        photoUploader.download(UserManager.parseEmailToPhotoFileName(email),
+                new Callback() {
+                    @Override
+                    public void handle() {
+                        Log.e("PHOTO", "photo downloaded");
+                        Picasso.get().load((photoUploader.getFileTO())).into(image);
+                    }
+                }, null);
+
 
         t = new Timer();
         startRunnable();
@@ -187,7 +216,7 @@ public class ChatActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onBackPressed();
+                showDialog();
             }
         });
     }
@@ -200,8 +229,14 @@ public class ChatActivity extends AppCompatActivity {
 
 
         if(msgDtoList!=null && msgDtoList.size() > 0) {
-            // TODO: aici trebuie schimbat la -> msgDtoList.get(msgDtoList.size() - 1)
-            UserD userD = new UserD(userRequest, msgDtoList.get(msgDtoList.size() - 1).getRawContent(), msgDtoList,role);
+            String lastMessage;
+            if((msgDtoList.get(msgDtoList.size()-1).getContentType())==1)
+                lastMessage = "user sent a photo";
+            else
+                lastMessage = msgDtoList.get(msgDtoList.size()-1).getRawContent();
+
+            UserD userD = new UserD(userRequest, lastMessage, msgDtoList,role);
+
             AppDatabase database = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "user-database")
                     .allowMainThreadQueries()   //Allows room to do operation on main thread
                     .build();
@@ -216,7 +251,8 @@ public class ChatActivity extends AppCompatActivity {
             }
             database.close();
         }
-        updatePoints();
+         updatePoints();
+        // showDialog();
         super.onBackPressed();
     }
 
@@ -242,29 +278,64 @@ public class ChatActivity extends AppCompatActivity {
             }
     }
 
-    private void updatePoints(){
-        UserDB user = LowKeyApplication.userManager.getUserDetails();
-        long newScore = user.getScore() + (long) PointsCalculator.calculateStringsValue(stringCounter,stringL,clock);
-        updateUserWithNewScore(user, newScore);
+    private void showDialog(){
+        AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
+        builder1.setMessage("Was this helpful ?");
+        builder1.setCancelable(true);
+
+        builder1.setPositiveButton(
+                "Yes",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                        //rebuild the email
+                        StringBuilder stringBuilder = new StringBuilder();
+                        stringBuilder.append(userRequest);
+                        stringBuilder.insert(stringBuilder.length()-3,'.');
+                        stringBuilder.insert(stringBuilder.length()-9,'@');
+                        Log.e("string ",stringBuilder.toString());
+                        UserDB user = UserDBManager.getUserData(stringBuilder.toString());
+                        user.setScore(user.getScore() + 5);
+                        UserDBManager.update(user);
+                        onBackPressed();
+                    }
+                });
+
+        builder1.setNegativeButton(
+                "No",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                        onBackPressed();
+                    }
+                });
+
+        AlertDialog alert11 = builder1.create();
+        alert11.show();
     }
 
-    private void updateUserWithNewScore(UserDB userDB, long newScore) {
-        userDB.setScore(newScore);
-        LowKeyApplication.userManager.updateCurrentUserAttributes(userDB, null);
+    private void updatePoints(){
+        String currentUserEmail = LowKeyApplication.userManager.getCurrentUserEmail();
+        // @TODO TO @PAUL :: nullpointer la user, probabil nu sunt in Table  !
+        UserDB user = UserDBManager.getUserData(currentUserEmail);
+        long newScore = user.getScore() + Math.round(PointsCalculator.calculateStringsValue(stringCounter,stringL,clock));
+        user.setScore(newScore);
+        Log.e("points ::::: ", "score"+newScore);
+        UserDBManager.update(user);
     }
 
     private void startRunnable(){
-     t.scheduleAtFixedRate(new TimerTask() {
-        @Override
-        public void run() {
-            clock++;
-            inChatRunnable.run();
-        }
+        t.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                clock++;
+                inChatRunnable.run();
+            }
 
-        @Override
-        public boolean cancel() {
-            return super.cancel();
-        }
+            @Override
+            public boolean cancel() {
+                return super.cancel();
+            }
         },delay, periodForT);
     }
 

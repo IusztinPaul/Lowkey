@@ -19,7 +19,7 @@ import java.util.concurrent.FutureTask;
 import fusionkey.lowkey.auth.models.UserDB;
 
 
-class UserDBManager {
+public class UserDBManager {
     private static DynamoDBMapper dynamoDBMapper;
 
     public static void create(final String userEmail,

@@ -71,9 +71,7 @@ public class questionsFragment extends Fragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
         msgRecyclerView.setLayoutManager(linearLayoutManager);
 
-        UserDB attributes = LowKeyApplication.userManager.getUserDetails();
-        final String id = attributes.getUsername();
-        uniqueID = attributes.getUserEmail();
+        uniqueID = LowKeyApplication.userManager.getCachedEmail();
 
         messages = new ArrayList<>();
         adapter = new NewsFeedAdapter(messages,getActivity().getApplicationContext(),msgRecyclerView);

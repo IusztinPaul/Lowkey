@@ -7,19 +7,34 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
+import java.io.File;
+import java.util.ArrayList;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 import fusionkey.lowkey.R;
+import fusionkey.lowkey.auth.models.UserDB;
+import fusionkey.lowkey.auth.utils.UserDBManager;
+import fusionkey.lowkey.auth.utils.UserManager;
+import fusionkey.lowkey.chat.models.MessageTO;
 import fusionkey.lowkey.listAdapters.ChatServiceAdapters.ChatAppMsgAdapter;
 import fusionkey.lowkey.main.Main2Activity;
+import fusionkey.lowkey.main.utils.Callback;
+import fusionkey.lowkey.main.utils.EmailBuilder;
+import fusionkey.lowkey.main.utils.ProfilePhotoUploader;
 import fusionkey.lowkey.models.UserD;
-
+import static fusionkey.lowkey.chat.models.MessageTO.MSG_TYPE_RECEIVED;
 public class MessagesActivity extends AppCompatActivity {
 
     private LinearLayout chatLayout;
     private TextView upperText;
+    private CircleImageView image;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +43,7 @@ public class MessagesActivity extends AppCompatActivity {
         chatLayout = findViewById(R.id.layout_chatbox);
         chatLayout.setVisibility(View.GONE);
         upperText = findViewById(R.id.isWritting);
+        image = findViewById(R.id.circleImageView2);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         final RecyclerView msgRecyclerView = (RecyclerView)findViewById(R.id.reyclerview_message_list);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
@@ -40,8 +56,25 @@ public class MessagesActivity extends AppCompatActivity {
                 .allowMainThreadQueries()   //Allows room to do operation on main thread
                 .build();
         final UserDao userDAO = database.userDao();
-        upperText.setText("Chat you had with " + username);
+
+        String email = EmailBuilder.buildEmail(username);
+        UserDB userDB = UserDBManager.getUserData(email);
+
+        upperText.setText(userDB.getUsername());
+
+        final ProfilePhotoUploader photoUploader = new ProfilePhotoUploader();
+        photoUploader.download(UserManager.parseEmailToPhotoFileName(email),
+                new Callback() {
+                    @Override
+                    public void handle() {
+                        Log.e("PHOTO", "photo downloaded");
+                        Picasso.get().load((photoUploader.getFileTO())).into(image);
+                    }
+                }, null);
+
         UserD user = userDAO.findByName(username);
+
+
 
         final ChatAppMsgAdapter chatAppMsgAdapter = new ChatAppMsgAdapter(user.getListMessage());
         msgRecyclerView.setAdapter(chatAppMsgAdapter);

@@ -1,14 +1,25 @@
 package fusionkey.lowkey.listAdapters.ChatTabAdapters;
 
+import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
 
+import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.R;
+import fusionkey.lowkey.auth.models.UserDB;
+import fusionkey.lowkey.auth.utils.UserDBManager;
+import fusionkey.lowkey.auth.utils.UserManager;
+import fusionkey.lowkey.main.utils.Callback;
+import fusionkey.lowkey.main.utils.EmailBuilder;
+import fusionkey.lowkey.main.utils.ProfilePhotoUploader;
 import fusionkey.lowkey.models.UserD;
 
 
@@ -49,17 +60,31 @@ public class ChatTabAdapter extends RecyclerView.Adapter<ChatTabViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(ChatTabViewHolder holder, int position) {
+    public void onBindViewHolder(final ChatTabViewHolder holder, int position) {
              UserD userDto = this.mUsers.get(position);
 
             // If the message is a received message.
             // Show received message in left linearlayout.
-            holder.name.setText(userDto.getUsername());
+
+            String email = EmailBuilder.buildEmail(userDto.getUsername());
+            UserDB userDB = UserDBManager.getUserData(email);
+
+            holder.name.setText(userDB.getUsername());
             holder.lastmsg.setText(userDto.getLast_message());
             holder.bind(mUsers.get(position), listener);
 
-            // Remove left linearlayout.The value should be GONE, can not be INVISIBLE
-            // Otherwise each iteview's distance is too big.
+            final ProfilePhotoUploader photoUploader = new ProfilePhotoUploader();
+            photoUploader.download(UserManager.parseEmailToPhotoFileName(email),
+                new Callback() {
+                    @Override
+                    public void handle() {
+                        Log.e("PHOTO", "photo downloaded");
+                        Picasso.get().load((photoUploader.getFileTO())).into(holder.image);
+                    }
+                }, null);
+
+
+
 
 
     }

@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.TimeZone;
 
@@ -29,7 +30,7 @@ public class notificationFragment extends Fragment {
     ArrayList<NotificationTO> mNotification = new ArrayList<>();
     private RecyclerView mRecyclerview;
 
-    String id = LowKeyApplication.userManager.getCurrentUserEmail();
+    String id = LowKeyApplication.userManager.getCachedEmail();
 
     static notificationFragment newInstance(int position) {
         notificationFragment frag = new notificationFragment();
@@ -71,7 +72,9 @@ public class notificationFragment extends Fragment {
             String[] s = preferences.getString(id+i,"").split("muiepsdasdfghjkl");
             notif.add(new NotificationTO(s[2].replace("}",""),s[0].replace("{default=","") + " answered your question "+ s[1]));
 
-        }return notif;
+        }
+        Collections.reverse(notif);
+        return notif;
     }
     private String localTime(Long time) {
         Calendar cal = Calendar.getInstance();

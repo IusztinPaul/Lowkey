@@ -80,12 +80,13 @@ public class ProfileTab extends Fragment {
         pager.setAdapter(buildAdapter());
         tabLayout.setupWithViewPager(pager, true);
         final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext().getApplicationContext());
+        username = rootView.findViewById(R.id.username2);
         /*
         points = rootView.findViewById(R.id.points);
         helped = rootView.findViewById(R.id.helped);
         money = rootView.findViewById(R.id.money);
         payment = rootView.findViewById(R.id.payment);
-        username = rootView.findViewById(R.id.username);
+
         level = rootView.findViewById(R.id.level);
         expBar = rootView.findViewById(R.id.expBar);
         paymentBar = rootView.findViewById(R.id.paymentBar);
