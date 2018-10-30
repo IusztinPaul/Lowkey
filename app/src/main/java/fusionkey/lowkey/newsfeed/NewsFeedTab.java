@@ -155,6 +155,7 @@ public class NewsFeedTab extends Fragment{
                     intent.putExtra("body",m.getContent());
                     intent.putExtra("title",m.getTitle());
                     intent.putExtra("username",m.getUser());
+                    intent.putExtra("email",m.getId());
                 }else {
                     MyParcelable object = new MyParcelable();
                     object.setArrList(new ArrayList<Comment>());
@@ -164,6 +165,7 @@ public class NewsFeedTab extends Fragment{
                     intent.putExtra("body",m.getContent());
                     intent.putExtra("title",m.getTitle());
                     intent.putExtra("username",m.getUser());
+                    intent.putExtra("email",m.getId());
 
                 }
                 startActivityForResult(intent, COMMENT_ACTIVITY_REQUEST_CODE);

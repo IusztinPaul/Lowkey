@@ -19,7 +19,7 @@
         android:layout_marginStart="32dp"
         android:layout_marginTop="32dp"
         android:elevation="15dp"
-        android:src="@drawable/fff"
+        android:src="@drawable/avatar_placeholder"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -72,13 +72,21 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent">
 
+        <Button
+            android:id="@+id/sendPhoto"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="bottom"
+            android:background="@drawable/image"
+            android:clickable="true"
+            android:gravity="center"
+            android:textSize="14dp" />
+
         <EditText
             android:id="@+id/chat_input_msg"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
             android:layout_weight="1"
             android:background="@android:color/transparent"
             android:hint="Type a message"
@@ -86,24 +94,14 @@
 
         <Button
             android:id="@+id/sendComment"
-            android:layout_width="64dp"
-            android:layout_height="48dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_gravity="bottom"
-            android:background="?attr/selectableItemBackground"
+            android:background="@drawable/send"
             android:clickable="true"
             android:gravity="center"
-            android:text="SEND"
-            android:textSize="14dp" />
-
-        <Button
-            android:id="@+id/sendPhoto"
-            android:layout_width="64dp"
-            android:layout_height="48dp"
-            android:layout_gravity="bottom"
-            android:background="?attr/selectableItemBackground"
-            android:clickable="true"
-            android:gravity="center"
-            android:text="Photo"
+            android:paddingBottom="3dp"
+            android:paddingTop="3dp"
             android:textSize="14dp" />
 
     </LinearLayout>

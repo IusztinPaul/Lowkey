@@ -30,11 +30,12 @@
             android:id="@+id/text_message_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:layout_marginStart="8dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
             android:text="SEBI"
-            android:textSize="12sp"
+            android:textSize="14sp"
+            android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -52,6 +53,7 @@
             android:padding="8dp"
             android:text="hi man, how are you?"
             android:textColor="#ffffff"
+            android:textSize="16sp"
             app:layout_constraintBottom_toTopOf="@+id/text_message_timeLeft"
             app:layout_constraintStart_toEndOf="@+id/circleImageView"
             app:layout_constraintTop_toTopOf="parent" />
@@ -108,6 +110,7 @@
             android:padding="8dp"
             android:text="hi man, hhi man, hhi man, how are yoow are yoow are you?"
             android:textColor="#ffffff"
+            android:textSize="16sp"
             app:layout_constraintBottom_toTopOf="@+id/lastdate"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -164,6 +167,7 @@
             android:padding="8dp"
             android:text="hello, hello!"
             android:textColor="@android:color/black"
+            android:textSize="16sp"
             app:layout_constraintBottom_toTopOf="@+id/text_message_timeRight"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
