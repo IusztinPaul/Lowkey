@@ -5,7 +5,6 @@ import android.arch.persistence.room.Room;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -30,8 +29,6 @@ import com.squareup.picasso.Picasso;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -41,8 +38,6 @@ import fusionkey.lowkey.R;
 import fusionkey.lowkey.ROOMdatabase.AppDatabase;
 import fusionkey.lowkey.ROOMdatabase.UserDao;
 import fusionkey.lowkey.auth.models.UserDB;
-import fusionkey.lowkey.auth.utils.AuthCallback;
-import fusionkey.lowkey.auth.utils.UserAttributesEnum;
 import fusionkey.lowkey.auth.utils.UserManager;
 import fusionkey.lowkey.chat.Runnables.DisconnectedRunnable;
 import fusionkey.lowkey.chat.Runnables.InChatRunnable;
@@ -69,6 +64,7 @@ import fusionkey.lowkey.pointsAlgorithm.PointsCalculator;
 public class ChatActivity extends AppCompatActivity {
     private final int GALLERY_REQUEST = 1;
     private final int PHOTO_SCORE_POINTS = 3;
+    private final int POSITIVE_BUTTON_REVIEW_POINTS = 5;
 
     final long periodForT = 1000, periodForT1 =10000, delay=0;
     long last_text_edit=0;
@@ -252,8 +248,13 @@ public class ChatActivity extends AppCompatActivity {
             database.close();
         }
 
+<<<<<<< HEAD
          updatePoints();
 
+=======
+
+         updatePoints();
+>>>>>>> dev
         super.onBackPressed();
     }
 
@@ -290,6 +291,7 @@ public class ChatActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int id) {
                         dialog.cancel();
                         //rebuild the email
+<<<<<<< HEAD
                         StringBuilder stringBuilder = new StringBuilder();
                         stringBuilder.append(userRequest);
                         stringBuilder.insert(stringBuilder.length()-3,'.');
@@ -300,6 +302,15 @@ public class ChatActivity extends AppCompatActivity {
                         user.setScore(user.getScore() + 5);
                         UserDBManager.update(user);
 
+=======
+                        String userEmail = EmailBuilder.buildEmail(userRequest);
+                        Log.e("userEmail ", userEmail);
+
+                        UserAttributeManager userAttributeManager = new UserAttributeManager(userEmail);
+                        UserDB user = userAttributeManager.getUserDB();
+                        user.setScore(user.getScore() + POSITIVE_BUTTON_REVIEW_POINTS);
+                        userAttributeManager.updateUserAttributes(null);
+>>>>>>> dev
 
                         onBackPressed();
                     }
@@ -319,13 +330,15 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void updatePoints(){
-        String currentUserEmail = LowKeyApplication.userManager.getCurrentUserEmail();
-        // @TODO TO @PAUL :: nullpointer la user, probabil nu sunt in Table  !
-        UserDB user = UserDBManager.getUserData(currentUserEmail);
-        long newScore = user.getScore() + Math.round(PointsCalculator.calculateStringsValue(stringCounter,stringL,clock));
-        user.setScore(newScore);
+        UserDB user = LowKeyApplication.userManager.getUserDetails();
+        long newScore = user.getScore() + (long) PointsCalculator.calculateStringsValue(stringCounter,stringL,clock);
+        updateUserWithNewScore(user, newScore);
         Log.e("points ::::: ", "score"+newScore);
-        UserDBManager.update(user);
+    }
+
+    private void updateUserWithNewScore(UserDB user, long newScore) {
+        user.setScore(newScore);
+        LowKeyApplication.userManager.updateCurrentUser(user);
     }
 
     private void startRunnable(){

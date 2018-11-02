@@ -183,9 +183,7 @@
             android:maxWidth="240dp"
             android:padding="8dp"
             android:visibility="gone"
-
             app:layout_constraintBottom_toTopOf="@+id/text_message_timeRight"
-
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
