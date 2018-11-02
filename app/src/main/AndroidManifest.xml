@@ -85,8 +85,6 @@
             android:value="ca-app-pub-3940256099942544~3347511713" />
 
         <activity android:name=".newsfeed.Askaquestion"/>
-
-
         <activity android:name=".main.menu.terms.TermsActivity"></activity>
     </application>
 
