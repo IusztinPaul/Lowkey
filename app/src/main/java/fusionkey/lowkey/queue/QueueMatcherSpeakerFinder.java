@@ -57,7 +57,7 @@ public class QueueMatcherSpeakerFinder extends QueueMatcherUtils implements IQue
                         Log.e("findSpeakers", response.toString());
                         try {
                             if (response.getString("errorMessage").equals("Listener already added. Has a lobby and in queue"))
-                                findRunnable.makeListenerDeleteRequest();
+                           //     findRunnable.makeListenerDeleteRequest();
                             // Continue only of the response has data.
                             if (!response.get(DATA_JSON_KEY).equals(RESPONSE_NO_DATA))
 

@@ -251,8 +251,9 @@ public class ChatActivity extends AppCompatActivity {
             }
             database.close();
         }
+
          updatePoints();
-        // showDialog();
+
         super.onBackPressed();
     }
 
@@ -294,9 +295,12 @@ public class ChatActivity extends AppCompatActivity {
                         stringBuilder.insert(stringBuilder.length()-3,'.');
                         stringBuilder.insert(stringBuilder.length()-9,'@');
                         Log.e("string ",stringBuilder.toString());
+
                         UserDB user = UserDBManager.getUserData(stringBuilder.toString());
                         user.setScore(user.getScore() + 5);
                         UserDBManager.update(user);
+
+
                         onBackPressed();
                     }
                 });
@@ -316,6 +320,7 @@ public class ChatActivity extends AppCompatActivity {
 
     private void updatePoints(){
         String currentUserEmail = LowKeyApplication.userManager.getCurrentUserEmail();
+        // @TODO TO @PAUL :: nullpointer la user, probabil nu sunt in Table  !
         UserDB user = UserDBManager.getUserData(currentUserEmail);
         long newScore = user.getScore() + Math.round(PointsCalculator.calculateStringsValue(stringCounter,stringL,clock));
         user.setScore(newScore);

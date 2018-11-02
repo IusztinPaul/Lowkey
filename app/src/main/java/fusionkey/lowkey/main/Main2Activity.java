@@ -20,9 +20,11 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import com.amazonaws.mobile.client.AWSMobileClient;
+
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
+
 import com.google.android.gms.ads.MobileAds;
 
 import fusionkey.lowkey.LowKeyApplication;
@@ -36,7 +38,7 @@ import fusionkey.lowkey.newsfeed.ProfileTab;
 public class Main2Activity extends AppCompatActivity implements LifecycleObserver,MainCallback {
     private LoadingAsyncTask loadingAsyncTask;
     public static String currentUser = LowKeyApplication.userManager.getParsedUserEmail();
-
+   // MobileAds.Initialize(this, "ca-app-pub-3205268820160972~9635375425");
     static public boolean SEARCH_STATE;
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
