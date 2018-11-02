@@ -1,16 +1,9 @@
 package fusionkey.lowkey.chat.models;
 
-import android.util.Log;
-
-import com.squareup.picasso.Picasso;
-
 import fusionkey.lowkey.auth.models.UserDB;
-import fusionkey.lowkey.auth.utils.UserDBManager;
-import fusionkey.lowkey.auth.utils.UserManager;
+import fusionkey.lowkey.auth.utils.UserAttributeManager;
 import fusionkey.lowkey.listAdapters.ChatServiceAdapters.ChatAppMsgViewHolder;
-import fusionkey.lowkey.main.utils.Callback;
 import fusionkey.lowkey.main.utils.EmailBuilder;
-import fusionkey.lowkey.main.utils.ProfilePhotoUploader;
 
 import static fusionkey.lowkey.chat.models.MessageTO.MSG_TYPE_RECEIVED;
 import static fusionkey.lowkey.chat.models.MessageTO.MSG_TYPE_RECEIVED_LAST;
@@ -23,7 +16,7 @@ public class ContentViewCreatorText extends ContentViewCreatorUtils implements I
         if(MSG_TYPE_RECEIVED.equals(msg.getMsgType()))
         {
             String email = EmailBuilder.buildEmail(msg.getSender());
-            UserDB userDB = UserDBManager.getUserData(email);
+            UserDB userDB = new UserAttributeManager(email).getUserDB();
             holder.leftName.setText(userDB.getUsername());
 
             populateView(holder.leftMsgLayout, holder.leftMsgTextView, holder.leftDate, msg);

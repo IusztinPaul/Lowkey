@@ -15,15 +15,12 @@ import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
-import java.io.File;
-import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import fusionkey.lowkey.R;
 import fusionkey.lowkey.auth.models.UserDB;
-import fusionkey.lowkey.auth.utils.UserDBManager;
+import fusionkey.lowkey.auth.utils.UserAttributeManager;
 import fusionkey.lowkey.auth.utils.UserManager;
-import fusionkey.lowkey.chat.models.MessageTO;
 import fusionkey.lowkey.listAdapters.ChatServiceAdapters.ChatAppMsgAdapter;
 import fusionkey.lowkey.main.Main2Activity;
 import fusionkey.lowkey.main.utils.Callback;
@@ -31,7 +28,7 @@ import fusionkey.lowkey.main.utils.EmailBuilder;
 import fusionkey.lowkey.main.utils.NetworkManager;
 import fusionkey.lowkey.main.utils.ProfilePhotoUploader;
 import fusionkey.lowkey.models.UserD;
-import static fusionkey.lowkey.chat.models.MessageTO.MSG_TYPE_RECEIVED;
+
 public class MessagesActivity extends AppCompatActivity {
 
     private LinearLayout chatLayout;
@@ -60,7 +57,7 @@ public class MessagesActivity extends AppCompatActivity {
         final UserDao userDAO = database.userDao();
 
         String email = EmailBuilder.buildEmail(username);
-        UserDB userDB = UserDBManager.getUserData(email);
+        UserDB userDB = new UserAttributeManager(email).getUserDB();
         try {
             upperText.setText(userDB.getUsername());
         } catch (NullPointerException npe){

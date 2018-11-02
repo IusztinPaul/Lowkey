@@ -1,22 +1,18 @@
 package fusionkey.lowkey.listAdapters.ChatTabAdapters;
 
 import android.content.Context;
-import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.R;
 import fusionkey.lowkey.auth.models.UserDB;
-import fusionkey.lowkey.auth.utils.UserDBManager;
+import fusionkey.lowkey.auth.utils.UserAttributeManager;
 import fusionkey.lowkey.auth.utils.UserManager;
 import fusionkey.lowkey.main.utils.Callback;
 import fusionkey.lowkey.main.utils.EmailBuilder;
@@ -67,8 +63,9 @@ public class ChatTabAdapter extends RecyclerView.Adapter<ChatTabViewHolder> {
             // If the message is a received message.
             // Show received message in left linearlayout.
 
+            //TODO: Why you query the user by it's username ?
             String email = EmailBuilder.buildEmail(userDto.getUsername());
-            UserDB userDB = UserDBManager.getUserData(email);
+            UserDB userDB = new UserAttributeManager(email).getUserDB();
             try {
                 holder.name.setText(userDB.getUsername());
             } catch (NullPointerException npe){
