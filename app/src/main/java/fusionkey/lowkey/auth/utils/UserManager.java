@@ -360,6 +360,7 @@ public class UserManager {
         String email = getCurrentUserEmail();
 
         if(email == null)
+            /* @TODO crapa aici @PAUL */
             throw new RuntimeException("There is no email on current user" +
                 ". Something is wrong!");
 

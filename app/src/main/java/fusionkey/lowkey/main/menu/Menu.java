@@ -16,6 +16,7 @@ import fusionkey.lowkey.main.menu.license.LicenseActivity;
 import fusionkey.lowkey.main.menu.profile.ChangePasswordActivity;
 import fusionkey.lowkey.main.menu.profile.EditUserActivity;
 import fusionkey.lowkey.main.menu.settings.SettingsActivity;
+import fusionkey.lowkey.main.menu.terms.TermsActivity;
 
 public class Menu extends AppCompatActivity {
 
@@ -28,6 +29,8 @@ public class Menu extends AppCompatActivity {
         ConstraintLayout about = findViewById(R.id.AboutLayoout);
         ConstraintLayout license = findViewById(R.id.LicenseLayout);
         ConstraintLayout logout = findViewById(R.id.LogoutLayout);
+        ConstraintLayout terms = findViewById(R.id.Terms);
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -35,6 +38,15 @@ public class Menu extends AppCompatActivity {
                 onBackPressed();
             }
         });
+
+        terms.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), TermsActivity.class);
+                startActivity(intent);
+            }
+        });
+
         edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
