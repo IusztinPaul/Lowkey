@@ -2,6 +2,8 @@ package fusionkey.lowkey.chat.models;
 
 import android.graphics.Bitmap;
 
+import java.io.File;
+
 import fusionkey.lowkey.listAdapters.ChatServiceAdapters.ChatAppMsgViewHolder;
 import fusionkey.lowkey.main.utils.PhotoUploader;
 import fusionkey.lowkey.main.utils.PhotoUtils;
@@ -33,6 +35,7 @@ public class MessageTO extends AbstractMessageTO {
         else
             return TEXT;
     }
+
 
     public Object getContent() {
         switch (getContentType()) {

@@ -105,7 +105,7 @@ public class StartTab extends Fragment {
         UserDao userDAO = database.userDao();
         userList = (ArrayList)userDAO.getAll();
         database.close();
-        final ChatTabAdapter adapter = new ChatTabAdapter(userList);
+        final ChatTabAdapter adapter = new ChatTabAdapter(userList,getContext());
         msgRecyclerView.setAdapter(adapter);
         adapter.setListener(new ChatTabAdapter.OnItemClickListener() {
             @Override

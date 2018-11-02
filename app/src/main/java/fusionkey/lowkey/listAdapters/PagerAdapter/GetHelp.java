@@ -6,9 +6,12 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -23,6 +26,7 @@ public class GetHelp extends Fragment {
     private static final String KEY_POSITION="position";
     private MainCallback mainCallback;
     SharedPreferences sharedPreferences;
+    private InterstitialAd mInterstitialAd;
 
     static GetHelp newInstance(int position) {
         GetHelp frag=new GetHelp();
@@ -56,8 +60,10 @@ public class GetHelp extends Fragment {
             @Override
             public void onClick(View view) {
                 if(NetworkManager.isNetworkAvailable() && loadState()==0){
-                    mainCallback.searchForHelp();
                     saveState("step", 1);
+
+                    mainCallback.searchForHelp();
+
 
             } else Toast.makeText(getActivity(), "Check if you're connected to the Internet", Toast.LENGTH_SHORT).show();
             }

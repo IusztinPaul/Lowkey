@@ -20,7 +20,6 @@ import java.util.Map;
 
 import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.R;
-import fusionkey.lowkey.auth.models.UserDB;
 import fusionkey.lowkey.auth.utils.UserAttributesEnum;
 import fusionkey.lowkey.entryActivity.EntryActivity;
 import fusionkey.lowkey.models.NotificationTO;
@@ -124,8 +123,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
 
     private void saveNotification(RemoteMessage remoteMessage){
-        UserDB attributes = LowKeyApplication.userManager.getUserDetails();
-        String id = attributes.getUserEmail();
+        //Map<String, String> attributes = LowKeyApplication.userManager.getUserDetails().getAttributes().getAttributes();
+        String id =  LowKeyApplication.userManager.getCachedEmail();
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = preferences.edit();
 

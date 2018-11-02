@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import fusionkey.lowkey.R;
 import fusionkey.lowkey.models.UserD;
 
@@ -16,7 +17,7 @@ public class ChatTabViewHolder extends RecyclerView.ViewHolder {
     TextView title;
     TextView name;
     TextView lastmsg;
-    ImageView imageStateHelped;
+    CircleImageView image;
     ImageView imageStateGetHelp;
 
     public ChatTabViewHolder(View itemView) {
@@ -26,6 +27,7 @@ public class ChatTabViewHolder extends RecyclerView.ViewHolder {
 
             name = (TextView) itemView.findViewById(R.id.name);
             lastmsg = (TextView) itemView.findViewById(R.id.lastmsg);
+            image = (CircleImageView) itemView.findViewById(R.id.circleImageView);
 
         }
     }

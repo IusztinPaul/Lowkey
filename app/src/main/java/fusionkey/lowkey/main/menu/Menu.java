@@ -23,7 +23,6 @@ public class Menu extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
-        ConstraintLayout settings = findViewById(R.id.SettingsLayout);
         ConstraintLayout edit = findViewById(R.id.EditLayout);
         ConstraintLayout change = findViewById(R.id.ChangeLayout);
         ConstraintLayout about = findViewById(R.id.AboutLayoout);
@@ -34,13 +33,6 @@ public class Menu extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 onBackPressed();
-            }
-        });
-        settings.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
-                startActivity(intent);
             }
         });
         edit.setOnClickListener(new View.OnClickListener() {

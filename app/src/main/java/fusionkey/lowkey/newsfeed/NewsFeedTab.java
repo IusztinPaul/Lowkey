@@ -38,6 +38,7 @@ import fusionkey.lowkey.listAdapters.ChatTabViewHolder;
 import fusionkey.lowkey.R;
 
 import fusionkey.lowkey.listAdapters.NewsFeedAdapter;
+import fusionkey.lowkey.main.utils.NetworkManager;
 import fusionkey.lowkey.newsfeed.asynctasks.NewsFeedAsyncTaskBuilder;
 import fusionkey.lowkey.newsfeed.interfaces.IGenericConsumer;
 
@@ -49,6 +50,7 @@ import fusionkey.lowkey.newsfeed.util.NewsFeedRequest;
 public class NewsFeedTab extends Fragment{
     public static final int NEWS_FEED_PAGE_SIZE = 4;
     public static final int COMMENT_ACTIVITY_REQUEST_CODE = 1;
+    public static final int POST_QUESTION_ACTIVITY_REQUEST_CODE = 2;
 
     private NewsFeedAdapter adapter;
     private ArrayList<NewsFeedMessage> messages;
@@ -66,6 +68,8 @@ public class NewsFeedTab extends Fragment{
     public SwipeRefreshLayout swipeRefreshLayout;
     private CircleImageView circleImageView;
     private Long referenceTimestamp;
+    private String id;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container,
@@ -81,7 +85,7 @@ public class NewsFeedTab extends Fragment{
         msgRecyclerView.setLayoutManager(linearLayoutManager);
         // Getting user details from Cognito.
         UserDB attributes = LowKeyApplication.userManager.getUserDetails();
-        final String id = attributes.getUsername();
+        id = attributes.getUsername();
         uniqueID = attributes.getUserEmail();
 
         // Create the initial data list.
@@ -123,8 +127,8 @@ public class NewsFeedTab extends Fragment{
             @Override
             public void onClick(View view) {
                 final Intent intent = new Intent(NewsFeedTab.this.getContext(), Askaquestion.class);
+                startActivityForResult(intent, POST_QUESTION_ACTIVITY_REQUEST_CODE);
                 getActivity().overridePendingTransition(0, 0);
-                startActivity(intent);
             }
         });
 
@@ -155,6 +159,7 @@ public class NewsFeedTab extends Fragment{
                     intent.putExtra("body",m.getContent());
                     intent.putExtra("title",m.getTitle());
                     intent.putExtra("username",m.getUser());
+                    intent.putExtra("email",m.getId());
                 }else {
                     MyParcelable object = new MyParcelable();
                     object.setArrList(new ArrayList<Comment>());
@@ -164,6 +169,7 @@ public class NewsFeedTab extends Fragment{
                     intent.putExtra("body",m.getContent());
                     intent.putExtra("title",m.getTitle());
                     intent.putExtra("username",m.getUser());
+                    intent.putExtra("email",m.getId());
 
                 }
                 startActivityForResult(intent, COMMENT_ACTIVITY_REQUEST_CODE);
@@ -203,7 +209,7 @@ public class NewsFeedTab extends Fragment{
                                     .execute();
 
                         }
-                    }, 5000);
+                    }, 2000);
 
             }
         });
@@ -249,27 +255,50 @@ public class NewsFeedTab extends Fragment{
             } else { Log.e("IntentResult","No comments to update");
                  }
              }
+            if (requestCode == POST_QUESTION_ACTIVITY_REQUEST_CODE){
+                 if(resultCode == Activity.RESULT_OK){
+                     Bundle b = data.getExtras();
+                     try {
+                         NewsFeedMessage m11 = new NewsFeedMessage();
+                         m11.setAnon(b.getBoolean("anonQ"));m11.setUser(id);m11.setTimeStamp(b.getLong("TimestampQ"));
+                         m11.setTitle(b.getString("TitleQ"));m11.setContent(b.getString("BodyQ"));
+                         m11.setId(uniqueID);
+                         m11.setType(NewsFeedMessage.NORMAL);
+                         messages.add(0,m11);
+                         adapter.notifyDataSetChanged();
+                         adapter.notifyItemInserted(0);
 
+                         Log.e("Q","ADDEEDDDDDd");
+                     } catch (NullPointerException e) {
+                         Log.e("Error", "parcelable object failed");
+                     }
+                 } else { Log.e("IntentResult","No comments to update");
+                 }
+            }
     }
 
     public void startPopulateNewsFeed() {
-        new NewsFeedAsyncTaskBuilder(newsFeedRequest, messages, msgRecyclerView, adapter)
-                .addIsStart()
-                .addArePostNew()
-                .addSetter(new IGenericConsumer<Long>() {
-                    @Override
-                    public void consume(Long item) {
-                        if(item != null)
-                            referenceTimestamp = item;
-                        else
-                            Toast.makeText(NewsFeedTab.this.getContext(),
-                                    NewsFeedTab.this.getResources().getString(R.string.nf_no_posts),
-                                    Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .build()
-                .execute();
-    }
+        if(NetworkManager.isNetworkAvailable()) {
+            new NewsFeedAsyncTaskBuilder(newsFeedRequest, messages, msgRecyclerView, adapter)
+                    .addIsStart()
+                    .addArePostNew()
+                    .addSetter(new IGenericConsumer<Long>() {
+                        @Override
+                        public void consume(Long item) {
+                            if (item != null)
+                                referenceTimestamp = item;
+                            else
+                                Toast.makeText(NewsFeedTab.this.getContext(),
+                                        NewsFeedTab.this.getResources().getString(R.string.nf_no_posts),
+                                        Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .build()
+                    .execute();
+        } else Toast.makeText(getActivity(), "Check if you're connected to the Internet", Toast.LENGTH_SHORT).show();
+
+
+}
 
     public void refreshNewsFeed() {
         for(int i = 0; i < messages.size(); i += NEWS_FEED_PAGE_SIZE)
