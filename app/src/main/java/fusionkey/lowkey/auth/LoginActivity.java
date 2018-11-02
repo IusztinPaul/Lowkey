@@ -33,6 +33,7 @@ import fusionkey.lowkey.auth.utils.AuthCallback;
 import fusionkey.lowkey.auth.utils.UserAttributesEnum;
 import fusionkey.lowkey.main.Main2Activity;
 import fusionkey.lowkey.R;
+import fusionkey.lowkey.main.menu.terms.TermsActivity;
 import fusionkey.lowkey.main.utils.NetworkManager;
 
 /**
@@ -55,7 +56,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private TextView tvForgotPassword;
     private View mProgressView;
     private View mLoginFormView;
-
+    private TextView terms;
     private Button mSign;
     private Button mBack;
     private TextView mRegister;
@@ -72,7 +73,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         tvConfirmCode = findViewById(R.id.tvConfirmCode);
         tvForgotPassword = findViewById(R.id.tvForgotPassword);
-
+        terms = findViewById(R.id.textView34);
         mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -82,6 +83,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     return true;
                 }
                 return false;
+            }
+        });
+
+        terms.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(LoginActivity.this, TermsActivity.class);
+                startActivity(intent);
             }
         });
 

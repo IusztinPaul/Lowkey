@@ -35,6 +35,8 @@ public class Askaquestion extends AppCompatActivity {
     Button back;
     NewsFeedRequest newsFeedRequest;
     CheckBox checkBox;
+    Timestamp timestamp;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +49,7 @@ public class Askaquestion extends AppCompatActivity {
         checkBox = findViewById(R.id.checkBox);
         back = findViewById(R.id.email_sign_in_button2);
         UserDB attributes = LowKeyApplication.userManager.getUserDetails();
+        timestamp = new Timestamp(System.currentTimeMillis());
         final String id = attributes.getUsername();
         final String uniqueID = attributes.getUserEmail();
         newsFeedRequest = new NewsFeedRequest(uniqueID);
@@ -58,9 +61,19 @@ public class Askaquestion extends AppCompatActivity {
                 if(NetworkManager.isNetworkAvailable()) {
                     boolean anon = checkBox.isChecked();
                     if (!title.getText().toString().equals("") && !body.getText().toString().equals("")) {
-                        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+
                         newsFeedRequest.postQuestion(timestamp.getTime(), anon, String.valueOf(title.getText()), String.valueOf(body.getText()));
+
+                            Intent retrieveData = new Intent();
+                            retrieveData.putExtra("TitleQ", String.valueOf(title.getText()));
+                            retrieveData.putExtra("BodyQ", String.valueOf(body.getText()));
+                            retrieveData.putExtra("TimestampQ", timestamp.getTime());
+                            retrieveData.putExtra("anonQ", anon);
+                            setResult(Activity.RESULT_OK, retrieveData);
+
+
                         onBackPressed();
+
                     }
                 } else Toast.makeText(getApplicationContext(), "Check if you're connected to the Internet", Toast.LENGTH_SHORT).show();
 
@@ -79,21 +92,6 @@ public class Askaquestion extends AppCompatActivity {
 
     }
 
-    @Override
-    public void onBackPressed() {
-        if(NetworkManager.isNetworkAvailable()) {
-            Intent retrieveData = new Intent();
-            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-            boolean anon = checkBox.isChecked();
-            retrieveData.putExtra("TitleQ", String.valueOf(title.getText()));
-            retrieveData.putExtra("BodyQ", String.valueOf(body.getText()));
-            retrieveData.putExtra("TimestampQ", timestamp.getTime());
-            retrieveData.putExtra("anonQ", anon);
-            setResult(Activity.RESULT_OK, retrieveData);
-        }
 
-        super.onBackPressed();
-        this.finish();
-    }
 
 }

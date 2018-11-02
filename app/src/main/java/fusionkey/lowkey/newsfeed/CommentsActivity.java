@@ -96,15 +96,7 @@ public class CommentsActivity extends AppCompatActivity {
         populateWithData();
         setupComments();
 
-        final ProfilePhotoUploader photoUploader = new ProfilePhotoUploader();
-        photoUploader.download(UserManager.parseEmailToPhotoFileName(getIntent().getStringExtra("email")),
-                new Callback() {
-                    @Override
-                    public void handle() {
-                        Log.e("PHOTO", "photo downloaded");
-                        Picasso.with(getApplicationContext()).load((photoUploader.getFileTO())).into(imagepic);
-                    }
-                }, null);
+
 
 
         button.setOnClickListener(new View.OnClickListener() {
@@ -144,8 +136,25 @@ public class CommentsActivity extends AppCompatActivity {
             commentsAdapter = new CommentAdapter(commentArrayList,this);
             title.setText(getIntent().getStringExtra("title"));
             body.setText(getIntent().getStringExtra("body"));
-            String aux = getIntent().getStringExtra("username");
-            posted.setText(aux);
+            if(getIntent().getBooleanExtra("anon",false)) {
+                String aux = "Anonymous";
+                posted.setText(aux);
+                Picasso.with(getApplicationContext()).load(R.drawable.avatar_placeholder).into(imagepic);
+
+            }
+            else {
+                String aux = getIntent().getStringExtra("username");
+                posted.setText(aux);
+                final ProfilePhotoUploader photoUploader = new ProfilePhotoUploader();
+                photoUploader.download(UserManager.parseEmailToPhotoFileName(getIntent().getStringExtra("email")),
+                        new Callback() {
+                            @Override
+                            public void handle() {
+                                Log.e("PHOTO", "photo downloaded");
+                                Picasso.with(getApplicationContext()).load((photoUploader.getFileTO())).into(imagepic);
+                            }
+                        }, null);
+            }
             rvComments.setAdapter(commentsAdapter);
         }catch(NullPointerException e){
             Log.e("Error","parcelable object failed");

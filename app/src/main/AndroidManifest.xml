@@ -40,7 +40,9 @@
         <activity android:name=".auth.ForgotPasswordActivity" />
         <activity
             android:name=".newsfeed.CommentsActivity"
-            android:theme="@style/AppTheme.CommentsActivity"/>
+
+            android:theme="@style/AppTheme.CommentsActivity" />
+
         <activity android:name=".ROOMdatabase.MessagesActivity" />
         <activity android:name=".main.menu.profile.EditUserActivity" />
         <activity
@@ -77,13 +79,13 @@
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/colorAccent" />
-
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="[ca-app-pub-3205268820160972~9635375425]"/>
+
+            android:value="ca-app-pub-3940256099942544~3347511713" />
 
         <activity android:name=".newsfeed.Askaquestion"/>
-
+        <activity android:name=".main.menu.terms.TermsActivity"></activity>
     </application>
 
 </manifest>

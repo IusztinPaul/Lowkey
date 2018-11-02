@@ -154,6 +154,7 @@ public class NewsFeedTab extends Fragment{
                     MyParcelable object = new MyParcelable();
                     object.setArrList(m.getCommentArrayList());
                     intent.putExtra("parcel", object);
+                    intent.putExtra("anon", m.getAnon());
                     intent.putExtra("SNStopic",m.getSNStopic());
                     intent.putExtra("timestampID",m.getTimeStamp());
                     intent.putExtra("body",m.getContent());
@@ -164,6 +165,7 @@ public class NewsFeedTab extends Fragment{
                     MyParcelable object = new MyParcelable();
                     object.setArrList(new ArrayList<Comment>());
                     intent.putExtra("parcel", object);
+                    intent.putExtra("anon", m.getAnon());
                     intent.putExtra("SNStopic",m.getSNStopic());
                     intent.putExtra("timestampID",m.getTimeStamp());
                     intent.putExtra("body",m.getContent());
