@@ -90,9 +90,10 @@ public class Askaquestion extends AppCompatActivity {
             retrieveData.putExtra("TimestampQ", timestamp.getTime());
             retrieveData.putExtra("anonQ", anon);
             setResult(Activity.RESULT_OK, retrieveData);
-        }g
+        }
 
         super.onBackPressed();
         this.finish();
     }
+
 }
