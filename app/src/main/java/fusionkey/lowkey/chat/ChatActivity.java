@@ -248,8 +248,13 @@ public class ChatActivity extends AppCompatActivity {
             database.close();
         }
 
+<<<<<<< HEAD
+         updatePoints();
+
+=======
 
          updatePoints();
+>>>>>>> dev
         super.onBackPressed();
     }
 
@@ -286,6 +291,18 @@ public class ChatActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int id) {
                         dialog.cancel();
                         //rebuild the email
+<<<<<<< HEAD
+                        StringBuilder stringBuilder = new StringBuilder();
+                        stringBuilder.append(userRequest);
+                        stringBuilder.insert(stringBuilder.length()-3,'.');
+                        stringBuilder.insert(stringBuilder.length()-9,'@');
+                        Log.e("string ",stringBuilder.toString());
+
+                        UserDB user = UserDBManager.getUserData(stringBuilder.toString());
+                        user.setScore(user.getScore() + 5);
+                        UserDBManager.update(user);
+
+=======
                         String userEmail = EmailBuilder.buildEmail(userRequest);
                         Log.e("userEmail ", userEmail);
 
@@ -293,6 +310,7 @@ public class ChatActivity extends AppCompatActivity {
                         UserDB user = userAttributeManager.getUserDB();
                         user.setScore(user.getScore() + POSITIVE_BUTTON_REVIEW_POINTS);
                         userAttributeManager.updateUserAttributes(null);
+>>>>>>> dev
 
                         onBackPressed();
                     }
