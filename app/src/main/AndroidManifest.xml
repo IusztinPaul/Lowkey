@@ -40,7 +40,7 @@
         <activity android:name=".auth.ForgotPasswordActivity" />
         <activity
             android:name=".newsfeed.CommentsActivity"
-            android:theme="@style/AppTheme.CommentsActivity"></activity>
+            android:theme="@style/AppTheme.CommentsActivity"/>
         <activity android:name=".ROOMdatabase.MessagesActivity" />
         <activity android:name=".main.menu.profile.EditUserActivity" />
         <activity
@@ -57,28 +57,32 @@
         <activity android:name=".main.menu.Menu" />
         <activity android:name=".main.menu.license.LicenseActivity" />
 
-        <!--<service android:name=".pushnotifications.MyFirebaseMessagingService">-->
-            <!--<intent-filter>-->
-                <!--<action android:name="com.google.firebase.MESSAGING_EVENT" />-->
-            <!--</intent-filter>-->
-        <!--</service>-->
+        <service android:name=".pushnotifications.MyFirebaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
 
-        <!--&lt;!&ndash;-->
-             <!--Set custom default icon. This is used when no icon is set for incoming notification messages.-->
-             <!--See README(https://goo.gl/l4GJaQ) for more.-->
-        <!--&ndash;&gt;-->
-        <!--<meta-data-->
-            <!--android:name="com.google.firebase.messaging.default_notification_icon"-->
-            <!--android:resource="@drawable/ic_launcher_foreground" />-->
-        <!--&lt;!&ndash;-->
-             <!--Set color used with incoming notification messages. This is used when no color is set for the incoming-->
-             <!--notification message. See README(https://goo.gl/6BKBk7) for more.-->
-        <!--&ndash;&gt;-->
-        <!--<meta-data-->
-            <!--android:name="com.google.firebase.messaging.default_notification_color"-->
-            <!--android:resource="@color/colorAccent" />-->
+        <!--
+             Set custom default icon. This is used when no icon is set for incoming notification messages.
+             See README(https://goo.gl/l4GJaQ) for more.
+        -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/ic_launcher_foreground" />
+        <!--
+             Set color used with incoming notification messages. This is used when no color is set for the incoming
+             notification message. See README(https://goo.gl/6BKBk7) for more.
+        -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/colorAccent" />
 
-        <activity android:name=".newsfeed.Askaquestion"></activity>
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="[ca-app-pub-3205268820160972~9635375425]"/>
+
+        <activity android:name=".newsfeed.Askaquestion"/>
     </application>
 
 </manifest>

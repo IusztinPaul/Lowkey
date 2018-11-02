@@ -1,10 +1,13 @@
 package fusionkey.lowkey.pushnotifications;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
@@ -12,6 +15,7 @@ import android.util.Log;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 import fusionkey.lowkey.LowKeyApplication;
@@ -19,11 +23,13 @@ import fusionkey.lowkey.R;
 import fusionkey.lowkey.auth.models.UserDB;
 import fusionkey.lowkey.auth.utils.UserAttributesEnum;
 import fusionkey.lowkey.entryActivity.EntryActivity;
+import fusionkey.lowkey.models.NotificationTO;
 
 import static android.content.ContentValues.TAG;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
-
+    private NotificationManager notifManager;
+    private static String GROUP_KEY_NOTIF ="group_key_notif";
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
@@ -55,26 +61,68 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
      */
 
     private void handleNow(RemoteMessage remoteMessage){
-        Intent intent = new Intent(this, EntryActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+        String message = remoteMessage.getData().toString();
 
-        String data = remoteMessage.getData().toString();
-
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this,"fs")
-                .setSmallIcon(R.drawable.schat)
-                .setContentTitle("My notification")
-                .setContentText(data)
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                // Set the intent that will fire when the user taps the notification
-                .setContentIntent(pendingIntent)
-                .setAutoCancel(true);
-        // Add as notification
-        NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        manager.notify(0, mBuilder.build());
-
+        String[] s = message.split("muiepsdasdfghjkl");
+        //notif.add(new NotificationTO(s[2].replace("}",""),s[0].replace("{default=","") + " answered your question "+ s[1]));
+        String username = s[0].replace("{default=","") + " answered your question " ;
+        String data =  s[2].replace("}","");
+        final int NOTIFY_ID = 0; // ID of notification
+        String id = "id";
+        String title = "defaul channel";
+        Intent intent;
+        PendingIntent pendingIntent;
+        NotificationCompat.Builder builder;
+        if (notifManager == null) {
+            notifManager = (NotificationManager)this.getSystemService(Context.NOTIFICATION_SERVICE);
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            NotificationChannel mChannel = notifManager.getNotificationChannel(id);
+            if (mChannel == null) {
+                mChannel = new NotificationChannel(id, title, importance);
+                mChannel.enableVibration(true);
+                mChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
+                notifManager.createNotificationChannel(mChannel);
+            }
+            builder = new NotificationCompat.Builder(this, id);
+            intent = new Intent(this, EntryActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+            builder.setContentTitle(username)                            // required
+                    .setSmallIcon(R.drawable.notif_image)
+                    .setContentText(data) // required
+                    .setDefaults(Notification.DEFAULT_ALL)
+                    .setAutoCancel(true)
+                    .setContentIntent(pendingIntent)
+                    .setGroup(GROUP_KEY_NOTIF)
+                    .setStyle(new NotificationCompat.BigTextStyle().bigText(data))
+                    //.setTicker(aMessage)
+                    .setVibrate(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
+        }
+        else {
+            builder = new NotificationCompat.Builder(this, id);
+            intent = new Intent(this, EntryActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+            builder.setContentTitle(username)                           // required
+                    .setSmallIcon(R.drawable.notif_image)   // required
+                    .setContentText(data) // required
+                    .setDefaults(Notification.DEFAULT_ALL)
+                    .setAutoCancel(true)
+                    .setContentIntent(pendingIntent)
+                    .setStyle(new NotificationCompat.BigTextStyle().bigText(data))
+                    .setGroup(GROUP_KEY_NOTIF)
+                    // .setTicker(aMessage)
+                    .setVibrate(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400})
+                    .setPriority(Notification.PRIORITY_HIGH);
+        }
+        Notification notification = builder.build();
+        notifManager.notify(NOTIFY_ID, notification);
     }
+
+
     private void saveNotification(RemoteMessage remoteMessage){
         UserDB attributes = LowKeyApplication.userManager.getUserDetails();
         String id = attributes.getUserEmail();
@@ -87,6 +135,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         editor.putInt("newnotif",1);
         editor.apply();
     }
+
+
 
 
 }

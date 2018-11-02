@@ -1,7 +1,9 @@
 package fusionkey.lowkey.chat;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.arch.persistence.room.Room;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -187,7 +189,7 @@ public class ChatActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onBackPressed();
+                showDialog();
             }
         });
     }
@@ -200,8 +202,14 @@ public class ChatActivity extends AppCompatActivity {
 
 
         if(msgDtoList!=null && msgDtoList.size() > 0) {
-            // TODO: aici trebuie schimbat la -> msgDtoList.get(msgDtoList.size() - 1)
-            UserD userD = new UserD(userRequest, msgDtoList.get(msgDtoList.size() - 1).getRawContent(), msgDtoList,role);
+            String lastMessage;
+            if((msgDtoList.get(msgDtoList.size()-1).getContentType())==1)
+                lastMessage = "user sent a photo";
+            else
+                lastMessage = msgDtoList.get(msgDtoList.size()-1).getRawContent();
+
+            UserD userD = new UserD(userRequest, lastMessage, msgDtoList,role);
+
             AppDatabase database = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "user-database")
                     .allowMainThreadQueries()   //Allows room to do operation on main thread
                     .build();
@@ -216,7 +224,8 @@ public class ChatActivity extends AppCompatActivity {
             }
             database.close();
         }
-        updatePoints();
+       // updatePoints();
+       // showDialog();
         super.onBackPressed();
     }
 
@@ -240,6 +249,42 @@ public class ChatActivity extends AppCompatActivity {
                     }
                     break;
             }
+    }
+
+    private void showDialog(){
+        AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
+        builder1.setMessage("Was this helpful ?");
+        builder1.setCancelable(true);
+
+        builder1.setPositiveButton(
+                "Yes",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                        //rebuild the email
+                        StringBuilder stringBuilder = new StringBuilder();
+                        stringBuilder.append(userRequest);
+                        stringBuilder.insert(stringBuilder.length()-3,'.');
+                        stringBuilder.insert(stringBuilder.length()-9,'@');
+                        Log.e("string ",stringBuilder.toString());
+                        //UserDB user = UserDBManager.getUserData(stringBuilder.toString());
+                        //user.setScore(user.getScore() + 5);
+                        //UserDBManager.update(user);
+                        onBackPressed();
+                    }
+                });
+
+        builder1.setNegativeButton(
+                "No",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                        onBackPressed();
+                    }
+                });
+
+        AlertDialog alert11 = builder1.create();
+        alert11.show();
     }
 
     private void updatePoints(){
