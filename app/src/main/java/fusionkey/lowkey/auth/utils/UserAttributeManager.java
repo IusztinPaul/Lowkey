@@ -1,6 +1,5 @@
 package fusionkey.lowkey.auth.utils;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import fusionkey.lowkey.auth.models.UserDB;
