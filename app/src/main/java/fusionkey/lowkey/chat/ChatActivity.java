@@ -146,7 +146,7 @@ public class ChatActivity extends AppCompatActivity {
                     @Override
                     public void handle() {
                         Log.e("PHOTO", "photo downloaded");
-                        Picasso.get().load((photoUploader.getFileTO())).into(image);
+                        Picasso.with(getApplicationContext()).load((photoUploader.getFileTO())).into(image);
                     }
                 }, null);
 
@@ -316,7 +316,6 @@ public class ChatActivity extends AppCompatActivity {
 
     private void updatePoints(){
         String currentUserEmail = LowKeyApplication.userManager.getCurrentUserEmail();
-        // @TODO TO @PAUL :: nullpointer la user, probabil nu sunt in Table  !
         UserDB user = UserDBManager.getUserData(currentUserEmail);
         long newScore = user.getScore() + Math.round(PointsCalculator.calculateStringsValue(stringCounter,stringL,clock));
         user.setScore(newScore);

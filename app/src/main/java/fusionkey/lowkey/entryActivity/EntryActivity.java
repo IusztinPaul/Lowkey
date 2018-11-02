@@ -22,6 +22,7 @@ import fusionkey.lowkey.auth.RegisterActivity;
 import fusionkey.lowkey.auth.utils.AuthCallback;
 import fusionkey.lowkey.auth.utils.UserAttributesEnum;
 import fusionkey.lowkey.main.Main2Activity;
+import fusionkey.lowkey.main.utils.NetworkManager;
 
 public class EntryActivity extends AppCompatActivity {
 
@@ -40,6 +41,7 @@ public class EntryActivity extends AppCompatActivity {
         switchView(true);
 
         // If you are logged in just proceed.
+        if(NetworkManager.isNetworkAvailable())
         if (isLoggedIn()) return;
         switchView(false);
 

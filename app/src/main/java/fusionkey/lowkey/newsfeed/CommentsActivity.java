@@ -102,7 +102,7 @@ public class CommentsActivity extends AppCompatActivity {
                     @Override
                     public void handle() {
                         Log.e("PHOTO", "photo downloaded");
-                        Picasso.get().load((photoUploader.getFileTO())).into(imagepic);
+                        Picasso.with(getApplicationContext()).load((photoUploader.getFileTO())).into(imagepic);
                     }
                 }, null);
 

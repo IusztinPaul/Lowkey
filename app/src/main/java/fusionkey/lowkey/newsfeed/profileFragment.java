@@ -9,8 +9,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.reward.RewardItem;
+import com.google.android.gms.ads.reward.RewardedVideoAd;
+import com.google.android.gms.ads.reward.RewardedVideoAdListener;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -21,6 +29,7 @@ import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.R;
 import fusionkey.lowkey.auth.models.UserDB;
 import fusionkey.lowkey.auth.utils.UserAttributesEnum;
+import fusionkey.lowkey.auth.utils.UserDBManager;
 import fusionkey.lowkey.listAdapters.NewsFeedAdapter;
 import fusionkey.lowkey.main.MainCallback;
 import fusionkey.lowkey.newsfeed.models.NewsFeedMessage;
@@ -38,7 +47,7 @@ public class profileFragment extends Fragment {
     TextView helped;
     TextView money;
     TextView payment;
-
+    Button reward;
     TextView level;
     TextView showall;
     ProgressBar paymentBar;
@@ -48,6 +57,8 @@ public class profileFragment extends Fragment {
     String uniqueID;
     private RecyclerView msgRecyclerView;
     NewsFeedRequest newsfeedRequest;
+    private RewardedVideoAd mRewardedVideoAd;
+
 
     static profileFragment newInstance(int position) {
         profileFragment frag=new profileFragment();
@@ -82,13 +93,77 @@ public class profileFragment extends Fragment {
         expBar = rootView.findViewById(R.id.expBar);
         paymentBar = rootView.findViewById(R.id.paymentBar);
         showall = rootView.findViewById(R.id.showall);
-
+        reward = rootView.findViewById(R.id.reward);
 
         UserDB attributes = LowKeyApplication.userManager.getUserDetails();
         uniqueID = attributes.getUserEmail();
 
+
+       reward.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View view) {
+               mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(getContext());
+               mRewardedVideoAd.setRewardedVideoAdListener(new RewardedVideoAdListener() {
+                   @Override
+                   public void onRewardedVideoAdLoaded() {
+                       mRewardedVideoAd.show();
+                   }
+
+                   @Override
+                   public void onRewardedVideoAdOpened() {
+
+                   }
+
+                   @Override
+                   public void onRewardedVideoStarted() {
+
+                   }
+
+                   @Override
+                   public void onRewardedVideoAdClosed() {
+
+                   }
+
+                   @Override
+                   public void onRewarded(RewardItem rewardItem) {
+
+                   }
+
+                   @Override
+                   public void onRewardedVideoAdLeftApplication() {
+
+                   }
+
+                   @Override
+                   public void onRewardedVideoAdFailedToLoad(int i) {
+
+                   }
+
+                   @Override
+                   public void onRewardedVideoCompleted() {
+                       String currentUserEmail = LowKeyApplication.userManager.getCurrentUserEmail();
+                       UserDB user = UserDBManager.getUserData(currentUserEmail);
+                       long newScore = user.getScore() + 5;
+                       user.setScore(newScore);
+                       UserDBManager.update(user);
+                       Toast.makeText(getContext(), "You've won 5 points ! ",
+                               Toast.LENGTH_SHORT).show();
+                       populateUI();
+                   }
+               });
+               loadRewardedVideoAd();
+           }
+       });
+
         populateUI();
         return(rootView);
+    }
+
+
+
+    private void loadRewardedVideoAd() {
+        mRewardedVideoAd.loadAd("ca-app-pub-3940256099942544/5224354917",
+                new AdRequest.Builder().build());
     }
 
     public void populateUI(){

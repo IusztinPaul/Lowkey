@@ -41,7 +41,7 @@ public class ChatAppMsgViewHolder extends RecyclerView.ViewHolder {
             leftMsgLayoutLAST = (ConstraintLayout) itemView.findViewById(R.id.chat_left_msg_layout_LAST);
 
             leftName = (TextView) itemView.findViewById(R.id.text_message_name);
-            imagepic = (CircleImageView) itemView.findViewById(R.id.circleImageView);
+            //imagepic = (CircleImageView) itemView.findViewById(R.id.circleImageView);
             leftDate = (TextView) itemView.findViewById(R.id.text_message_timeLeft);
             rightDate = (TextView) itemView.findViewById(R.id.text_message_timeRight);
 

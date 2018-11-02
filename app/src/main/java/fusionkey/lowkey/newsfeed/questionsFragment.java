@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +25,7 @@ import fusionkey.lowkey.auth.utils.UserAttributesEnum;
 import fusionkey.lowkey.listAdapters.ChatTabViewHolder;
 import fusionkey.lowkey.listAdapters.NewsFeedAdapter;
 import fusionkey.lowkey.main.MainCallback;
+import fusionkey.lowkey.main.utils.NetworkManager;
 import fusionkey.lowkey.newsfeed.asynctasks.GetYourQuestionsAsyncTask;
 import fusionkey.lowkey.newsfeed.models.Comment;
 import fusionkey.lowkey.newsfeed.models.NewsFeedMessage;
@@ -128,10 +130,14 @@ public class questionsFragment extends Fragment {
 
 
     public void refreshNewsfeed(){
-        GetYourQuestionsAsyncTask getYourQuestionsAsyncTask = new GetYourQuestionsAsyncTask(messages,msgRecyclerView,adapter,newsfeedRequest);
-        getYourQuestionsAsyncTask.execute();
-        //adapter.notifyDataSetChanged();
+        if(NetworkManager.isNetworkAvailable()) {
+            GetYourQuestionsAsyncTask getYourQuestionsAsyncTask = new GetYourQuestionsAsyncTask(messages, msgRecyclerView, adapter, newsfeedRequest);
+            getYourQuestionsAsyncTask.execute();
+            //adapter.notifyDataSetChanged();
+        } else Toast.makeText(getContext(), "Check if you're connected to the Internet", Toast.LENGTH_SHORT).show();
+
     }
+
     @Override
     public void onActivityResult(int requestCode,int resultCode,Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

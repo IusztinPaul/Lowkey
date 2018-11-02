@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -27,6 +28,7 @@ import fusionkey.lowkey.listAdapters.ChatServiceAdapters.ChatAppMsgAdapter;
 import fusionkey.lowkey.main.Main2Activity;
 import fusionkey.lowkey.main.utils.Callback;
 import fusionkey.lowkey.main.utils.EmailBuilder;
+import fusionkey.lowkey.main.utils.NetworkManager;
 import fusionkey.lowkey.main.utils.ProfilePhotoUploader;
 import fusionkey.lowkey.models.UserD;
 import static fusionkey.lowkey.chat.models.MessageTO.MSG_TYPE_RECEIVED;
@@ -59,20 +61,30 @@ public class MessagesActivity extends AppCompatActivity {
 
         String email = EmailBuilder.buildEmail(username);
         UserDB userDB = UserDBManager.getUserData(email);
-
-        upperText.setText(userDB.getUsername());
-
+        try {
+            upperText.setText(userDB.getUsername());
+        } catch (NullPointerException npe){
+            upperText.setText("Not found");
+        }
         final ProfilePhotoUploader photoUploader = new ProfilePhotoUploader();
         photoUploader.download(UserManager.parseEmailToPhotoFileName(email),
                 new Callback() {
                     @Override
                     public void handle() {
                         Log.e("PHOTO", "photo downloaded");
-                        Picasso.get().load((photoUploader.getFileTO())).into(image);
+                        Picasso.with(getApplicationContext()).load((photoUploader.getFileTO())).into(image);
                     }
-                }, null);
+                }, new Callback() {
+                    @Override
+                    public void handle() {
+                        Picasso.with(getApplicationContext()).load((R.drawable.avatar_placeholder)).into(image);
+                    }
+                });
 
-        UserD user = userDAO.findByName(username);
+        if(!NetworkManager.isNetworkAvailable())
+            Toast.makeText(getApplicationContext(), "Check if you're connected to the Internet", Toast.LENGTH_SHORT).show();
+
+    UserD user = userDAO.findByName(username);
 
 
 

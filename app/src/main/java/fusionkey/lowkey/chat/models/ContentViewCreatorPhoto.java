@@ -30,8 +30,12 @@ public class ContentViewCreatorPhoto extends ContentViewCreatorUtils implements 
         {
             String email = EmailBuilder.buildEmail(msg.getSender());
             UserDB userDB = UserDBManager.getUserData(email);
-            holder.leftName.setText(userDB.getUsername());
-
+            try {
+                holder.leftName.setText(userDB.getUsername());
+            }
+            catch (NullPointerException npe){
+                holder.leftName.setText("Not found");
+            }
             populateView(holder.leftMsgLayout, holder.leftDate, msg);
             hideTextAndShowImage(holder.leftMsgTextView, holder.leftIv, (Bitmap) msg.getContent());
             makeLayoutsVisibilityGONE(holder.rightMsgLayout, holder.leftMsgLayoutLAST);
