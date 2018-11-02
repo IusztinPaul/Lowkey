@@ -31,6 +31,7 @@ import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import fusionkey.lowkey.LowKeyApplication;
+import fusionkey.lowkey.auth.models.UserDB;
 import fusionkey.lowkey.auth.utils.UserAttributesEnum;
 import fusionkey.lowkey.entryActivity.EntryActivity;
 import fusionkey.lowkey.R;
@@ -79,12 +80,13 @@ public class ProfileTab extends Fragment {
         pager.setAdapter(buildAdapter());
         tabLayout.setupWithViewPager(pager, true);
         final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext().getApplicationContext());
+        username = rootView.findViewById(R.id.username2);
         /*
         points = rootView.findViewById(R.id.points);
         helped = rootView.findViewById(R.id.helped);
         money = rootView.findViewById(R.id.money);
         payment = rootView.findViewById(R.id.payment);
-        username = rootView.findViewById(R.id.username);
+
         level = rootView.findViewById(R.id.level);
         expBar = rootView.findViewById(R.id.expBar);
         paymentBar = rootView.findViewById(R.id.paymentBar);
@@ -201,8 +203,8 @@ public class ProfileTab extends Fragment {
     }
     public void populateUI(){
         try {
-            Map<String, String> attributes = LowKeyApplication.userManager.getUserDetails().getAttributes().getAttributes();
-            String usernameS = attributes.get(UserAttributesEnum.USERNAME.toString());
+            UserDB attributes = LowKeyApplication.userManager.getUserDetails();
+            String usernameS = attributes.getUsername();
             username.setText(usernameS != null ? usernameS : "");
 
         } catch (NullPointerException e) {

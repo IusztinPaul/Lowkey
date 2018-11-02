@@ -5,7 +5,6 @@ import android.util.Log;
 
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUser;
-import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUserDetails;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUserPool;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUserSession;
 import com.amazonaws.regions.Region;
@@ -22,16 +21,15 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-public class CognitoPoolUtils {
+class CognitoPoolUtils {
    static final String REGION = "eu-central-1"; // Used by Java SDK.
    static final Regions REGIONS = Regions.EU_CENTRAL_1; // Used by Android SDK.
-   static final String USER_POOL_ID = "eu-central-1_TU6gnuPdq";
-   static final String CLIENT_ID = "4dt31qskgv09rtckvli0g6ikia";
-   static final String CLIENT_SECRET = "ecbl2apn2k54nl9terbqhvsrco5t780isc1fcusptci08jic7q1";
+   static final String USER_POOL_ID = "eu-central-1_FTGTblB3e";
+   static final String CLIENT_ID = "7qqhj3qvkkvflkmiaf6tc729ge";
+   static final String CLIENT_SECRET = "1silga4fuguanqm92nnbncb1dbsmeg8kj0kfhsttd996v5ltorfg";
 
     private CognitoUserPool userPool;
     private CognitoUser user;
-    private CognitoUserDetails userDetails;
     private CognitoUserSession userSession;
 
     CognitoPoolUtils (Context context)  {
@@ -63,14 +61,6 @@ public class CognitoPoolUtils {
         this.user = null;
     }
 
-    public CognitoUserDetails getUserDetails() {
-        return userDetails;
-    }
-
-    public synchronized void setUserDetails(CognitoUserDetails userDetails) {
-        this.userDetails = userDetails;
-    }
-
     public CognitoUserSession getUserSession() {
         return userSession;
     }
@@ -81,7 +71,6 @@ public class CognitoPoolUtils {
 
     public void setAllUserDataToNull() {
         user = null;
-        userDetails = null;
         userSession = null;
     }
 

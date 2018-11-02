@@ -6,11 +6,15 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
+
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
 
 import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.R;
@@ -22,6 +26,7 @@ public class HelpOthers extends Fragment {
     private static final String KEY_POSITION="position";
     SharedPreferences sharedPreferences;
     private MainCallback mainCallback;
+    private InterstitialAd mInterstitialAd;
 
     static HelpOthers newInstance(int position) {
         HelpOthers frag=new HelpOthers();
@@ -54,7 +59,9 @@ public class HelpOthers extends Fragment {
             @Override
             public void onClick(View view) {
                 if(NetworkManager.isNetworkAvailable() && loadState()==0){
+
                     mainCallback.helpOthers();
+
                     saveState("step",1);
 
 

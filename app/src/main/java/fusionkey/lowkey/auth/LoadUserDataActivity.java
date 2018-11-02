@@ -12,7 +12,7 @@ import java.lang.ref.WeakReference;
 
 import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.R;
-import fusionkey.lowkey.entryActivity.EntryActivity;
+import fusionkey.lowkey.auth.utils.UserAttributesEnum;
 import fusionkey.lowkey.main.Main2Activity;
 import fusionkey.lowkey.main.utils.Callback;
 import fusionkey.lowkey.main.utils.ProfilePhotoUploader;
@@ -25,24 +25,25 @@ public class LoadUserDataActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_load_user_data);
 
-        new AsyncTaskChecker(new WeakReference<Activity>(this)).execute();
+        String userEmail = this.getIntent().getStringExtra(UserAttributesEnum.EMAIL.toString());
+        new AsyncTaskChecker(new WeakReference<Activity>(this), userEmail).execute();
     }
 
     private static class AsyncTaskChecker extends AsyncTask<Void, Void, Void> {
         private WeakReference<Activity> activityWeakReference;
+        private String userEmail;
         private boolean loadingPhoto;
 
-        public AsyncTaskChecker(WeakReference<Activity> activityWeakReference) {
+        public AsyncTaskChecker(WeakReference<Activity> activityWeakReference, String userEmail) {
             this.activityWeakReference = activityWeakReference;
+            this.userEmail = userEmail;
         }
 
         @Override
         protected Void doInBackground(Void... voids) {
             new RegisterSNS().registerWithSNS();
 
-            // First wait for the user details which are loaded from the login login.
-            while (LowKeyApplication.userManager.getUserDetails() == null
-                    || LowKeyApplication.userManager.getUserId() == null) ;
+            LowKeyApplication.userManager.requestCurrentUserDetails(userEmail, null);
 
             // Now access the S3 photo with the new user details.
             try {
@@ -50,11 +51,6 @@ public class LoadUserDataActivity extends AppCompatActivity {
                 final ProfilePhotoUploader profilePhotoUploader =
                         new ProfilePhotoUploader();
                 profilePhotoUploader.download(
-                        /**
-                         * @TODO la linia asta e eroare
-                         *      Caused by: java.lang.NullPointerException: Attempt to invoke virtual method 'java.lang.String com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUser.getUserId()'
-                         *      on a null object reference
-                         */
                         LowKeyApplication.userManager.getPhotoFileName(),
                         new Callback() {
                             @Override

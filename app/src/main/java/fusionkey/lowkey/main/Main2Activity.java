@@ -20,6 +20,9 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import com.amazonaws.mobile.client.AWSMobileClient;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
 
 import fusionkey.lowkey.LowKeyApplication;
@@ -47,7 +50,7 @@ public class Main2Activity extends AppCompatActivity implements LifecycleObserve
     /**
      * The {@link ViewPager} that will host the section contents.
      */
-
+    private InterstitialAd mInterstitialAd;
     private ViewPager mViewPager;
     private ProgressBar progressBar;
     private SharedPreferences sharedPreferences;
@@ -75,6 +78,11 @@ public class Main2Activity extends AppCompatActivity implements LifecycleObserve
         searchCard = (CardView) findViewById(R.id.searchCard);
         imageView = findViewById(R.id.imageView8);
 
+        // Admob init
+        // Sample AdMob app ID: ca-app-pub-3940256099942544~3347511713
+        MobileAds.initialize(this, "ca-app-pub-3940256099942544~3347511713");
+
+
 
         // AWSMobileClient enables AWS user credentials to access your table
         AWSMobileClient.getInstance().initialize(this).execute();
@@ -83,24 +91,101 @@ public class Main2Activity extends AppCompatActivity implements LifecycleObserve
     }
     @Override
     public void searchForHelp() {
-        loadingAsyncTask = new LoadingAsyncTask(currentUser, this, progressBar, true, searchCard);
-        loadingAsyncTask.execute();
-        saveState("step", 0);
+
+        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
+            mInterstitialAd.setAdListener(new AdListener() {
+                @Override
+                public void onAdLoaded() {
+                    // Code to be executed when an ad finishes loading.
+                    mInterstitialAd.show();
+                }
+
+                @Override
+                public void onAdFailedToLoad(int errorCode) {
+                    // Code to be executed when an ad request fails.
+                    loadingAsyncTask = new LoadingAsyncTask(currentUser, Main2Activity.this, progressBar, true, searchCard);
+                    loadingAsyncTask.execute();
+                    saveState("step", 0);
+                }
+
+                @Override
+                public void onAdOpened() {
+                    // Code to be executed when the ad is displayed.
+                }
+
+                @Override
+                public void onAdLeftApplication() {
+                    // Code to be executed when the user has left the app.
+                }
+
+                @Override
+                public void onAdClosed() {
+                    // Code to be executed when when the interstitial ad is closed.
+                    loadingAsyncTask = new LoadingAsyncTask(currentUser, Main2Activity.this, progressBar, true, searchCard);
+                    loadingAsyncTask.execute();
+                    saveState("step", 0);
+                }
+            });
+
     }
     @Override
     public void helpOthers() {
 
-        searchCard.setVisibility(View.VISIBLE);
-        loadingAsyncTask = new LoadingAsyncTask(currentUser, this, progressBar, false, searchCard);
-        loadingAsyncTask.execute();
-        imageView.setOnClickListener(new View.OnClickListener() {
+        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
+        mInterstitialAd.setAdListener(new AdListener() {
             @Override
-            public void onClick(View view) {
-                loadingAsyncTask.cancel(true);
-                saveState("step", 0);
-                doNothing();
+            public void onAdLoaded() {
+                // Code to be executed when an ad finishes loading.
+                mInterstitialAd.show();
+            }
+
+            @Override
+            public void onAdFailedToLoad(int errorCode) {
+                // Code to be executed when an ad request fails.
+                searchCard.setVisibility(View.VISIBLE);
+                loadingAsyncTask = new LoadingAsyncTask(currentUser, Main2Activity.this, progressBar, false, searchCard);
+                loadingAsyncTask.execute();
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        loadingAsyncTask.cancel(true);
+                        saveState("step", 0);
+                        doNothing();
+                    }
+                });
+            }
+
+            @Override
+            public void onAdOpened() {
+                // Code to be executed when the ad is displayed.
+            }
+
+            @Override
+            public void onAdLeftApplication() {
+                // Code to be executed when the user has left the app.
+            }
+
+            @Override
+            public void onAdClosed() {
+                // Code to be executed when when the interstitial ad is closed.
+                searchCard.setVisibility(View.VISIBLE);
+                loadingAsyncTask = new LoadingAsyncTask(currentUser, Main2Activity.this, progressBar, false, searchCard);
+                loadingAsyncTask.execute();
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        loadingAsyncTask.cancel(true);
+                        saveState("step", 0);
+                        doNothing();
+                    }
+                });
             }
         });
+
     }
 
     private void doNothing() {

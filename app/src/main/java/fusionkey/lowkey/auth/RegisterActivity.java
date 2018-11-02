@@ -9,14 +9,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import java.util.HashMap;
 
 import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.R;
 import fusionkey.lowkey.auth.utils.AttributesValidator;
 import fusionkey.lowkey.auth.utils.AuthCallback;
-import fusionkey.lowkey.auth.utils.UserAttributesEnum;
-import fusionkey.lowkey.auth.utils.UserDBManager;
 import fusionkey.lowkey.main.utils.NetworkManager;
 
 public class RegisterActivity extends AppCompatActivity {
@@ -84,15 +81,10 @@ public class RegisterActivity extends AppCompatActivity {
             return;
         }
 
-        HashMap<UserAttributesEnum, String> attributes = new HashMap<>();
-        attributes.put(UserAttributesEnum.USERNAME, username);
-        LowKeyApplication.userManager.register(email, password, attributes, this,
+        LowKeyApplication.userManager.register(email, password, username, this,
                 new AuthCallback() {
                     @Override
                     public void execute() {
-                        // Create an user instance in DynamoDB for extra information.
-                        UserDBManager.create(email);
-
                         Intent intent = new Intent(RegisterActivity.this, ConfirmCodeActivity.class);
                         intent.putExtra(ConfirmCodeActivity.STEP ,2);
                         startActivity(intent);

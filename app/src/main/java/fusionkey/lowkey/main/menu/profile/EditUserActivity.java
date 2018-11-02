@@ -25,11 +25,11 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.R;
+import fusionkey.lowkey.auth.models.UserDB;
 import fusionkey.lowkey.auth.utils.AttributesValidator;
 import fusionkey.lowkey.auth.utils.AuthCallback;
 import fusionkey.lowkey.auth.utils.UserAttributesEnum;
@@ -49,7 +49,7 @@ public class EditUserActivity extends AppCompatActivity {
 
     private CircleImageView ivProfile;
     private EditText etUsername;
-    private EditText etName;
+    private EditText etFullName;
     private EditText etPhone;
     private Spinner spinnerGender;
     private DatePicker dpBirth;
@@ -72,7 +72,7 @@ public class EditUserActivity extends AppCompatActivity {
             }
         });
         etUsername = findViewById(R.id.etUsername);
-        etName = findViewById(R.id.etName);
+        etFullName = findViewById(R.id.etName);
         etPhone = findViewById(R.id.etPhone);
         spinnerGender = findViewById(R.id.spinnerGender);
         dpBirth = findViewById(R.id.dpBirth);
@@ -124,14 +124,14 @@ public class EditUserActivity extends AppCompatActivity {
 
     private void save() {
         etUsername.setError(null);
-        etName.setError(null);
+        etFullName.setError(null);
         etPhone.setError(null);
         switchView(true);
 
         HashMap<UserAttributesEnum, String> attributesToUpdate = new HashMap<>();
 
         String username = etUsername.getText().toString().trim(),
-                name = etName.getText().toString().trim(),
+                fullName = etFullName.getText().toString().trim(),
                 phone = etPhone.getText().toString().trim(),
                 gender = spinnerGender.getSelectedItem().toString(),
                 birth = getFormattedDate(dpBirth);
@@ -140,8 +140,8 @@ public class EditUserActivity extends AppCompatActivity {
         if (!TextUtils.isEmpty(username))
             attributesToUpdate.put(UserAttributesEnum.USERNAME, username);
 
-        if (!TextUtils.isEmpty(name))
-            attributesToUpdate.put(UserAttributesEnum.NAME, name);
+        if (!TextUtils.isEmpty(fullName))
+            attributesToUpdate.put(UserAttributesEnum.FULL_NAME, fullName);
 
         if (AttributesValidator.isPhoneValid(phone))
             attributesToUpdate.put(UserAttributesEnum.PHONE, phone);
@@ -154,7 +154,7 @@ public class EditUserActivity extends AppCompatActivity {
         attributesToUpdate.put(UserAttributesEnum.GENDER, gender);
         attributesToUpdate.put(UserAttributesEnum.BIRTH_DATE, birth);
 
-        LowKeyApplication.userManager.updateUserAttributes(attributesToUpdate, this, new AuthCallback() {
+        LowKeyApplication.userManager.updateCurrentUserAttributes(attributesToUpdate, new AuthCallback() {
             @Override
             public void execute() {
                 if (newImage != null) {
@@ -181,11 +181,6 @@ public class EditUserActivity extends AppCompatActivity {
                     onSuccessLogic();
                 }
             }
-        }, new AuthCallback() {
-            @Override
-            public void execute() {
-                switchView(false);
-            }
         });
     }
 
@@ -195,7 +190,7 @@ public class EditUserActivity extends AppCompatActivity {
                 Toast.LENGTH_SHORT).show();
 
         // Reload the user details locally.
-        LowKeyApplication.userManager.requestUserDetails(EditUserActivity.this, null);
+        LowKeyApplication.userManager.requestCurrentUserDetails(null, null);
 
         Intent intent = new Intent(EditUserActivity.this, Main2Activity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -205,13 +200,13 @@ public class EditUserActivity extends AppCompatActivity {
     private void populateUI() {
         switchView(true);
         try {
-            Map<String, String> attributes = LowKeyApplication.userManager.getUserDetails().getAttributes().getAttributes();
+            UserDB user = LowKeyApplication.userManager.getUserDetails();
 
-            String username = attributes.get(UserAttributesEnum.USERNAME.toString()),
-                    name = attributes.get(UserAttributesEnum.NAME.toString()),
-                    phone = attributes.get(UserAttributesEnum.PHONE.toString()),
-                    gender = attributes.get(UserAttributesEnum.GENDER.toString()),
-                    birth = attributes.get(UserAttributesEnum.BIRTH_DATE.toString());
+            String username = user.getUsername(),
+                    name = user.getFullName(),
+                    phone = user.getPhone(),
+                    gender = user.getGender(),
+                    birth = user.getBirthDate();
 
             // Get spinner default position.
             ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.
@@ -219,7 +214,7 @@ public class EditUserActivity extends AppCompatActivity {
             int gender_spinner_pos = spinnerAdapter.getPosition(gender != null ? gender : spinnerAdapter.getItem(0));
 
             etUsername.setText(username != null ? username : "");
-            etName.setText(name != null ? name : "");
+            etFullName.setText(name != null ? name : "");
             etPhone.setText(phone != null ? phone : "");
             spinnerGender.setSelection(gender_spinner_pos, true);
 

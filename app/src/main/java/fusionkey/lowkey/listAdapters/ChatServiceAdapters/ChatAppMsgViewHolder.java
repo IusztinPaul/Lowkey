@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import fusionkey.lowkey.R;
 
 
@@ -29,6 +30,7 @@ public class ChatAppMsgViewHolder extends RecyclerView.ViewHolder {
     public TextView rightDate;
     public TextView rightMsgTextView;
     public ImageView rightIv;
+    public CircleImageView imagepic;
 
     public ChatAppMsgViewHolder(View itemView) {
         super(itemView);
@@ -39,7 +41,7 @@ public class ChatAppMsgViewHolder extends RecyclerView.ViewHolder {
             leftMsgLayoutLAST = (ConstraintLayout) itemView.findViewById(R.id.chat_left_msg_layout_LAST);
 
             leftName = (TextView) itemView.findViewById(R.id.text_message_name);
-
+            //imagepic = (CircleImageView) itemView.findViewById(R.id.circleImageView);
             leftDate = (TextView) itemView.findViewById(R.id.text_message_timeLeft);
             rightDate = (TextView) itemView.findViewById(R.id.text_message_timeRight);
 

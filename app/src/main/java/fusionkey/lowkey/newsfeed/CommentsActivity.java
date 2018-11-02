@@ -23,15 +23,22 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.R;
+import fusionkey.lowkey.auth.models.UserDB;
 import fusionkey.lowkey.auth.utils.UserAttributesEnum;
+import fusionkey.lowkey.auth.utils.UserManager;
 import fusionkey.lowkey.listAdapters.CommentAdapters.CommentAdapter;
+import fusionkey.lowkey.main.utils.Callback;
+import fusionkey.lowkey.main.utils.ProfilePhotoUploader;
 import fusionkey.lowkey.newsfeed.interfaces.NewsFeedCallBack;
 import fusionkey.lowkey.newsfeed.models.Comment;
 import fusionkey.lowkey.newsfeed.util.NewsFeedRequest;
@@ -49,6 +56,7 @@ public class CommentsActivity extends AppCompatActivity {
     LinearLayout llAddComment;
     NewsFeedCallBack newsFeedCallBack;
     CardView questionInfo;
+    CircleImageView imagepic;
     List<Comment> commentArrayList;
     ArrayList<Comment> commentsSentList = new ArrayList<>();
     private CommentAdapter commentsAdapter;
@@ -66,6 +74,7 @@ public class CommentsActivity extends AppCompatActivity {
         title = findViewById(R.id.username2);
         body = findViewById(R.id.body);
         questionInfo = findViewById(R.id.cardView10);
+        imagepic = findViewById(R.id.circleImageView4);
         posted = findViewById(R.id.posted);
 
         inputTxt = findViewById(R.id.chat_input_msg);
@@ -83,16 +92,29 @@ public class CommentsActivity extends AppCompatActivity {
                 }
             });
         }
+
         populateWithData();
         setupComments();
+
+        final ProfilePhotoUploader photoUploader = new ProfilePhotoUploader();
+        photoUploader.download(UserManager.parseEmailToPhotoFileName(getIntent().getStringExtra("email")),
+                new Callback() {
+                    @Override
+                    public void handle() {
+                        Log.e("PHOTO", "photo downloaded");
+                        Picasso.with(getApplicationContext()).load((photoUploader.getFileTO())).into(imagepic);
+                    }
+                }, null);
+
+
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(!TextUtils.isEmpty(inputTxt.getText().toString())) {
                     Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-                    Map<String, String> attributes = LowKeyApplication.userManager.getUserDetails().getAttributes().getAttributes();
-                    final String uniqueID = attributes.get(UserAttributesEnum.EMAIL.toString());
-                    final String username = attributes.get(UserAttributesEnum.USERNAME.toString());
+                    UserDB attributes = LowKeyApplication.userManager.getUserDetails();
+                    final String uniqueID = attributes.getUserEmail();
+                    final String username = attributes.getUsername();
                     new NewsFeedRequest(username).postComment(getIntent().getLongExtra("timestampID",0), true, inputTxt.getText().toString(),getIntent().getStringExtra("SNStopic"));
                     commentArrayList.add(new Comment("true",String.valueOf(timestamp.getTime()),inputTxt.getText().toString(),username));
                     commentsSentList.add(new Comment("true",String.valueOf(timestamp.getTime()),inputTxt.getText().toString(),username));
@@ -122,7 +144,7 @@ public class CommentsActivity extends AppCompatActivity {
             commentsAdapter = new CommentAdapter(commentArrayList,this);
             title.setText(getIntent().getStringExtra("title"));
             body.setText(getIntent().getStringExtra("body"));
-            String aux = "posted by " + getIntent().getStringExtra("username");
+            String aux = getIntent().getStringExtra("username");
             posted.setText(aux);
             rvComments.setAdapter(commentsAdapter);
         }catch(NullPointerException e){

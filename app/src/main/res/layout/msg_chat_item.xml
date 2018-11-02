@@ -45,7 +45,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:elevation="15dp"
-            android:src="@drawable/fff"
+            android:src="@drawable/avatar_placeholder"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -57,7 +57,7 @@
             android:layout_marginLeft="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:text="Sebastian Sandru"
+            android:text="USERNAME"
             android:textColor="@android:color/black"
             android:textSize="18sp"
             android:textStyle="bold"

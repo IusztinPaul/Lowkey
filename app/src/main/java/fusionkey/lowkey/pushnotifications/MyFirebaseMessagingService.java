@@ -123,8 +123,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
 
     private void saveNotification(RemoteMessage remoteMessage){
-        Map<String, String> attributes = LowKeyApplication.userManager.getUserDetails().getAttributes().getAttributes();
-        String id = attributes.get(UserAttributesEnum.EMAIL.toString());
+        //Map<String, String> attributes = LowKeyApplication.userManager.getUserDetails().getAttributes().getAttributes();
+        String id =  LowKeyApplication.userManager.getCachedEmail();
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = preferences.edit();
 

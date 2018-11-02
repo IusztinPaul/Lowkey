@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,10 +20,12 @@ import java.util.Map;
 
 import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.R;
+import fusionkey.lowkey.auth.models.UserDB;
 import fusionkey.lowkey.auth.utils.UserAttributesEnum;
 import fusionkey.lowkey.listAdapters.ChatTabViewHolder;
 import fusionkey.lowkey.listAdapters.NewsFeedAdapter;
 import fusionkey.lowkey.main.MainCallback;
+import fusionkey.lowkey.main.utils.NetworkManager;
 import fusionkey.lowkey.newsfeed.asynctasks.GetYourQuestionsAsyncTask;
 import fusionkey.lowkey.newsfeed.models.Comment;
 import fusionkey.lowkey.newsfeed.models.NewsFeedMessage;
@@ -70,9 +73,7 @@ public class questionsFragment extends Fragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
         msgRecyclerView.setLayoutManager(linearLayoutManager);
 
-        Map<String, String> attributes = LowKeyApplication.userManager.getUserDetails().getAttributes().getAttributes();
-        final String id = attributes.get(UserAttributesEnum.USERNAME.toString());
-        uniqueID = (attributes.get(UserAttributesEnum.EMAIL.toString()));
+        uniqueID = LowKeyApplication.userManager.getCachedEmail();
 
         messages = new ArrayList<>();
         adapter = new NewsFeedAdapter(messages,getActivity().getApplicationContext(),msgRecyclerView);
@@ -97,6 +98,7 @@ public class questionsFragment extends Fragment {
                     intent.putExtra("body",m.getContent());
                     intent.putExtra("title",m.getTitle());
                     intent.putExtra("username",m.getUser());
+                    intent.putExtra("email",m.getId());
                 }else {
                     MyParcelable object = new MyParcelable();
                     object.setArrList(new ArrayList<Comment>());
@@ -106,6 +108,7 @@ public class questionsFragment extends Fragment {
                     intent.putExtra("body",m.getContent());
                     intent.putExtra("title",m.getTitle());
                     intent.putExtra("username",m.getUser());
+                    intent.putExtra("email",m.getId());
 
                 }
                 startActivityForResult(intent, COMMENT_ACTIVITY_REQUEST_CODE);
@@ -127,10 +130,14 @@ public class questionsFragment extends Fragment {
 
 
     public void refreshNewsfeed(){
-        GetYourQuestionsAsyncTask getYourQuestionsAsyncTask = new GetYourQuestionsAsyncTask(messages,msgRecyclerView,adapter,newsfeedRequest);
-        getYourQuestionsAsyncTask.execute();
-        //adapter.notifyDataSetChanged();
+        if(NetworkManager.isNetworkAvailable()) {
+            GetYourQuestionsAsyncTask getYourQuestionsAsyncTask = new GetYourQuestionsAsyncTask(messages, msgRecyclerView, adapter, newsfeedRequest);
+            getYourQuestionsAsyncTask.execute();
+            //adapter.notifyDataSetChanged();
+        } else Toast.makeText(getContext(), "Check if you're connected to the Internet", Toast.LENGTH_SHORT).show();
+
     }
+
     @Override
     public void onActivityResult(int requestCode,int resultCode,Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

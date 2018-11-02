@@ -18,6 +18,7 @@ import java.util.List;
 
 import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.R;
+import fusionkey.lowkey.auth.models.UserDB;
 import fusionkey.lowkey.auth.utils.UserAttributesEnum;
 import fusionkey.lowkey.auth.utils.UserManager;
 import fusionkey.lowkey.listAdapters.NewsFeedAdapter;
@@ -67,6 +68,10 @@ public class GetYourQuestionsAsyncTask extends AsyncTask<Void,String,JSONObject>
                 try {
                     Log.e("RESPONSE :",response.toString());
 
+                    UserDB attributes = LowKeyApplication.userManager.getUserDetails();
+                    String usernameS = attributes.getUsername();
+
+
                     JSONArray arr = new JSONArray(response.getString("data"));
                     for (int i = 0; i < arr.length(); i++) {
                         JSONObject obj = arr.getJSONObject(i);
@@ -77,7 +82,7 @@ public class GetYourQuestionsAsyncTask extends AsyncTask<Void,String,JSONObject>
                         newsFeedMessage.setTitle(obj.getString("postTitle"));
                         newsFeedMessage.setType(NewsFeedMessage.NORMAL);
                         newsFeedMessage.setSNStopic(obj.getString("snsTopic"));
-                        newsFeedMessage.setUser(getUsername(obj.getString("userId")));
+                        newsFeedMessage.setUser(usernameS);
                         newsFeedMessage.setUserPhoto(LowKeyApplication.profilePhoto);
                         String anon = (obj.getString("isAnonymous"));
                         String email = obj.getString("userId");

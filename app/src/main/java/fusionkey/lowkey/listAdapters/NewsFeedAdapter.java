@@ -28,6 +28,8 @@ import fusionkey.lowkey.main.utils.Callback;
 import fusionkey.lowkey.main.utils.ProfilePhotoUploader;
 import fusionkey.lowkey.newsfeed.models.NewsFeedMessage;
 
+import static java.security.AccessController.getContext;
+
 public class NewsFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private final int VIEW_TYPE_ITEM = 0;
@@ -108,12 +110,16 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             //chatTabViewHolder.image.setImageBitmap(msgDto.getUserPhoto());
             if (!msgDto.getAnon()) {
                 chatTabViewHolder.name.setText(msgDto.getUser());
-                Picasso.get().load(msgDto.getFile()).into(chatTabViewHolder.image);
+                if(msgDto.getType()==NewsFeedMessage.NORMAL){
+                    chatTabViewHolder.image.setImageBitmap(LowKeyApplication.profilePhoto);
+                }
+                Picasso.with(mcontext).load(msgDto.getFile()).into(chatTabViewHolder.image);
+
                 //Its the same thing like getUsername in here
                 //UserAttributeManager attributeManager = new UserAttributeManager(msgDto.getId());
                 //holder.name.setText(attributeManager.getUsername());
             } else {
-                Picasso.get().load(R.drawable.avatar_placeholder).into(chatTabViewHolder.image);
+                Picasso.with(mcontext).load(R.drawable.avatar_placeholder).into(chatTabViewHolder.image);
                 chatTabViewHolder.name.setText(ANON_STRING);
             }
             chatTabViewHolder.lastmsg.setText(msgDto.getContent());

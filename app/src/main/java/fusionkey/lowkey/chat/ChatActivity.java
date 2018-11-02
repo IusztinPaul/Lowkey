@@ -1,12 +1,10 @@
 package fusionkey.lowkey.chat;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.arch.persistence.room.Room;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -26,30 +24,33 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.R;
 import fusionkey.lowkey.ROOMdatabase.AppDatabase;
 import fusionkey.lowkey.ROOMdatabase.UserDao;
-import fusionkey.lowkey.auth.utils.AuthCallback;
-import fusionkey.lowkey.auth.utils.UserAttributesEnum;
-import fusionkey.lowkey.auth.utils.UserDBManager;
+import fusionkey.lowkey.auth.models.UserDB;
+import fusionkey.lowkey.auth.utils.UserManager;
 import fusionkey.lowkey.chat.Runnables.DisconnectedRunnable;
 import fusionkey.lowkey.chat.Runnables.InChatRunnable;
 import fusionkey.lowkey.chat.models.MessageTOFactory;
 import fusionkey.lowkey.listAdapters.ChatServiceAdapters.ChatAppMsgAdapter;
 import fusionkey.lowkey.chat.models.MessageTO;
+import fusionkey.lowkey.auth.utils.*;
+import fusionkey.lowkey.main.utils.Callback;
+import fusionkey.lowkey.main.utils.EmailBuilder;
 import fusionkey.lowkey.main.utils.PhotoUploader;
 import fusionkey.lowkey.main.utils.PhotoUtils;
+import fusionkey.lowkey.main.utils.ProfilePhotoUploader;
 import fusionkey.lowkey.models.UserD;
-import fusionkey.lowkey.models.UserDB;
 import fusionkey.lowkey.pointsAlgorithm.PointsCalculator;
 
 /**
@@ -63,8 +64,9 @@ import fusionkey.lowkey.pointsAlgorithm.PointsCalculator;
 public class ChatActivity extends AppCompatActivity {
     private final int GALLERY_REQUEST = 1;
     private final int PHOTO_SCORE_POINTS = 3;
+    private final int POSITIVE_BUTTON_REVIEW_POINTS = 5;
 
-    final long periodForT = 1000, periodForT1 =4000, delay=0;
+    final long periodForT = 1000, periodForT1 =10000, delay=0;
     long last_text_edit=0;
 
     String role;
@@ -81,11 +83,12 @@ public class ChatActivity extends AppCompatActivity {
     EditText msgInputText;
     LinearLayout chatbox;
     String listenerRequest;
+    private CircleImageView image;
     String userRequest;
     ArrayList<MessageTO> msgDtoList;
 
     private int stringCounter,
-                clock;
+            clock;
     ArrayList<Integer> stringL;
 
     private static final String disconnectedDialog = "just disconnected from the chat !";
@@ -109,6 +112,7 @@ public class ChatActivity extends AppCompatActivity {
         final String user = getIntent().getStringExtra(userIntent);
         role = getIntent().getStringExtra(roleIntent);
         chatbox = findViewById(R.id.layout_chatbox);
+        image = findViewById(R.id.circleImageView2);
         msgInputText = findViewById(R.id.chat_input_msg);
         listenerRequest = listener.replace("[", "").replace("]", "").replace("\"","");
         userRequest = user.replace("[", "").replace("]", "").replace("\"","");
@@ -129,6 +133,19 @@ public class ChatActivity extends AppCompatActivity {
 
         //Object that makes request and updates the UI if the user is/isn't connected/writting
         inChatRunnable = new InChatRunnable(state,chatRoom);
+
+        String email = EmailBuilder.buildEmail(userRequest);
+
+        final ProfilePhotoUploader photoUploader = new ProfilePhotoUploader();
+        photoUploader.download(UserManager.parseEmailToPhotoFileName(email),
+                new Callback() {
+                    @Override
+                    public void handle() {
+                        Log.e("PHOTO", "photo downloaded");
+                        Picasso.with(getApplicationContext()).load((photoUploader.getFileTO())).into(image);
+                    }
+                }, null);
+
 
         t = new Timer();
         startRunnable();
@@ -230,8 +247,9 @@ public class ChatActivity extends AppCompatActivity {
             }
             database.close();
         }
-       // updatePoints();
-       // showDialog();
+
+
+         updatePoints();
         super.onBackPressed();
     }
 
@@ -268,14 +286,14 @@ public class ChatActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int id) {
                         dialog.cancel();
                         //rebuild the email
-                        StringBuilder stringBuilder = new StringBuilder();
-                        stringBuilder.append(userRequest);
-                        stringBuilder.insert(stringBuilder.length()-3,'.');
-                        stringBuilder.insert(stringBuilder.length()-9,'@');
-                        Log.e("string ",stringBuilder.toString());
-                        //UserDB user = UserDBManager.getUserData(stringBuilder.toString());
-                        //user.setScore(user.getScore() + 5);
-                        //UserDBManager.update(user);
+                        String userEmail = EmailBuilder.buildEmail(userRequest);
+                        Log.e("userEmail ", userEmail);
+
+                        UserAttributeManager userAttributeManager = new UserAttributeManager(userEmail);
+                        UserDB user = userAttributeManager.getUserDB();
+                        user.setScore(user.getScore() + POSITIVE_BUTTON_REVIEW_POINTS);
+                        userAttributeManager.updateUserAttributes(null);
+
                         onBackPressed();
                     }
                 });
@@ -294,28 +312,29 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void updatePoints(){
-        String currentUserEmail = LowKeyApplication.userManager.getCurrentUserEmail();
-        // @TODO TO @PAUL :: nullpointer la user, probabil nu sunt in Table  !
-        UserDB user = UserDBManager.getUserData(currentUserEmail);
-
+        UserDB user = LowKeyApplication.userManager.getUserDetails();
         long newScore = user.getScore() + (long) PointsCalculator.calculateStringsValue(stringCounter,stringL,clock);
-        user.setScore(newScore);
+        updateUserWithNewScore(user, newScore);
+        Log.e("points ::::: ", "score"+newScore);
+    }
 
-        UserDBManager.update(user);
+    private void updateUserWithNewScore(UserDB user, long newScore) {
+        user.setScore(newScore);
+        LowKeyApplication.userManager.updateCurrentUser(user);
     }
 
     private void startRunnable(){
-     t.scheduleAtFixedRate(new TimerTask() {
-        @Override
-        public void run() {
-            clock++;
-            inChatRunnable.run();
-        }
+        t.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                clock++;
+                inChatRunnable.run();
+            }
 
-        @Override
-        public boolean cancel() {
-            return super.cancel();
-        }
+            @Override
+            public boolean cancel() {
+                return super.cancel();
+            }
         },delay, periodForT);
     }
 

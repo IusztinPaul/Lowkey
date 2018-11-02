@@ -6,8 +6,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
+import com.amazonaws.mobile.client.AWSMobileClient;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -19,7 +19,9 @@ import fusionkey.lowkey.auth.LoginActivity;
 import fusionkey.lowkey.R;
 import fusionkey.lowkey.auth.RegisterActivity;
 import fusionkey.lowkey.auth.utils.AuthCallback;
+import fusionkey.lowkey.auth.utils.UserAttributesEnum;
 import fusionkey.lowkey.main.Main2Activity;
+import fusionkey.lowkey.main.utils.NetworkManager;
 
 public class EntryActivity extends AppCompatActivity {
 
@@ -30,13 +32,14 @@ public class EntryActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_entry);
-
-        pBar = findViewById(R.id.pBar);
-        switchView(true);
+        initializeClients();
 
         // If you are logged in just proceed.
-        if (isLoggedIn()) return;
+        if (ifIsLoggedInLogIn()) return;
+
+        // If is not logged in create view.
+        setContentView(R.layout.activity_entry);
+        pBar = findViewById(R.id.pBar);
         switchView(false);
 
         Button Glogin = (Button) findViewById(R.id.Gconnect);
@@ -53,20 +56,15 @@ public class EntryActivity extends AppCompatActivity {
             }
         });
 
-        Glogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(EntryActivity.this, "Connect with GOOGLE +", Toast.LENGTH_LONG).show();
-            }
-        });
-
         Alogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                overridePendingTransition(0, 0);
-                Intent intent = new Intent(EntryActivity.this, LoginActivity.class);
-                startActivity(intent);
-                overridePendingTransition(0, 0);
+                if(!ifIsLoggedInLogIn()) {
+                    overridePendingTransition(0, 0);
+                    Intent intent = new Intent(EntryActivity.this, LoginActivity.class);
+                    startActivity(intent);
+                    overridePendingTransition(0, 0);
+                }
             }
         });
 
@@ -99,19 +97,30 @@ public class EntryActivity extends AppCompatActivity {
 
     }
 
-    private boolean isLoggedIn() {
-        return LowKeyApplication.userManager.logInIfHasCredentials(this,
+    private boolean ifIsLoggedInLogIn() {
+        return NetworkManager.isNetworkAvailable() &&
+                LowKeyApplication.userManager.logInIfHasCredentials(
                 new AuthCallback() {
                     @Override
                     public void execute() {
                         Intent myIntent = new Intent(EntryActivity.this, LoadUserDataActivity.class);
+
+                        String userEmail = LowKeyApplication.userManager.getCachedEmail();
+                        myIntent.putExtra(UserAttributesEnum.EMAIL.toString(), userEmail);
+
                         myIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         EntryActivity.this.startActivity(myIntent);
                     }
                 });
+
+
     }
 
     private void switchView(boolean loading) {
         pBar.setVisibility(loading ? View.VISIBLE : View.GONE);
+    }
+
+    private void initializeClients() {
+        AWSMobileClient.getInstance().initialize(this).execute();
     }
 }
