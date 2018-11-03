@@ -23,6 +23,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -33,6 +34,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import fusionkey.lowkey.Chat;
 import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.R;
 import fusionkey.lowkey.ROOMdatabase.AppDatabase;
@@ -51,6 +53,7 @@ import fusionkey.lowkey.main.utils.PhotoUploader;
 import fusionkey.lowkey.main.utils.PhotoUtils;
 import fusionkey.lowkey.main.utils.ProfilePhotoUploader;
 import fusionkey.lowkey.models.UserD;
+import fusionkey.lowkey.newsfeed.NewsFeedTab;
 import fusionkey.lowkey.pointsAlgorithm.PointsCalculator;
 
 /**
@@ -65,6 +68,8 @@ public class ChatActivity extends AppCompatActivity {
     private final int GALLERY_REQUEST = 1;
     private final int PHOTO_SCORE_POINTS = 3;
     private final int POSITIVE_BUTTON_REVIEW_POINTS = 5;
+
+    private static String USER_STATUS_STRING = "User disconnected from the chat!";
 
     final long periodForT = 1000, periodForT1 =10000, delay=0;
     long last_text_edit=0;
@@ -167,6 +172,9 @@ public class ChatActivity extends AppCompatActivity {
                     if (str.equals("disconnected")) {
                         Log.e("Checking DISCONNECT", "checking");
                         chatbox.setVisibility(View.INVISIBLE);
+                        Toast.makeText(ChatActivity.this,
+                                USER_STATUS_STRING,
+                                Toast.LENGTH_SHORT).show();
                     }
 
                 } catch(NullPointerException e){

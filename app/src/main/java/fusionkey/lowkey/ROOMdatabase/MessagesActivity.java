@@ -32,6 +32,7 @@ public class MessagesActivity extends AppCompatActivity {
 
     private LinearLayout chatLayout;
     private TextView upperText;
+    private TextView status;
     private CircleImageView image;
     public static String USERNAME;
 
@@ -43,6 +44,7 @@ public class MessagesActivity extends AppCompatActivity {
         chatLayout.setVisibility(View.GONE);
         upperText = findViewById(R.id.isWritting);
         image = findViewById(R.id.circleImageView2);
+        status = findViewById(R.id.status);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         final RecyclerView msgRecyclerView = (RecyclerView)findViewById(R.id.reyclerview_message_list);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
@@ -50,7 +52,7 @@ public class MessagesActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         String username = intent.getStringExtra("username");
-
+        status.setText("disonnected");
         AppDatabase database = Room.databaseBuilder(this, AppDatabase.class, "user-database")
                 .allowMainThreadQueries()   //Allows room to do operation on main thread
                 .build();
