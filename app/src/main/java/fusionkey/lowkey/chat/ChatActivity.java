@@ -296,18 +296,13 @@ public class ChatActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int id) {
                         dialog.cancel();
                         //rebuild the email
-
                         String userEmail = EmailBuilder.buildEmail(userRequest);
                         Log.e("userEmail ", userEmail);
 
                         UserAttributeManager userAttributeManager = new UserAttributeManager(userEmail);
-
                         UserDB user = userAttributeManager.getUserDB();
-                        user.setScore(user.getScore() + POSITIVE_BUTTON_REVIEW_POINTS);
-
-                        userAttributeManager.setUserDB(user);
-                        userAttributeManager.updateUserAttributes(null);
-
+                        long newScore = user.getScore() + POSITIVE_BUTTON_REVIEW_POINTS;
+                        updateUserWithNewScore(user, newScore);
 
                         onBackPressed();
                     }
@@ -329,13 +324,14 @@ public class ChatActivity extends AppCompatActivity {
     private void updatePoints(){
         UserDB user = LowKeyApplication.userManager.getUserDetails();
         long newScore = user.getScore() + (long) PointsCalculator.calculateStringsValue(stringCounter,stringL,clock);
-        updateCurrentUserWithNewScore(user, newScore);
+        updateUserWithNewScore(user, newScore);
         Log.e("points ::::: ", "score"+newScore);
     }
 
-    private void updateCurrentUserWithNewScore(UserDB user, long newScore) {
+
+    private void updateUserWithNewScore(UserDB user, long newScore) {
         user.setScore(newScore);
-        LowKeyApplication.userManager.updateCurrentUser(user);
+        UserAttributeManager.updateUserAttributes(user, null);
     }
 
     private void startRunnable(){
