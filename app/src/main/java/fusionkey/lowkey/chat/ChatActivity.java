@@ -294,14 +294,9 @@ public class ChatActivity extends AppCompatActivity {
 
                         String userEmail = EmailBuilder.buildEmail(userRequest);
                         Log.e("userEmail ", userEmail);
-
-                        /**
-                         *
-                         */
-                        UserAttributeManager userAttributeManager = new UserAttributeManager(userEmail);
                         UserDB user = UserDBManager.getUserData(userEmail);
                         user.setScore(user.getScore() + POSITIVE_BUTTON_REVIEW_POINTS);
-                        userAttributeManager.updateUserAttributes(null);
+                        UserDBManager.update(user);
 
 
                         onBackPressed();
