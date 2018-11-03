@@ -13,10 +13,15 @@ public class UserAttributeManager {
 
     public UserAttributeManager(String userEmail) {
         this.userEmail = userEmail;
+        getAttributes();
+    }
+
+    public UserAttributeManager(UserDB userDB) {
+        this.userEmail = userDB.getUserEmail();
+        this.userDB = userDB;
     }
 
     private void getAttributes() {
-        // TODO: simulate async behaviour
         this.userDB = UserDBManager.getUserData(userEmail);
     }
 
@@ -34,7 +39,6 @@ public class UserAttributeManager {
     }
 
     public String getUsername() {
-        getAttributes();
         try {
             return userDB.getUsername();
         } catch (NullPointerException e) {
