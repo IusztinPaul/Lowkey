@@ -31,6 +31,7 @@ public class ProfileTab extends Fragment {
     TextView username;
     CircleImageView circleImageView;
     ImageView imageViewEdit;
+    ImageView settings;
     SharedPreferences preferences;
     TabLayout tabLayout;
     ViewPager pager;
@@ -47,14 +48,13 @@ public class ProfileTab extends Fragment {
         imageViewEdit = rootView.findViewById(R.id.imageViewEdit);
         username = rootView.findViewById(R.id.username2);
         circleImageView = rootView.findViewById(R.id.circleImageView3);
+        settings = rootView.findViewById(R.id.settingsImg);
 
         pager=rootView.findViewById(R.id.pager);
         tabLayout =rootView.findViewById(R.id.tabDots);
         pager.setAdapter(buildAdapter());
         tabLayout.setupWithViewPager(pager, true);
 
-        ImageView settings = rootView.findViewById(R.id.settingsImg);
-        populateUI();
         settings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -42,8 +42,12 @@ public class LoadUserDataActivity extends AppCompatActivity {
         @Override
         protected Void doInBackground(Void... voids) {
             new RegisterSNS().registerWithSNS();
-
             LowKeyApplication.userManager.requestCurrentUserDetails(userEmail, null);
+
+            /**
+             * Mai bine renuntam sa facem load aici, Picasso oricum face asta destul de bine si putem face
+             * direct din Pagina de profil .
+             */
 
             return null;
         }
