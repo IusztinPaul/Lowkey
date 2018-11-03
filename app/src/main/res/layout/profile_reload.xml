@@ -50,7 +50,7 @@
                         android:layout_marginTop="8dp"
                         android:elevation="30dp"
                         android:paddingBottom="8dp"
-                        android:text="Sandru Sebastian"
+                        android:text="Username"
                         android:textColor="@android:color/white"
                         android:textSize="18sp"
                         android:textStyle="bold"
@@ -69,7 +69,7 @@
                         android:layout_marginStart="8dp"
                         android:layout_marginTop="8dp"
                         android:elevation="15dp"
-                        android:src="@drawable/fff"
+                        android:src="@drawable/avatar_placeholder"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
