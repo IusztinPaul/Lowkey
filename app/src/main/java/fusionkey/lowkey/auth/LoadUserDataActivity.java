@@ -45,37 +45,6 @@ public class LoadUserDataActivity extends AppCompatActivity {
 
             LowKeyApplication.userManager.requestCurrentUserDetails(userEmail, null);
 
-            // Now access the S3 photo with the new user details.
-            try {
-                loadingPhoto = true;
-                final ProfilePhotoUploader profilePhotoUploader =
-                        new ProfilePhotoUploader();
-                profilePhotoUploader.download(
-                        LowKeyApplication.userManager.getPhotoFileName(),
-                        new Callback() {
-                            @Override
-                            public void handle() {
-                                loadingPhoto = false;
-                                Log.e("success", "successHandler");
-                            }
-                        },
-                        new Callback() {
-                            @Override
-                            public void handle() {
-                                loadingPhoto = false;
-                                Log.e("fail", "failHandler");
-                            }
-                        }
-                );
-                while (loadingPhoto) ;
-
-                LowKeyApplication.profilePhoto = profilePhotoUploader.getPhoto();
-            } catch (NullPointerException e) {
-                // Forced try...catch so the app wont crash.
-                Log.e("LoadUserDataAc bg task", e.getMessage());
-                Toast.makeText(activityWeakReference.get(), e.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-
             return null;
         }
 
