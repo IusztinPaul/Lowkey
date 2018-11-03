@@ -10,9 +10,12 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import fusionkey.lowkey.ROOMdatabase.MessagesActivity;
 import fusionkey.lowkey.auth.models.UserDB;
 import fusionkey.lowkey.auth.utils.UserDBManager;
 import fusionkey.lowkey.auth.utils.UserManager;
+import fusionkey.lowkey.chat.ChatActivity;
+import fusionkey.lowkey.chat.Message;
 import fusionkey.lowkey.listAdapters.ChatServiceAdapters.ChatAppMsgViewHolder;
 import fusionkey.lowkey.main.utils.Callback;
 import fusionkey.lowkey.main.utils.EmailBuilder;
@@ -28,14 +31,12 @@ public class ContentViewCreatorPhoto extends ContentViewCreatorUtils implements 
         // If the message is a received message.
         if(MSG_TYPE_RECEIVED.equals(msg.getMsgType()))
         {
-            String email = EmailBuilder.buildEmail(msg.getSender());
-            UserDB userDB = UserDBManager.getUserData(email);
-            try {
-                holder.leftName.setText(userDB.getUsername());
-            }
-            catch (NullPointerException npe){
+            if(ChatActivity.USERNAME!=null)
+            holder.leftName.setText(ChatActivity.USERNAME);
+            else if(MessagesActivity.USERNAME!=null)
+                holder.leftName.setText(MessagesActivity.USERNAME);
+            else
                 holder.leftName.setText("Not found");
-            }
             populateView(holder.leftMsgLayout, holder.leftDate, msg);
             hideTextAndShowImage(holder.leftMsgTextView, holder.leftIv, (Bitmap) msg.getContent());
             makeLayoutsVisibilityGONE(holder.rightMsgLayout, holder.leftMsgLayoutLAST);

@@ -163,7 +163,7 @@ public class EditUserActivity extends AppCompatActivity {
                             new Callback() {
                                 @Override
                                 public void handle() {
-                                    LowKeyApplication.profilePhoto = newImage;
+                                    LowKeyApplication.userManager.profilePhoto = newImage;
                                     onSuccessLogic();
                                 }
                             },
@@ -231,8 +231,8 @@ public class EditUserActivity extends AppCompatActivity {
             }
 
             // Try to get profile photo from S3.
-            if(LowKeyApplication.profilePhoto != null) {
-                ivProfile.setImageBitmap(LowKeyApplication.profilePhoto);
+            if(LowKeyApplication.userManager.profilePhoto != null) {
+                ivProfile.setImageBitmap(LowKeyApplication.userManager.profilePhoto);
                 switchView(false);
             }
             else {

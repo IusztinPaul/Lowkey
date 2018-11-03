@@ -74,6 +74,7 @@ public class ProfileTab extends Fragment {
             }
         });
 
+
         loadUserPhoto();
         setupNotifications();
         populateUI();
@@ -123,13 +124,13 @@ public class ProfileTab extends Fragment {
                     @Override
                     public void handle() {
                         Log.e("PHOTO", "photo downloaded");
-                        Picasso.with(getContext()).load((photoUploader.getFileTO())).into(circleImageView);
-                        LowKeyApplication.profilePhoto =  photoUploader.getPhoto();
+                        Picasso.with(getContext()).load(photoUploader.getFileTO()).into(circleImageView);
+                        LowKeyApplication.userManager.profilePhoto =  photoUploader.getPhoto();
+                        LowKeyApplication.userManager.photoFile = photoUploader.getFileTO();
                     }
                 }, new Callback() {
                     @Override
                     public void handle() {
-                        Picasso.with(getContext()).load(R.drawable.avatar_placeholder).into(circleImageView);
                     }
                 });
     }
