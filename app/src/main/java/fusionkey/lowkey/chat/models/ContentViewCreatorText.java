@@ -1,9 +1,8 @@
 package fusionkey.lowkey.chat.models;
 
-import fusionkey.lowkey.auth.models.UserDB;
-import fusionkey.lowkey.auth.utils.UserDBManager;
+import fusionkey.lowkey.ROOMdatabase.MessagesActivity;
+import fusionkey.lowkey.chat.ChatActivity;
 import fusionkey.lowkey.listAdapters.ChatServiceAdapters.ChatAppMsgViewHolder;
-import fusionkey.lowkey.main.utils.EmailBuilder;
 
 import static fusionkey.lowkey.chat.models.MessageTO.MSG_TYPE_RECEIVED;
 import static fusionkey.lowkey.chat.models.MessageTO.MSG_TYPE_RECEIVED_LAST;
@@ -15,10 +14,13 @@ public class ContentViewCreatorText extends ContentViewCreatorUtils implements I
     public void createView(final ChatAppMsgViewHolder holder, MessageTO msg) {
         if(MSG_TYPE_RECEIVED.equals(msg.getMsgType()))
         {
-            String email = EmailBuilder.buildEmail(msg.getSender());
-            UserDB userDB = UserDBManager.getUserData(email);
-            holder.leftName.setText(userDB.getUsername());
 
+            if(ChatActivity.USERNAME!=null)
+                holder.leftName.setText(ChatActivity.USERNAME);
+            else if(MessagesActivity.USERNAME!=null)
+                holder.leftName.setText(MessagesActivity.USERNAME);
+            else
+                holder.leftName.setText("Not found");
             populateView(holder.leftMsgLayout, holder.leftMsgTextView, holder.leftDate, msg);
             makeLayoutsVisibilityGONE(holder.rightMsgLayout, holder.leftMsgLayoutLAST, holder.leftIv);
         }

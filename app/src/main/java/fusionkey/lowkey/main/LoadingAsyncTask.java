@@ -16,7 +16,6 @@ import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
 
-import fusionkey.lowkey.Chat;
 import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.chat.ChatActivity;
 import fusionkey.lowkey.main.utils.NetworkManager;
@@ -84,10 +83,7 @@ public class LoadingAsyncTask extends AsyncTask<Void, Integer, JSONObject> {
                     !isCancelled() &&
                     NetworkManager.isNetworkAvailable()) {
 
-                int loopState = queueMatcher.getLoopState();
-                if (loopState < 0)
-                    loopState = 0;
-                publishProgress(loopState);
+                updateProgressBarProgress();
 
                 try {
                     Thread.sleep(500);
@@ -137,6 +133,16 @@ public class LoadingAsyncTask extends AsyncTask<Void, Integer, JSONObject> {
             currentActivity.get().startActivity(intent);
         }
     }
+
+    private void updateProgressBarProgress() {
+        int loopState = queueMatcher.getLoopState();
+
+        if (loopState < 0)
+            loopState = 0; // ProgressBar progress cannot be negative.
+
+        publishProgress(loopState);
+    }
+
 
     private boolean isContainerValid() {
         try {

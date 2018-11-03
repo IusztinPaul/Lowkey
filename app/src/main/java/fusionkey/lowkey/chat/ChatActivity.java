@@ -69,6 +69,7 @@ public class ChatActivity extends AppCompatActivity {
     final long periodForT = 1000, periodForT1 =10000, delay=0;
     long last_text_edit=0;
 
+    public static String USERNAME;
     String role;
     InChatRunnable inChatRunnable;
     ChatRoom chatRoom;
@@ -120,6 +121,8 @@ public class ChatActivity extends AppCompatActivity {
         msgDtoList = new ArrayList<>();
         stringL = new ArrayList<>();
 
+        String email = EmailBuilder.buildEmail(userRequest);
+
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         msgRecyclerView.setLayoutManager(linearLayoutManager);
@@ -134,7 +137,8 @@ public class ChatActivity extends AppCompatActivity {
         //Object that makes request and updates the UI if the user is/isn't connected/writting
         inChatRunnable = new InChatRunnable(state,chatRoom);
 
-        String email = EmailBuilder.buildEmail(userRequest);
+        UserAttributeManager userAttributeManager = new UserAttributeManager(email);
+        USERNAME = userAttributeManager.getUsername();
 
         final ProfilePhotoUploader photoUploader = new ProfilePhotoUploader();
         photoUploader.download(UserManager.parseEmailToPhotoFileName(email),
@@ -162,6 +166,7 @@ public class ChatActivity extends AppCompatActivity {
                         Log.e("Checking DISCONNECT", "checking");
                         chatbox.setVisibility(View.INVISIBLE);
                     }
+
                 } catch(NullPointerException e){
                     Log.e("h1->handleMessage", e.getMessage());
                 }
@@ -211,6 +216,11 @@ public class ChatActivity extends AppCompatActivity {
                 showDialog();
             }
         });
+    }
+
+
+    private void saveAndCancelTask(){
+
     }
 
     @Override
@@ -285,10 +295,14 @@ public class ChatActivity extends AppCompatActivity {
                         String userEmail = EmailBuilder.buildEmail(userRequest);
                         Log.e("userEmail ", userEmail);
 
+                        /**
+                         *
+                         */
                         UserAttributeManager userAttributeManager = new UserAttributeManager(userEmail);
-                        UserDB user = userAttributeManager.getUserDB();
+                        UserDB user = UserDBManager.getUserData(userEmail);
                         user.setScore(user.getScore() + POSITIVE_BUTTON_REVIEW_POINTS);
                         userAttributeManager.updateUserAttributes(null);
+
 
                         onBackPressed();
                     }

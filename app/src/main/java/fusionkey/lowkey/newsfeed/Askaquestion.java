@@ -53,7 +53,7 @@ public class Askaquestion extends AppCompatActivity {
         final String id = attributes.getUsername();
         final String uniqueID = attributes.getUserEmail();
         newsFeedRequest = new NewsFeedRequest(uniqueID);
-        circleImageView.setImageBitmap(LowKeyApplication.profilePhoto);
+        circleImageView.setImageBitmap(LowKeyApplication.userManager.profilePhoto);
         username.setText(id);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
