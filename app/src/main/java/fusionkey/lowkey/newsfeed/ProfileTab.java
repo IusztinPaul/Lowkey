@@ -124,6 +124,7 @@ public class ProfileTab extends Fragment {
                     public void handle() {
                         Log.e("PHOTO", "photo downloaded");
                         Picasso.with(getContext()).load((photoUploader.getFileTO())).into(circleImageView);
+                        LowKeyApplication.profilePhoto =  photoUploader.getPhoto();
                     }
                 }, new Callback() {
                     @Override
