@@ -16,12 +16,13 @@ import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
 
+import fusionkey.lowkey.Chat;
+import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.chat.ChatActivity;
 import fusionkey.lowkey.main.utils.NetworkManager;
 import fusionkey.lowkey.queue.IQueueMatcher;
 import fusionkey.lowkey.queue.LobbyCheckerRunnable;
-import fusionkey.lowkey.queue.QueueMatcherListenerFinder;
-import fusionkey.lowkey.queue.QueueMatcherSpeakerFinder;
+import fusionkey.lowkey.queue.QueueMatcherFactory;
 import fusionkey.lowkey.queue.QueueMatcherUtils;
 
 public class LoadingAsyncTask extends AsyncTask<Void, Integer, JSONObject> {
@@ -36,20 +37,22 @@ public class LoadingAsyncTask extends AsyncTask<Void, Integer, JSONObject> {
     private WeakReference<ProgressBar> progressBar;
     private WeakReference<Activity> currentActivity;
     private WeakReference<CardView> searchCard;
-    private String currentUser;
+    private String currentUserParsedEmail;
     private JSONObject jsonResponseContainer;
 
-    LoadingAsyncTask(String currentUser, Activity currentActivity, ProgressBar progressBar, boolean findListener,CardView searchCard) {
-        this.findListener=findListener;
-        if (findListener)
-            this.queueMatcher = new QueueMatcherListenerFinder(currentUser, currentActivity);
-        else
-            this.queueMatcher = new QueueMatcherSpeakerFinder(currentUser, currentActivity);
-        this.currentUser=currentUser;
+    LoadingAsyncTask(Activity currentActivity,
+                     ProgressBar progressBar,
+                     boolean findListener,
+                     CardView searchCard) {
+        this.findListener = findListener;
+        this.currentUserParsedEmail = LowKeyApplication.userManager.getParsedUserEmail();
         this.searchCard = new WeakReference<>(searchCard);
         this.currentActivity = new WeakReference<>(currentActivity);
+
         this.progressBar = new WeakReference<>(progressBar);
         this.progressBar.get().setVisibility(View.GONE);
+
+        this.queueMatcher = new QueueMatcherFactory(currentActivity, findListener).create();
     }
 
     @Override
@@ -62,7 +65,7 @@ public class LoadingAsyncTask extends AsyncTask<Void, Integer, JSONObject> {
     @Override
     protected JSONObject doInBackground(Void... voids) {
 
-        if(NetworkManager.isNetworkAvailable()) {
+        if (NetworkManager.isNetworkAvailable()) {
             // Start finding.
             queueMatcher.find();
 
@@ -111,56 +114,81 @@ public class LoadingAsyncTask extends AsyncTask<Void, Integer, JSONObject> {
     @Override
     protected void onCancelled(JSONObject jsonObject) {
         Toast.makeText(this.currentActivity.get(), EXIT_LOBBY_TOAST, Toast.LENGTH_SHORT).show();
-        this.progressBar.get().setVisibility(View.GONE);
+        stopAndResetProgressBar();
     }
 
     @Override
     protected void onPostExecute(JSONObject jsonObject) {
         super.onPostExecute(jsonObject);
-        this.progressBar.get().setVisibility(View.GONE);
         this.jsonResponseContainer = jsonObject;
 
-        try {
-            // If there is no data or the request failed don't proceed else do whatever you want to.
-            if (jsonObject.equals(QueueMatcherUtils.JSON_FAILED_REQUESTED_OBJECT) || jsonObject.get(QueueMatcherUtils.DATA_JSON_KEY).equals(QueueMatcherUtils.RESPONSE_NO_DATA)) {
-                Log.e("LoadingAsyncTask", "The match was not made successfully");
-                Toast.makeText(currentActivity.get(), LOBBY_DELETED_TOAST, Toast.LENGTH_SHORT).show();
-                saveState("step",0);
-                searchCard.get().setVisibility(View.INVISIBLE);
-            } else {
-                Log.e("LoadingAsyncTask :", jsonObject.toString());
-                Intent intent = new Intent(currentActivity.get(), ChatActivity.class);
-                intent.putExtra("Listener", currentUser);
-                    if(!findListener) {
-                        intent.putExtra("User",
-                                jsonObject.getJSONObject(QueueMatcherUtils.DATA_JSON_KEY).
-                                        getString(QueueMatcherUtils.DATA_SPEAKERS_KEY));
-                        intent.putExtra("role","helper");
-                    }else {
-                        intent.putExtra("User",
-                                jsonObject.getJSONObject(QueueMatcherUtils.DATA_JSON_KEY).
-                                        getString(QueueMatcherUtils.DATA_LISTENER_KEY));
-                        intent.putExtra("role","Nothelper");
-                    }
-                saveState("step",0);
-               searchCard.get().setVisibility(View.INVISIBLE);
-                    currentActivity.get().startActivity(intent);
-                Toast.makeText(this.currentActivity.get(), FIND_LOBBY_TOAST, Toast.LENGTH_SHORT).show();
+        stopAndResetProgressBar();
+        processSearchCardState();
 
+        if (isContainerValid()) {
+            Log.e("LoadingAsyncTask", "The match was not made successfully");
+            Toast.makeText(currentActivity.get(), LOBBY_DELETED_TOAST, Toast.LENGTH_SHORT).show();
+        } else {
+            Log.e("LoadingAsyncTask :", jsonObject.toString());
+            Toast.makeText(this.currentActivity.get(), FIND_LOBBY_TOAST, Toast.LENGTH_SHORT).show();
 
-
-            }
-        } catch (JSONException e) {
-            Log.e("LoadingAsyncTask", e.getMessage());
+            Intent intent = createIntent();
+            currentActivity.get().startActivity(intent);
         }
     }
-    private void saveState(String key,int step){
+
+    private boolean isContainerValid() {
+        try {
+            return !jsonResponseContainer.equals(QueueMatcherUtils.JSON_FAILED_REQUESTED_OBJECT) &&
+                    !jsonResponseContainer.get(QueueMatcherUtils.DATA_JSON_KEY).equals(QueueMatcherUtils.RESPONSE_NO_DATA);
+        } catch (JSONException e) {
+            Log.e("isContainerValid", e.getMessage());
+            return false;
+        }
+    }
+
+    private Intent createIntent() {
+        try {
+            Intent intent = new Intent(currentActivity.get(), ChatActivity.class);
+            intent.putExtra(ChatActivity.LISTENER_INTENT, currentUserParsedEmail);
+
+            if (!findListener) {
+                intent.putExtra(ChatActivity.USER_INTENT,
+                        jsonResponseContainer.getJSONObject(QueueMatcherUtils.DATA_JSON_KEY).
+                                getString(QueueMatcherUtils.DATA_SPEAKERS_KEY));
+                intent.putExtra(ChatActivity.ROLE_INTENT, "helper");
+            } else {
+                intent.putExtra(ChatActivity.USER_INTENT,
+                        jsonResponseContainer.getJSONObject(QueueMatcherUtils.DATA_JSON_KEY).
+                                getString(QueueMatcherUtils.DATA_LISTENER_KEY));
+                intent.putExtra(ChatActivity.ROLE_INTENT, "Nothelper");
+            }
+
+            return intent;
+        } catch (JSONException e) {
+            Log.e("createIntent", e.getMessage());
+            return null;
+        }
+    }
+
+    private void processSearchCardState() {
+        saveState("step", 0);
+        searchCard.get().setVisibility(View.INVISIBLE);
+    }
+
+    private void saveState(String key, int step) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(currentActivity.get().getApplicationContext());
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putInt(key, step);
         editor.apply();
     }
-    private int loadState(){
+
+    private void stopAndResetProgressBar() {
+        this.progressBar.get().setVisibility(View.GONE);
+        this.progressBar.get().setProgress(progressBar.get().getMax());
+    }
+
+    private int loadState() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(currentActivity.get().getApplicationContext());
         return (sharedPreferences.getInt("step", 0));
     }

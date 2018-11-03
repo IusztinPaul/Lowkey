@@ -25,9 +25,6 @@ import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
 
-import com.google.android.gms.ads.AdListener;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
 
 import fusionkey.lowkey.LowKeyApplication;
@@ -40,7 +37,7 @@ import fusionkey.lowkey.newsfeed.ProfileTab;
 
 public class Main2Activity extends AppCompatActivity implements LifecycleObserver,MainCallback {
     private LoadingAsyncTask loadingAsyncTask;
-    public static String currentUser = LowKeyApplication.userManager.getParsedUserEmail();
+    public static String currentUserParsedEmail = LowKeyApplication.userManager.getParsedUserEmail();
    // MobileAds.Initialize(this, "ca-app-pub-3205268820160972~9635375425");
     static public boolean SEARCH_STATE;
     /**
@@ -110,7 +107,7 @@ public class Main2Activity extends AppCompatActivity implements LifecycleObserve
                 @Override
                 public void onAdFailedToLoad(int errorCode) {
                     // Code to be executed when an ad request fails.
-                    loadingAsyncTask = new LoadingAsyncTask(currentUser, Main2Activity.this, progressBar, true, searchCard);
+                    loadingAsyncTask = new LoadingAsyncTask(Main2Activity.this, progressBar, true, searchCard);
                     loadingAsyncTask.execute();
                     saveState("step", 0);
                 }
@@ -128,7 +125,7 @@ public class Main2Activity extends AppCompatActivity implements LifecycleObserve
                 @Override
                 public void onAdClosed() {
                     // Code to be executed when when the interstitial ad is closed.
-                    loadingAsyncTask = new LoadingAsyncTask(currentUser, Main2Activity.this, progressBar, true, searchCard);
+                    loadingAsyncTask = new LoadingAsyncTask(Main2Activity.this, progressBar, true, searchCard);
                     loadingAsyncTask.execute();
                     saveState("step", 0);
                 }
@@ -152,7 +149,7 @@ public class Main2Activity extends AppCompatActivity implements LifecycleObserve
             public void onAdFailedToLoad(int errorCode) {
                 // Code to be executed when an ad request fails.
                 searchCard.setVisibility(View.VISIBLE);
-                loadingAsyncTask = new LoadingAsyncTask(currentUser, Main2Activity.this, progressBar, false, searchCard);
+                loadingAsyncTask = new LoadingAsyncTask(Main2Activity.this, progressBar, false, searchCard);
                 loadingAsyncTask.execute();
                 imageView.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -178,7 +175,7 @@ public class Main2Activity extends AppCompatActivity implements LifecycleObserve
             public void onAdClosed() {
                 // Code to be executed when when the interstitial ad is closed.
                 searchCard.setVisibility(View.VISIBLE);
-                loadingAsyncTask = new LoadingAsyncTask(currentUser, Main2Activity.this, progressBar, false, searchCard);
+                loadingAsyncTask = new LoadingAsyncTask(Main2Activity.this, progressBar, false, searchCard);
                 loadingAsyncTask.execute();
                 imageView.setOnClickListener(new View.OnClickListener() {
                     @Override
