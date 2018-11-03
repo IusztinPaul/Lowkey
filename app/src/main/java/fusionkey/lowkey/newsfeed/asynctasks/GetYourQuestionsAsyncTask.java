@@ -83,24 +83,11 @@ public class GetYourQuestionsAsyncTask extends AsyncTask<Void,String,JSONObject>
                         newsFeedMessage.setType(NewsFeedMessage.NORMAL);
                         newsFeedMessage.setSNStopic(obj.getString("snsTopic"));
                         newsFeedMessage.setUser(usernameS);
-                        newsFeedMessage.setUserPhoto(LowKeyApplication.profilePhoto);
+                        newsFeedMessage.setUserPhoto(LowKeyApplication.userManager.profilePhoto);
                         String anon = (obj.getString("isAnonymous"));
                         String email = obj.getString("userId");
                         // Set photo logic.
-                        newsFeedMessage.setUserPhoto(BitmapFactory.decodeResource(
-                                LowKeyApplication.instance.getResources(),
-                                R.drawable.avatar_placeholder)
-                        );
-                        final ProfilePhotoUploader photoUploader = new ProfilePhotoUploader();
-                        photoUploader.download(UserManager.parseEmailToPhotoFileName(email),
-                                new Callback() {
-                                    @Override
-                                    public void handle() {
-                                        Log.e("PHOTO", "photo downloaded");
-                                        newsFeedMessage.setFile(photoUploader.getFileTO());
-                                        newsFeedAdapter.notifyDataSetChanged();
-                                    }
-                                }, null);
+
 
                         if(anon.equalsIgnoreCase("true")|| anon.equalsIgnoreCase("true"))
                             newsFeedMessage.setAnon(Boolean.valueOf(anon));

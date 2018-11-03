@@ -3,6 +3,7 @@ package fusionkey.lowkey.auth.utils;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -24,6 +25,7 @@ import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.SignUpHan
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.VerificationHandler;
 import com.amazonaws.services.cognitoidentityprovider.model.UserType;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 
@@ -42,6 +44,9 @@ public class UserManager {
 
     private CognitoPoolUtils cognitoPoolUtils;
     private UserDB currentUser;
+
+    public Bitmap profilePhoto;
+    public File photoFile;
 
     private static UserManager instance;
 
@@ -169,7 +174,7 @@ public class UserManager {
         cognitoPoolUtils.setAllUserDataToNull();
         this.currentUser = null;
         clearCredentials();
-        LowKeyApplication.profilePhoto = null;
+        profilePhoto = null;
     }
 
     /**

@@ -22,7 +22,6 @@ import fusionkey.lowkey.auth.models.UserDB;
 import fusionkey.lowkey.auth.utils.UserAttributeManager;
 import fusionkey.lowkey.auth.utils.UserManager;
 import fusionkey.lowkey.listAdapters.ChatServiceAdapters.ChatAppMsgAdapter;
-import fusionkey.lowkey.main.Main2Activity;
 import fusionkey.lowkey.main.utils.Callback;
 import fusionkey.lowkey.main.utils.EmailBuilder;
 import fusionkey.lowkey.main.utils.NetworkManager;
@@ -34,6 +33,7 @@ public class MessagesActivity extends AppCompatActivity {
     private LinearLayout chatLayout;
     private TextView upperText;
     private CircleImageView image;
+    public static String USERNAME;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,11 +58,16 @@ public class MessagesActivity extends AppCompatActivity {
 
         String email = EmailBuilder.buildEmail(username);
         UserDB userDB = new UserAttributeManager(email).getUserDB();
+        UserAttributeManager userAttributeManager = new UserAttributeManager(email);
+        USERNAME = userAttributeManager.getUsername();
+
         try {
-            upperText.setText(userDB.getUsername());
+            upperText.setText(USERNAME);
         } catch (NullPointerException npe){
+            USERNAME = "not found";
             upperText.setText("Not found");
         }
+
         final ProfilePhotoUploader photoUploader = new ProfilePhotoUploader();
         photoUploader.download(UserManager.parseEmailToPhotoFileName(email),
                 new Callback() {
@@ -93,8 +98,7 @@ public class MessagesActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MessagesActivity.this, Main2Activity.class);
-                startActivity(intent);
+                onBackPressed();
             }
         });
     }
@@ -102,4 +106,6 @@ public class MessagesActivity extends AppCompatActivity {
     public void onBackPressed(){
         super.onBackPressed();
     }
+
+
 }

@@ -110,14 +110,12 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             //chatTabViewHolder.image.setImageBitmap(msgDto.getUserPhoto());
             if (!msgDto.getAnon()) {
                 chatTabViewHolder.name.setText(msgDto.getUser());
-                if(msgDto.getType()==NewsFeedMessage.NORMAL){
-                    chatTabViewHolder.image.setImageBitmap(LowKeyApplication.profilePhoto);
+                if(msgDto.getType().equals(NewsFeedMessage.NORMAL)){
+                    Picasso.with(mcontext).load(LowKeyApplication.userManager.photoFile).into(chatTabViewHolder.image);
                 }
-                Picasso.with(mcontext).load(msgDto.getFile()).into(chatTabViewHolder.image);
+                else
+                    Picasso.with(mcontext).load(msgDto.getFile()).into(chatTabViewHolder.image);
 
-                //Its the same thing like getUsername in here
-                //UserAttributeManager attributeManager = new UserAttributeManager(msgDto.getId());
-                //holder.name.setText(attributeManager.getUsername());
             } else {
                 Picasso.with(mcontext).load(R.drawable.avatar_placeholder).into(chatTabViewHolder.image);
                 chatTabViewHolder.name.setText(ANON_STRING);

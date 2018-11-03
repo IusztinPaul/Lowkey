@@ -8,7 +8,7 @@ import fusionkey.lowkey.queue.RequestQueueSingleton;
 
 
 public class LowKeyApplication extends Application {
-    public static Bitmap profilePhoto;
+
     public static String endpointArn;
 
     public static RequestQueueSingleton requestQueueSingleton;

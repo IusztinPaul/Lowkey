@@ -69,6 +69,7 @@ public class ChatActivity extends AppCompatActivity {
     final long periodForT = 1000, periodForT1 =10000, delay=0;
     long last_text_edit=0;
 
+    public static String USERNAME;
     String role;
     InChatRunnable inChatRunnable;
     ChatRoom chatRoom;
@@ -92,9 +93,9 @@ public class ChatActivity extends AppCompatActivity {
     ArrayList<Integer> stringL;
 
     private static final String disconnectedDialog = "just disconnected from the chat !";
-    private static final String listenerIntent ="Listener";
-    private static final String userIntent ="User";
-    private static final String roleIntent = "role";
+    public static final String LISTENER_INTENT ="Listener";
+    public static final String USER_INTENT ="User";
+    public static final String ROLE_INTENT = "role";
 
     private ChatAppMsgAdapter chatAppMsgAdapter;
     private RecyclerView msgRecyclerView;
@@ -108,9 +109,9 @@ public class ChatActivity extends AppCompatActivity {
         state = findViewById(R.id.isWritting);
         connectDot = findViewById(R.id.textView8);
         msgRecyclerView = findViewById(R.id.reyclerview_message_list);
-        final String listener = getIntent().getStringExtra(listenerIntent);
-        final String user = getIntent().getStringExtra(userIntent);
-        role = getIntent().getStringExtra(roleIntent);
+        final String listener = getIntent().getStringExtra(LISTENER_INTENT);
+        final String user = getIntent().getStringExtra(USER_INTENT);
+        role = getIntent().getStringExtra(ROLE_INTENT);
         chatbox = findViewById(R.id.layout_chatbox);
         image = findViewById(R.id.circleImageView2);
         msgInputText = findViewById(R.id.chat_input_msg);
@@ -119,6 +120,8 @@ public class ChatActivity extends AppCompatActivity {
         chatRoom = new ChatRoom(userRequest,listenerRequest);
         msgDtoList = new ArrayList<>();
         stringL = new ArrayList<>();
+
+        String email = EmailBuilder.buildEmail(userRequest);
 
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
@@ -134,7 +137,8 @@ public class ChatActivity extends AppCompatActivity {
         //Object that makes request and updates the UI if the user is/isn't connected/writting
         inChatRunnable = new InChatRunnable(state,chatRoom);
 
-        String email = EmailBuilder.buildEmail(userRequest);
+        UserAttributeManager userAttributeManager = new UserAttributeManager(email);
+        USERNAME = userAttributeManager.getUsername();
 
         final ProfilePhotoUploader photoUploader = new ProfilePhotoUploader();
         photoUploader.download(UserManager.parseEmailToPhotoFileName(email),
@@ -161,13 +165,10 @@ public class ChatActivity extends AppCompatActivity {
                     if (str.equals("disconnected")) {
                         Log.e("Checking DISCONNECT", "checking");
                         chatbox.setVisibility(View.INVISIBLE);
-
                     }
-                    else {
 
-                    }
                 } catch(NullPointerException e){
-
+                    Log.e("h1->handleMessage", e.getMessage());
                 }
             }
         };
@@ -217,6 +218,11 @@ public class ChatActivity extends AppCompatActivity {
         });
     }
 
+
+    private void saveAndCancelTask(){
+
+    }
+
     @Override
     public void onBackPressed(){
         chatAsyncTask.cancel(true);
@@ -248,13 +254,7 @@ public class ChatActivity extends AppCompatActivity {
             database.close();
         }
 
-<<<<<<< HEAD
-         updatePoints();
-
-=======
-
-         updatePoints();
->>>>>>> dev
+        updatePoints();
         super.onBackPressed();
     }
 
@@ -291,26 +291,18 @@ public class ChatActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int id) {
                         dialog.cancel();
                         //rebuild the email
-<<<<<<< HEAD
-                        StringBuilder stringBuilder = new StringBuilder();
-                        stringBuilder.append(userRequest);
-                        stringBuilder.insert(stringBuilder.length()-3,'.');
-                        stringBuilder.insert(stringBuilder.length()-9,'@');
-                        Log.e("string ",stringBuilder.toString());
 
-                        UserDB user = UserDBManager.getUserData(stringBuilder.toString());
-                        user.setScore(user.getScore() + 5);
-                        UserDBManager.update(user);
-
-=======
                         String userEmail = EmailBuilder.buildEmail(userRequest);
                         Log.e("userEmail ", userEmail);
 
+                        /**
+                         *
+                         */
                         UserAttributeManager userAttributeManager = new UserAttributeManager(userEmail);
-                        UserDB user = userAttributeManager.getUserDB();
+                        UserDB user = UserDBManager.getUserData(userEmail);
                         user.setScore(user.getScore() + POSITIVE_BUTTON_REVIEW_POINTS);
                         userAttributeManager.updateUserAttributes(null);
->>>>>>> dev
+
 
                         onBackPressed();
                     }
