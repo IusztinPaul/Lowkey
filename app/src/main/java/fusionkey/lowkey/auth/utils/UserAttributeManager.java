@@ -38,6 +38,13 @@ public class UserAttributeManager {
             successCallback.execute();
     }
 
+    public static void updateUserAttributes(UserDB userDB,
+                                            final AuthCallback successCallback) {
+        UserDBManager.update(userDB);
+        if(successCallback != null)
+            successCallback.execute();
+    }
+
     public String getUsername() {
         try {
             return userDB.getUsername();
