@@ -191,6 +191,7 @@ public class UserManager {
             public void onSuccess(CognitoUser cognitoUser, boolean userConfirmed, CognitoUserCodeDeliveryDetails cognitoUserCodeDeliveryDetails) {
                 cognitoPoolUtils.setUser(cognitoUser);
                 setUpUser(email, username);
+
                 if (!userConfirmed) {
                     Toast.makeText(currentActivity,
                             currentActivity.getResources().getString(R.string.register_validation_message),

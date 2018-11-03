@@ -21,15 +21,10 @@ import com.google.android.gms.ads.reward.RewardedVideoAd;
 import com.google.android.gms.ads.reward.RewardedVideoAdListener;
 
 import java.util.ArrayList;
-import java.util.Map;
 
-
-import de.hdodenhof.circleimageview.CircleImageView;
 import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.R;
 import fusionkey.lowkey.auth.models.UserDB;
-import fusionkey.lowkey.auth.utils.UserAttributesEnum;
-import fusionkey.lowkey.auth.utils.UserDBManager;
 import fusionkey.lowkey.listAdapters.NewsFeedAdapter;
 import fusionkey.lowkey.main.MainCallback;
 import fusionkey.lowkey.newsfeed.models.NewsFeedMessage;
@@ -141,11 +136,10 @@ public class profileFragment extends Fragment {
 
                    @Override
                    public void onRewardedVideoCompleted() {
-                       String currentUserEmail = LowKeyApplication.userManager.getCurrentUserEmail();
-                       UserDB user = UserDBManager.getUserData(currentUserEmail);
+                       UserDB user = LowKeyApplication.userManager.getUserDetails();
                        long newScore = user.getScore() + 5;
                        user.setScore(newScore);
-                       UserDBManager.update(user);
+                       LowKeyApplication.userManager.updateCurrentUser(user);
                        Toast.makeText(getContext(), "You've won 5 points ! ",
                                Toast.LENGTH_SHORT).show();
                        populateUI();
