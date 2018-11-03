@@ -6,9 +6,6 @@ import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
-
-import com.squareup.picasso.Picasso;
 
 import java.lang.ref.WeakReference;
 
@@ -19,7 +16,7 @@ import fusionkey.lowkey.auth.utils.UserManager;
 import fusionkey.lowkey.main.Main2Activity;
 import fusionkey.lowkey.main.utils.Callback;
 import fusionkey.lowkey.main.utils.ProfilePhotoUploader;
-import fusionkey.lowkey.pushnotifications.RegisterSNS;
+import fusionkey.lowkey.pushnotifications.service.RegisterSNS;
 
 public class LoadUserDataActivity extends AppCompatActivity {
 

@@ -1,4 +1,4 @@
-package fusionkey.lowkey.pushnotifications;
+package fusionkey.lowkey.pushnotifications.service;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -15,14 +15,9 @@ import android.util.Log;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
-import java.util.ArrayList;
-import java.util.Map;
-
 import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.R;
-import fusionkey.lowkey.auth.utils.UserAttributesEnum;
 import fusionkey.lowkey.entryActivity.EntryActivity;
-import fusionkey.lowkey.models.NotificationTO;
 
 import static android.content.ContentValues.TAG;
 
