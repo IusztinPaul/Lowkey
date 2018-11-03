@@ -58,14 +58,20 @@ public class HelpOthers extends Fragment {
         imag1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(NetworkManager.isNetworkAvailable() && loadState()==0){
+                if(NetworkManager.isNetworkAvailable()){
 
-                    mainCallback.helpOthers();
+                    if(loadState() == 0) {
+                        mainCallback.helpOthers();
+                        saveState("step", 1);
+                    } else
+                        Toast.makeText(getActivity(),
+                                getActivity().getString(R.string.already_in_queue_message)
+                                , Toast.LENGTH_SHORT).show();
 
-                    saveState("step",1);
-
-
-            }else Toast.makeText(getActivity(), "Check if you're connected to the Internet", Toast.LENGTH_SHORT).show();
+            } else
+                Toast.makeText(getActivity(),
+                        getActivity().getString(R.string.no_network_message),
+                        Toast.LENGTH_SHORT).show();
             }
         });
         return(result);

@@ -38,7 +38,9 @@ public class RegisterActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(NetworkManager.isNetworkAvailable())
                 attemptRegister();
-                else Toast.makeText(RegisterActivity.this, "Check if you're connected to the Internet", Toast.LENGTH_SHORT).show();
+                else Toast.makeText(RegisterActivity.this,
+                        RegisterActivity.this.getString(R.string.no_network_message),
+                        Toast.LENGTH_SHORT).show();
 
             }
         });
