@@ -295,12 +295,12 @@ public class ChatActivity extends AppCompatActivity {
                         String userEmail = EmailBuilder.buildEmail(userRequest);
                         Log.e("userEmail ", userEmail);
 
-                        /**
-                         *
-                         */
                         UserAttributeManager userAttributeManager = new UserAttributeManager(userEmail);
-                        UserDB user = UserDBManager.getUserData(userEmail);
+
+                        UserDB user = userAttributeManager.getUserDB();
                         user.setScore(user.getScore() + POSITIVE_BUTTON_REVIEW_POINTS);
+
+                        userAttributeManager.setUserDB(user);
                         userAttributeManager.updateUserAttributes(null);
 
 
@@ -324,11 +324,11 @@ public class ChatActivity extends AppCompatActivity {
     private void updatePoints(){
         UserDB user = LowKeyApplication.userManager.getUserDetails();
         long newScore = user.getScore() + (long) PointsCalculator.calculateStringsValue(stringCounter,stringL,clock);
-        updateUserWithNewScore(user, newScore);
+        updateCurrentUserWithNewScore(user, newScore);
         Log.e("points ::::: ", "score"+newScore);
     }
 
-    private void updateUserWithNewScore(UserDB user, long newScore) {
+    private void updateCurrentUserWithNewScore(UserDB user, long newScore) {
         user.setScore(newScore);
         LowKeyApplication.userManager.updateCurrentUser(user);
     }
