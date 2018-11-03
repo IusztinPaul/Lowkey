@@ -80,6 +80,7 @@ public class ChatActivity extends AppCompatActivity {
     Bundle bb = new Bundle();
     Thread thread;
     TextView state;
+    TextView status;
     TextView connectDot;
     EditText msgInputText;
     LinearLayout chatbox;
@@ -107,6 +108,7 @@ public class ChatActivity extends AppCompatActivity {
         //INIT
         Toolbar toolbar = findViewById(R.id.toolbar);
         state = findViewById(R.id.isWritting);
+        status = findViewById(R.id.status);status.setText("wait");
         connectDot = findViewById(R.id.textView8);
         msgRecyclerView = findViewById(R.id.reyclerview_message_list);
         final String listener = getIntent().getStringExtra(LISTENER_INTENT);
@@ -135,7 +137,7 @@ public class ChatActivity extends AppCompatActivity {
         chatAsyncTask.execute();
 
         //Object that makes request and updates the UI if the user is/isn't connected/writting
-        inChatRunnable = new InChatRunnable(state,chatRoom);
+        inChatRunnable = new InChatRunnable(status,state,chatRoom);
 
         UserAttributeManager userAttributeManager = new UserAttributeManager(email);
         USERNAME = userAttributeManager.getUsername();
@@ -177,7 +179,7 @@ public class ChatActivity extends AppCompatActivity {
         t1.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                thread = new Thread(new DisconnectedRunnable(h1,state));
+                thread = new Thread(new DisconnectedRunnable(h1,status));
                 thread.start();
             }
 
