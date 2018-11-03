@@ -29,7 +29,7 @@ public class LoadingAsyncTask extends AsyncTask<Void, Integer, JSONObject> {
 
     private static final String FIND_LOBBY_TOAST = "The chat is starting!";
     private static final String EXIT_LOBBY_TOAST = "You have exited the loading screen!";
-    private static final String LOBBY_DELETED_TOAST = "There are no online listeners or the lobby was deleted";
+    private static final String LOBBY_DELETED_TOAST = "There are no online users at the moment.";
 
     private boolean findListener;
 
@@ -69,15 +69,15 @@ public class LoadingAsyncTask extends AsyncTask<Void, Integer, JSONObject> {
             // Start finding.
             queueMatcher.find();
 
-            // This time is needed so the runnables from the queueMatcher can start. Otherwise
-            // the container will be null and queueMatcher.isLoopCheckerAlive() == FALSE
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                queueMatcher.stopFinding();
-                e.printStackTrace();
-                return QueueMatcherUtils.JSON_FAILED_REQUESTED_OBJECT;
-            }
+            // Wait for the L0/S0 API calls to finish and have a response.
+            while (!queueMatcher.hasStep0Response())
+                try {
+                    Thread.sleep(250);
+                } catch (InterruptedException e) {
+                    queueMatcher.stopFinding();
+                    e.printStackTrace();
+                    return QueueMatcherUtils.JSON_FAILED_REQUESTED_OBJECT;
+                }
 
             // Wait for lobby to get full or to timeout.
             while (queueMatcher.isLoopCheckerAlive() &&
@@ -114,6 +114,7 @@ public class LoadingAsyncTask extends AsyncTask<Void, Integer, JSONObject> {
     @Override
     protected void onCancelled(JSONObject jsonObject) {
         Toast.makeText(this.currentActivity.get(), EXIT_LOBBY_TOAST, Toast.LENGTH_SHORT).show();
+        queueMatcher.stopFinding();
         stopAndResetProgressBar();
     }
 
@@ -125,7 +126,7 @@ public class LoadingAsyncTask extends AsyncTask<Void, Integer, JSONObject> {
         stopAndResetProgressBar();
         processSearchCardState();
 
-        if (isContainerValid()) {
+        if (!isContainerValid()) {
             Log.e("LoadingAsyncTask", "The match was not made successfully");
             Toast.makeText(currentActivity.get(), LOBBY_DELETED_TOAST, Toast.LENGTH_SHORT).show();
         } else {

@@ -19,15 +19,10 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
-import com.amazonaws.mobile.client.AWSMobileClient;
-
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
 
-import com.google.android.gms.ads.MobileAds;
-
-import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.R;
 
 import fusionkey.lowkey.main.utils.PhotoUploader;
@@ -37,9 +32,7 @@ import fusionkey.lowkey.newsfeed.ProfileTab;
 
 public class Main2Activity extends AppCompatActivity implements LifecycleObserver,MainCallback {
     private LoadingAsyncTask loadingAsyncTask;
-    public static String currentUserParsedEmail = LowKeyApplication.userManager.getParsedUserEmail();
-   // MobileAds.Initialize(this, "ca-app-pub-3205268820160972~9635375425");
-    static public boolean SEARCH_STATE;
+
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -59,6 +52,7 @@ public class Main2Activity extends AppCompatActivity implements LifecycleObserve
     private CardView searchCard;
     private ImageView imageView;
     private FloatingActionButton fab;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,18 +73,9 @@ public class Main2Activity extends AppCompatActivity implements LifecycleObserve
         progressBar = (ProgressBar) findViewById(R.id.paymentBar);
         searchCard = (CardView) findViewById(R.id.searchCard);
         imageView = findViewById(R.id.imageView8);
-
-        // Admob init
-        // Sample AdMob app ID: ca-app-pub-3940256099942544~3347511713
-        MobileAds.initialize(this, "ca-app-pub-3940256099942544~3347511713");
-
-
-
-        // AWSMobileClient enables AWS user credentials to access your table
-        AWSMobileClient.getInstance().initialize(this).execute();
-
-
+        setProgressBarStopButtonListener();
     }
+
     @Override
     public void searchForHelp() {
 
@@ -151,14 +136,6 @@ public class Main2Activity extends AppCompatActivity implements LifecycleObserve
                 searchCard.setVisibility(View.VISIBLE);
                 loadingAsyncTask = new LoadingAsyncTask(Main2Activity.this, progressBar, false, searchCard);
                 loadingAsyncTask.execute();
-                imageView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        loadingAsyncTask.cancel(true);
-                        saveState("step", 0);
-                        doNothing();
-                    }
-                });
             }
 
             @Override
@@ -177,17 +154,20 @@ public class Main2Activity extends AppCompatActivity implements LifecycleObserve
                 searchCard.setVisibility(View.VISIBLE);
                 loadingAsyncTask = new LoadingAsyncTask(Main2Activity.this, progressBar, false, searchCard);
                 loadingAsyncTask.execute();
-                imageView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        loadingAsyncTask.cancel(true);
-                        saveState("step", 0);
-                        doNothing();
-                    }
-                });
             }
         });
 
+    }
+
+    private void setProgressBarStopButtonListener() {
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                loadingAsyncTask.cancel(true);
+                saveState("step", 0);
+                doNothing();
+            }
+        });
     }
 
     private void doNothing() {

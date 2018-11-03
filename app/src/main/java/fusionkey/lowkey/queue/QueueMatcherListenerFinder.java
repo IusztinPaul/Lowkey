@@ -30,6 +30,8 @@ import static fusionkey.lowkey.LowKeyApplication.requestQueueSingleton;
 
 public class QueueMatcherListenerFinder extends QueueMatcherUtils implements IQueueMatcher {
 
+    private boolean hasStep0Response = false;
+
     public QueueMatcherListenerFinder(String currentUser, Activity currentActivity) {
         super(currentUser, currentActivity);
     }
@@ -54,31 +56,17 @@ public class QueueMatcherListenerFinder extends QueueMatcherUtils implements IQu
                     public void onResponse(final JSONObject response) {
                         Log.e("findListener", response.toString());
 
-                        try {
-                            // continue only if the response has data
-                            if (!response.get(DATA_JSON_KEY).equals(RESPONSE_NO_DATA)) {
-                                final String listener = response.get(DATA_JSON_KEY).toString();
-
-                                HashMap<String, String> queryParameters = new HashMap<>();
-                                queryParameters.put(USER_API_QUERY_STRING, currentUser);
-                                queryParameters.put(LISTENER_API_QUERY_STRING, listener);
-                                final String url = getAbsoluteUrlWithQueryString(queryParameters, SEAPKER_RELATIVE_URL);
-
-                                currentActivity.runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        findRunnable = new LobbyCheckerRunnable(url, listener, currentUser);
-                                        new Thread(findRunnable).start();
-                                    }
-                                });
-                            }
-                        } catch (JSONException e) {
-                            Log.e("JSONException", "Json response had no '" + DATA_JSON_KEY + "' key");
-                            if (findRunnable != null) {
-                                findRunnable.setResponseContainer(JSON_FAILED_REQUESTED_OBJECT);
-                                findRunnable.setStillChecking(false);
-                            }
+                        if (responseHasData(response)) {
+                            currentActivity.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    findRunnable = createRunnable(response);
+                                    new Thread(findRunnable).start();
+                                }
+                            });
                         }
+
+                        hasStep0Response = true;
                     }
                 },
                 new Response.ErrorListener() {
@@ -89,6 +77,8 @@ public class QueueMatcherListenerFinder extends QueueMatcherUtils implements IQu
                             findRunnable.setResponseContainer(JSON_FAILED_REQUESTED_OBJECT);
                             findRunnable.setStillChecking(false);
                         }
+
+                        hasStep0Response = true;
                     }
 
                 }) {
@@ -146,6 +136,11 @@ public class QueueMatcherListenerFinder extends QueueMatcherUtils implements IQu
                 findRunnable.makeSpeakerDeleteRequest();
     }
 
+    @Override
+    public boolean hasStep0Response() {
+        return hasStep0Response;
+    }
+
     /**
      * @return the state of the loop from the thread -> if it runs or not
      */
@@ -161,5 +156,21 @@ public class QueueMatcherListenerFinder extends QueueMatcherUtils implements IQu
             return 0;
 
         return findRunnable.getLoopState();
+    }
+
+    private LobbyCheckerRunnable createRunnable(JSONObject response) {
+        try {
+            final String listener = response.get(DATA_JSON_KEY).toString();
+
+            HashMap<String, String> queryParameters = new HashMap<>();
+            queryParameters.put(USER_API_QUERY_STRING, currentUser);
+            queryParameters.put(LISTENER_API_QUERY_STRING, listener);
+
+            String newUrl = getAbsoluteUrlWithQueryString(queryParameters, SEAPKER_RELATIVE_URL);
+            return new LobbyCheckerRunnable(newUrl, listener, currentUser);
+        } catch (JSONException e) {
+            Log.e("createRunnableUrl", e.getMessage());
+            return null;
+        }
     }
 }

@@ -30,6 +30,8 @@ import static fusionkey.lowkey.LowKeyApplication.requestQueueSingleton;
 
 public class QueueMatcherSpeakerFinder extends QueueMatcherUtils implements IQueueMatcher {
 
+    private boolean hasStep0Response = false;
+
     public QueueMatcherSpeakerFinder(String currentUser, Activity currentActivity) {
         super(currentUser, currentActivity);
     }
@@ -55,25 +57,19 @@ public class QueueMatcherSpeakerFinder extends QueueMatcherUtils implements IQue
                     @Override
                     public void onResponse(JSONObject response) {
                         Log.e("findSpeakers", response.toString());
-                        try {
-                            if (response.getString("errorMessage").equals("Listener already added. Has a lobby and in queue"))
-                               findRunnable.makeListenerDeleteRequest();
-                            // Continue only of the response has data.
-                            if (!response.get(DATA_JSON_KEY).equals(RESPONSE_NO_DATA))
-
+                        if (isListenerAlreadyInQueue(response)) {
+                            findRunnable.makeListenerDeleteRequest();
+                        } else {
+                            if (responseHasData(response))
                                 currentActivity.runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
                                         new Thread(findRunnable).start();
                                     }
                                 });
-                        } catch (JSONException e) {
-                            Log.e("JSONException", "Json response had no '" + DATA_JSON_KEY + "' key");
-                            if (findRunnable != null) {
-                                findRunnable.setResponseContainer(JSON_FAILED_REQUESTED_OBJECT);
-                                findRunnable.setStillChecking(false);
-                            }
                         }
+
+                        hasStep0Response = true;
                     }
                 },
                 new Response.ErrorListener() {
@@ -85,6 +81,8 @@ public class QueueMatcherSpeakerFinder extends QueueMatcherUtils implements IQue
                             findRunnable.setStillChecking(false);
                             findRunnable.makeListenerDeleteRequest();
                         }
+
+                        hasStep0Response = true;
                     }
                 }) {
 
@@ -130,7 +128,6 @@ public class QueueMatcherSpeakerFinder extends QueueMatcherUtils implements IQue
     }
 
     /**
-     *
      * This method removes the lobby of the listener and ads a flag that the listener from the queue
      * it's deprecated. So no more speakers will stay or be added in the lobby for that listener.
      */
@@ -142,6 +139,11 @@ public class QueueMatcherSpeakerFinder extends QueueMatcherUtils implements IQue
                 findRunnable.setStillChecking(false);
             else
                 findRunnable.makeListenerDeleteRequest();
+    }
+
+    @Override
+    public boolean hasStep0Response() {
+        return hasStep0Response;
     }
 
     /**
@@ -159,5 +161,21 @@ public class QueueMatcherSpeakerFinder extends QueueMatcherUtils implements IQue
             return 0;
 
         return findRunnable.getLoopState();
+    }
+
+    public boolean isListenerAlreadyInQueue(JSONObject response) {
+        try {
+            int statusCode = response.getInt(STATUS_CODE_JSON_KEY);
+            if (statusCode == 500)
+                return true;
+
+            String errorMessage = response.getString(ERROR_JSON_KEY);
+            if (errorMessage.equals("Listener already added. Has a lobby and in queue."))
+                return true;
+
+        } catch (JSONException e) {
+            return false;
+        }
+        return false;
     }
 }
