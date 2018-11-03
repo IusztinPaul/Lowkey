@@ -1,6 +1,9 @@
 package fusionkey.lowkey.queue;
 
 import android.app.Activity;
+import android.util.Log;
+
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
@@ -24,7 +27,7 @@ abstract public class QueueMatcherUtils {
     static final String SEAPKER_RELATIVE_URL = "speaker/";
 
     public static final String DATA_JSON_KEY = "data";
-    public static final String ERROR_JSON_LEY = "errorMessage";
+    public static final String ERROR_JSON_KEY = "errorMessage";
     public static final String STATUS_CODE_JSON_KEY = "statusCode";
     public static final String DELETE_INFO_JSON_KEY = "deleteInfoMessage";
     public static final String RESPONSE_NO_DATA = "";
@@ -46,6 +49,15 @@ abstract public class QueueMatcherUtils {
     QueueMatcherUtils(String currentUser, Activity currentActivity) {
         this.currentUser = currentUser;
         this.currentActivity = currentActivity;
+    }
+
+    protected boolean responseHasData(JSONObject response) {
+        try {
+            return !response.get(DATA_JSON_KEY).equals(RESPONSE_NO_DATA);
+        } catch (JSONException e) {
+            Log.e("responseHasData", e.getMessage());
+            return false;
+        }
     }
 
     String getAbsoluteUrlWithQueryString(Map<?, ?> queryParameters, String relativeUrl) {

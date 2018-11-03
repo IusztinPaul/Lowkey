@@ -44,39 +44,39 @@ public class LobbyCheckerRunnable implements Runnable {
         stillChecking = true;
 
         try {
-        while (stillChecking && i > 0) {
+            while (stillChecking && i > 0) {
 
-            responseContainer = null;
-            requestQueueSingleton.addToRequestQueue(getRequest());
+                responseContainer = null;
+                requestQueueSingleton.addToRequestQueue(getRequest());
 
-            while (responseContainer == null) {
-                Thread.sleep(2);
-                i -= 2;
+                while (responseContainer == null) {
+                    Thread.sleep(2);
+                    i -= 2;
 
-                if(i <= 0) {
-                    i = 0;
+                    if (i <= 0) {
+                        i = 0;
+                        break;
+                    }
+                }
+
+                // If the listener exits the lobby all the speakers waiting for the listener
+                // have to be thrown out -> containers will be filled with JSON_FAILED_REQUESTED_OBJECT.
+                if (responseContainer != null
+                        && responseContainer.get(QueueMatcherUtils.DATA_JSON_KEY).
+                        equals(QueueMatcherUtils.RESPONSE_LOBBY_DELETED)) {
                     break;
                 }
-            }
 
-            // If the listener exits the lobby all the speakers waiting for the listener
-            // have to be thrown out -> containers will be filled with JSON_FAILED_REQUESTED_OBJECT.
-            if(responseContainer != null
-                    && responseContainer.get(QueueMatcherUtils.DATA_JSON_KEY).
-                    equals(QueueMatcherUtils.RESPONSE_LOBBY_DELETED)) {
-                break;
-            }
+                if (responseContainer != null
+                        && !responseContainer.get(QueueMatcherUtils.DATA_JSON_KEY).
+                        equals(QueueMatcherUtils.RESPONSE_NO_DATA)) {
+                    dataFound = true;
+                    break;
+                }
 
-            if(responseContainer != null
-                    && !responseContainer.get(QueueMatcherUtils.DATA_JSON_KEY).
-                    equals(QueueMatcherUtils.RESPONSE_NO_DATA)) {
-                dataFound = true;
-                break;
+                Thread.sleep(4);
+                i -= 4;
             }
-
-            Thread.sleep(4);
-            i -= 4;
-        }
 
         } catch (InterruptedException e) {
             Log.e("InterruptedException: " + Thread.currentThread(), e.getStackTrace().toString());
@@ -88,7 +88,7 @@ public class LobbyCheckerRunnable implements Runnable {
             stillChecking = false;
 
             // If the data was not found we have to make a cleanup.
-            if(!dataFound)
+            if (!dataFound)
                 makeDeleteRequest("LobbyChecker");
         }
     }
@@ -126,14 +126,14 @@ public class LobbyCheckerRunnable implements Runnable {
     }
 
     synchronized void setSpeaker(String speaker) {
-       this.callerSpeaker = speaker;
+        this.callerSpeaker = speaker;
     }
 
     /**
      * As a speaker.
      */
     void makeSpeakerDeleteRequest() {
-        if(listener == null || callerSpeaker == null)
+        if (listener == null || callerSpeaker == null)
             return;
         makeDeleteRequest("deleteSpeaker");
     }
@@ -142,7 +142,7 @@ public class LobbyCheckerRunnable implements Runnable {
      * As a listener.
      */
     void makeListenerDeleteRequest() {
-        if(listener == null)
+        if (listener == null)
             return;
 
         makeDeleteRequest("deleteListener");
@@ -160,13 +160,13 @@ public class LobbyCheckerRunnable implements Runnable {
                     }
                 },
                 new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("Error: " + logTag, error.toString());
+                    }
+                }) {
             @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e("Error: " + logTag, error.toString());
-            }
-        }) {
-            @Override
-            public Map<String, String> getHeaders(){
+            public Map<String, String> getHeaders() {
 
                 HashMap<String, String> headers = new HashMap<String, String>();
                 headers.put("Content-Type", "application/json");
@@ -176,6 +176,8 @@ public class LobbyCheckerRunnable implements Runnable {
         };
 
         requestQueueSingleton.addToRequestQueue(request);
+
+        stillChecking = false;
         responseContainer = QueueMatcherUtils.JSON_FAILED_REQUESTED_OBJECT;
     }
 

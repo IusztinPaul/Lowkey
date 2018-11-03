@@ -8,4 +8,5 @@ public interface IQueueMatcher {
     void stopFinding();
     boolean isLoopCheckerAlive();
     int getLoopState();
+    boolean hasStep0Response();
 }

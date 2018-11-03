@@ -1,18 +1,8 @@
 package fusionkey.lowkey.chat.models;
 
-import android.util.Log;
-
-import com.squareup.picasso.Picasso;
-
 import fusionkey.lowkey.ROOMdatabase.MessagesActivity;
-import fusionkey.lowkey.auth.models.UserDB;
-import fusionkey.lowkey.auth.utils.UserDBManager;
-import fusionkey.lowkey.auth.utils.UserManager;
 import fusionkey.lowkey.chat.ChatActivity;
 import fusionkey.lowkey.listAdapters.ChatServiceAdapters.ChatAppMsgViewHolder;
-import fusionkey.lowkey.main.utils.Callback;
-import fusionkey.lowkey.main.utils.EmailBuilder;
-import fusionkey.lowkey.main.utils.ProfilePhotoUploader;
 
 import static fusionkey.lowkey.chat.models.MessageTO.MSG_TYPE_RECEIVED;
 import static fusionkey.lowkey.chat.models.MessageTO.MSG_TYPE_RECEIVED_LAST;

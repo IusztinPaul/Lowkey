@@ -93,9 +93,9 @@ public class ChatActivity extends AppCompatActivity {
     ArrayList<Integer> stringL;
 
     private static final String disconnectedDialog = "just disconnected from the chat !";
-    private static final String listenerIntent ="Listener";
-    private static final String userIntent ="User";
-    private static final String roleIntent = "role";
+    public static final String LISTENER_INTENT ="Listener";
+    public static final String USER_INTENT ="User";
+    public static final String ROLE_INTENT = "role";
 
     private ChatAppMsgAdapter chatAppMsgAdapter;
     private RecyclerView msgRecyclerView;
@@ -109,9 +109,9 @@ public class ChatActivity extends AppCompatActivity {
         state = findViewById(R.id.isWritting);
         connectDot = findViewById(R.id.textView8);
         msgRecyclerView = findViewById(R.id.reyclerview_message_list);
-        final String listener = getIntent().getStringExtra(listenerIntent);
-        final String user = getIntent().getStringExtra(userIntent);
-        role = getIntent().getStringExtra(roleIntent);
+        final String listener = getIntent().getStringExtra(LISTENER_INTENT);
+        final String user = getIntent().getStringExtra(USER_INTENT);
+        role = getIntent().getStringExtra(ROLE_INTENT);
         chatbox = findViewById(R.id.layout_chatbox);
         image = findViewById(R.id.circleImageView2);
         msgInputText = findViewById(R.id.chat_input_msg);
@@ -165,11 +165,10 @@ public class ChatActivity extends AppCompatActivity {
                     if (str.equals("disconnected")) {
                         Log.e("Checking DISCONNECT", "checking");
                         chatbox.setVisibility(View.INVISIBLE);
-
                     }
 
                 } catch(NullPointerException e){
-
+                    Log.e("h1->handleMessage", e.getMessage());
                 }
             }
         };
@@ -255,8 +254,7 @@ public class ChatActivity extends AppCompatActivity {
             database.close();
         }
 
-         updatePoints();
-
+        updatePoints();
         super.onBackPressed();
     }
 
@@ -303,8 +301,8 @@ public class ChatActivity extends AppCompatActivity {
                         UserAttributeManager userAttributeManager = new UserAttributeManager(userEmail);
                         UserDB user = UserDBManager.getUserData(userEmail);
                         user.setScore(user.getScore() + POSITIVE_BUTTON_REVIEW_POINTS);
-                        UserDBManager.update(user);
-                        //userAttributeManager.updateUserAttributes(null);
+                        userAttributeManager.updateUserAttributes(null);
+
 
                         onBackPressed();
                     }
