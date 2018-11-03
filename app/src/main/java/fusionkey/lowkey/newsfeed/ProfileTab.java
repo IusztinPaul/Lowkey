@@ -119,7 +119,7 @@ public class ProfileTab extends Fragment {
 
     private void loadUserPhoto(){
         final ProfilePhotoUploader photoUploader = new ProfilePhotoUploader();
-        photoUploader.download(UserManager.parseEmailToPhotoFileName(LowKeyApplication.userManager.getCachedEmail()),
+        photoUploader.download(UserManager.parseEmailToPhotoFileName(LowKeyApplication.userManager.getParsedUserEmail()),
                 new Callback() {
                     @Override
                     public void handle() {
