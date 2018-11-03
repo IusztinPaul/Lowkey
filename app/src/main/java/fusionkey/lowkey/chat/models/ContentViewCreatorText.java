@@ -1,9 +1,6 @@
 package fusionkey.lowkey.chat.models;
 
-import fusionkey.lowkey.auth.models.UserDB;
-import fusionkey.lowkey.auth.utils.UserAttributeManager;
 import fusionkey.lowkey.listAdapters.ChatServiceAdapters.ChatAppMsgViewHolder;
-import fusionkey.lowkey.main.utils.EmailBuilder;
 import fusionkey.lowkey.ROOMdatabase.MessagesActivity;
 import fusionkey.lowkey.chat.ChatActivity;
 

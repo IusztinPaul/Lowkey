@@ -111,7 +111,7 @@ public class StartTab extends Fragment {
             @Override
             public void onItemClick(UserD item) {
                 Intent intent = new Intent(getContext(), MessagesActivity.class);
-                intent.putExtra("username", item.getUsername());
+                intent.putExtra(MessagesActivity.OTHER_USER_EMAIL, item.getUserEmail());
                 getActivity().overridePendingTransition(0,0);
                 startActivity(intent);
                 getActivity().overridePendingTransition(0,0);
@@ -123,8 +123,7 @@ public class StartTab extends Fragment {
                         .allowMainThreadQueries()   //Allows room to do operation on main thread
                         .build();
                 UserDao userDAO = database.userDao();
-                UserD user = new UserD();
-                user = userDAO.findByName(item.getUsername());
+                UserD user = userDAO.findByName(item.getEmail());
                 userDAO.delete(user);
                 database.close();
                 adapter.deleteItem(position);

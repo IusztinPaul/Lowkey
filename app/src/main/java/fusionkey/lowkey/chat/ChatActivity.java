@@ -46,7 +46,6 @@ import fusionkey.lowkey.listAdapters.ChatServiceAdapters.ChatAppMsgAdapter;
 import fusionkey.lowkey.chat.models.MessageTO;
 import fusionkey.lowkey.auth.utils.*;
 import fusionkey.lowkey.main.utils.Callback;
-import fusionkey.lowkey.main.utils.EmailBuilder;
 import fusionkey.lowkey.main.utils.PhotoUploader;
 import fusionkey.lowkey.main.utils.PhotoUtils;
 import fusionkey.lowkey.main.utils.ProfilePhotoUploader;
@@ -227,7 +226,13 @@ public class ChatActivity extends AppCompatActivity {
         t.cancel();
         t1.cancel();
 
+        addMessagesToROOM();
+        updatePoints();
 
+        super.onBackPressed();
+    }
+
+    private void addMessagesToROOM() {
         if(msgDtoList!=null && msgDtoList.size() > 0) {
             String lastMessage;
             if((msgDtoList.get(msgDtoList.size()-1).getContentType())==1)
@@ -251,9 +256,6 @@ public class ChatActivity extends AppCompatActivity {
             }
             database.close();
         }
-
-        updatePoints();
-        super.onBackPressed();
     }
 
     @Override
@@ -288,11 +290,7 @@ public class ChatActivity extends AppCompatActivity {
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         dialog.cancel();
-                        //rebuild the email
-                        String userEmail = EmailBuilder.buildEmail(ChatActivity.this.otherUserEmail);
-                        Log.e("otherUserEmail ", userEmail);
-
-                        UserAttributeManager userAttributeManager = new UserAttributeManager(userEmail);
+                        UserAttributeManager userAttributeManager = new UserAttributeManager(otherUserEmail);
                         UserDB user = userAttributeManager.getUserDB();
                         long newScore = user.getScore() + POSITIVE_BUTTON_REVIEW_POINTS;
                         updateUserWithNewScore(user, newScore);
@@ -403,7 +401,8 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void sendMessageRequest(String msgContent, boolean isPhoto, Timestamp timestamp) {
-        Message msgToSend = new Message(currentUserEmail, otherUserEmail, currentUserEmail,
+        Message msgToSend = new Message(currentUser.getParsedEmail(),
+                        otherUser.getParsedEmail(), currentUser.getParsedEmail(),
                 msgContent, timestamp,isPhoto + "");
         msgToSend.sendMsg();
     }

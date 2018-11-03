@@ -15,7 +15,7 @@ public class UserD {
     private int uid;
 
     @ColumnInfo(name = "name")
-    private String username;
+    private String userEmail;
 
     @ColumnInfo(name = "messages")
     private ArrayList<MessageTO> listMessage;
@@ -26,20 +26,24 @@ public class UserD {
     @ColumnInfo(name = "state")
     private String state;
 
-    public UserD(String username, String last_message, ArrayList<MessageTO> listMessage, String state){
-        this.setUsername(username);
+    public UserD(String userEmail,
+                 String last_message,
+                 ArrayList<MessageTO> listMessage,
+                 String state) {
+        this.setUserEmail(userEmail);
+        this.setUserEmail(userEmail);
         this.setLast_message(last_message);
         this.setListMessage(listMessage);
         this.setState(state);
     }
 
-    public UserD(){}
-    public String getUsername() {
-        return username;
+    public UserD() {}
+    public String getEmail() {
+        return userEmail;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setEmail(String userEmail) {
+        this.userEmail = userEmail;
     }
 
     public ArrayList<MessageTO> getListMessage() {
@@ -76,5 +80,13 @@ public class UserD {
 
     public void setState(String state) {
         this.state = state;
+    }
+
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
     }
 }

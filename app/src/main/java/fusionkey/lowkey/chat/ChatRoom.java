@@ -28,8 +28,8 @@ public class ChatRoom extends AbstractChat implements Ichatroom {
 
     public boolean isChatRoomAlive;
 
-    public ChatRoom(String user, String listener){
-        super(user,listener);
+    public ChatRoom(String otherUser, String currentUser){
+        super(otherUser,currentUser);
     }
 
     /**
