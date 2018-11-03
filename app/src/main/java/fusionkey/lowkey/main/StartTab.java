@@ -98,7 +98,7 @@ public class StartTab extends Fragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
         msgRecyclerView.setLayoutManager(linearLayoutManager);
 
-        ArrayList<UserD> userList = new ArrayList<UserD>();
+        ArrayList<UserD> userList = new ArrayList<>();
         AppDatabase database = Room.databaseBuilder(getActivity(), AppDatabase.class, "user-database")
                 .allowMainThreadQueries()   //Allows room to do operation on main thread
                 .build();

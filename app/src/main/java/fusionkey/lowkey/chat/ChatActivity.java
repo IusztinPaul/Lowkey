@@ -241,13 +241,8 @@ public class ChatActivity extends AppCompatActivity {
 
 
         if(msgDtoList!=null && msgDtoList.size() > 0) {
-            String lastMessage;
-            if((msgDtoList.get(msgDtoList.size()-1).getContentType())==1)
-                lastMessage = "user sent a photo";
-            else
-                lastMessage = msgDtoList.get(msgDtoList.size()-1).getRawContent();
 
-            UserD userD = new UserD(userRequest, lastMessage, msgDtoList,role);
+            UserD userD = new UserD(userRequest, msgDtoList,role);
 
             AppDatabase database = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "user-database")
                     .allowMainThreadQueries()   //Allows room to do operation on main thread

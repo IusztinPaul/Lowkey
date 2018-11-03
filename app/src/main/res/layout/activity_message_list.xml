@@ -87,15 +87,20 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent">
 
+
+
+
+
         <Button
             android:id="@+id/sendPhoto"
 
-            android:layout_width="50dp"
-            android:layout_height="match_parent"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_gravity="bottom"
+            android:layout_marginLeft="8dp"
             android:background="@drawable/image"
-            android:clickable="true"
 
+            android:clickable="true"
             android:gravity="center"
             android:textSize="14dp" />
 
@@ -112,15 +117,17 @@
 
         <Button
             android:id="@+id/sendComment"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:background="@drawable/send"
             android:clickable="true"
             android:gravity="center"
             android:paddingBottom="3dp"
             android:paddingTop="3dp"
 
+
+            android:text="SEND"
             android:textSize="14dp" />
 
     </LinearLayout>

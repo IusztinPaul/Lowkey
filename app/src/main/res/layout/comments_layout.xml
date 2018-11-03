@@ -194,16 +194,15 @@
 
         <Button
             android:id="@+id/sendComment"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:layout_marginBottom="2dp"
-            android:layout_marginRight="8dp"
-            android:background="@drawable/send"
             android:clickable="true"
             android:gravity="center"
             android:paddingBottom="3dp"
             android:paddingTop="3dp"
+            android:text="SEND"
             android:textSize="14dp" />
 
     </LinearLayout>

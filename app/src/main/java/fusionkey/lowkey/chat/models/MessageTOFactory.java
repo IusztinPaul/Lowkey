@@ -85,10 +85,9 @@ public class MessageTOFactory {
     private String getFormattedDate(Long time) {
         Calendar cal = Calendar.getInstance();
         TimeZone tz = cal.getTimeZone();
-        SimpleDateFormat sf = new SimpleDateFormat("mm:ss");
+        SimpleDateFormat sf = new SimpleDateFormat("HH:mm");
         sf.setTimeZone(tz);
         Date date = new Date(time);
-        PrettyTime t = new PrettyTime(date);
         return sf.format(date);
     }
 
