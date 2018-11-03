@@ -17,6 +17,7 @@ import org.json.JSONObject;
 import java.lang.ref.WeakReference;
 
 import fusionkey.lowkey.LowKeyApplication;
+import fusionkey.lowkey.auth.models.UserDB;
 import fusionkey.lowkey.chat.ChatActivity;
 import fusionkey.lowkey.main.utils.NetworkManager;
 import fusionkey.lowkey.queue.IQueueMatcher;
@@ -36,7 +37,7 @@ public class LoadingAsyncTask extends AsyncTask<Void, Integer, JSONObject> {
     private WeakReference<ProgressBar> progressBar;
     private WeakReference<Activity> currentActivity;
     private WeakReference<CardView> searchCard;
-    private String currentUserParsedEmail;
+    private UserDB currentUser;
     private JSONObject jsonResponseContainer;
 
     LoadingAsyncTask(Activity currentActivity,
@@ -44,7 +45,7 @@ public class LoadingAsyncTask extends AsyncTask<Void, Integer, JSONObject> {
                      boolean findListener,
                      CardView searchCard) {
         this.findListener = findListener;
-        this.currentUserParsedEmail = LowKeyApplication.userManager.getParsedUserEmail();
+        this.currentUser = LowKeyApplication.userManager.getUserDetails();
         this.searchCard = new WeakReference<>(searchCard);
         this.currentActivity = new WeakReference<>(currentActivity);
 
@@ -157,7 +158,7 @@ public class LoadingAsyncTask extends AsyncTask<Void, Integer, JSONObject> {
     private Intent createIntent() {
         try {
             Intent intent = new Intent(currentActivity.get(), ChatActivity.class);
-            intent.putExtra(ChatActivity.LISTENER_INTENT, currentUserParsedEmail);
+            intent.putExtra(ChatActivity.LISTENER_INTENT, currentUser.getUserEmail());
 
             if (!findListener) {
                 intent.putExtra(ChatActivity.USER_INTENT,

@@ -15,6 +15,8 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+import fusionkey.lowkey.auth.models.UserDB;
+
 import static fusionkey.lowkey.LowKeyApplication.requestQueueSingleton;
 
 /**
@@ -32,7 +34,7 @@ public class QueueMatcherListenerFinder extends QueueMatcherUtils implements IQu
 
     private boolean hasStep0Response = false;
 
-    public QueueMatcherListenerFinder(String currentUser, Activity currentActivity) {
+    public QueueMatcherListenerFinder(UserDB currentUser, Activity currentActivity) {
         super(currentUser, currentActivity);
     }
 
@@ -45,7 +47,7 @@ public class QueueMatcherListenerFinder extends QueueMatcherUtils implements IQu
     @Override
     public void find() { // as a speaker
         HashMap<String, String> queryParameters = new HashMap<>();
-        queryParameters.put(USER_API_QUERY_STRING, currentUser);
+        queryParameters.put(USER_API_QUERY_STRING, currentUser.getUserEmail());
         String url = getAbsoluteUrlWithQueryString(queryParameters, SEAPKER_RELATIVE_URL);
 
         // call S0 lambda function
@@ -163,11 +165,11 @@ public class QueueMatcherListenerFinder extends QueueMatcherUtils implements IQu
             final String listener = response.get(DATA_JSON_KEY).toString();
 
             HashMap<String, String> queryParameters = new HashMap<>();
-            queryParameters.put(USER_API_QUERY_STRING, currentUser);
+            queryParameters.put(USER_API_QUERY_STRING, currentUser.getUserEmail());
             queryParameters.put(LISTENER_API_QUERY_STRING, listener);
 
             String newUrl = getAbsoluteUrlWithQueryString(queryParameters, SEAPKER_RELATIVE_URL);
-            return new LobbyCheckerRunnable(newUrl, listener, currentUser);
+            return new LobbyCheckerRunnable(newUrl, listener, currentUser.getUserEmail());
         } catch (JSONException e) {
             Log.e("createRunnableUrl", e.getMessage());
             return null;

@@ -36,7 +36,6 @@ public class ChatAsyncTask extends AsyncTask<Void, String, JSONObject> {
         this.chatAppMsgAdapter = chatAppMsgAdapter;
         this.recyclerView = new WeakReference<>(recyclerView);
         this.list = list;
-
     }
 
     @Override
@@ -67,7 +66,6 @@ public class ChatAsyncTask extends AsyncTask<Void, String, JSONObject> {
 
                         JSONObject msgJson = new JSONObject(response.getJSONObject("data").getString("message"));
 
-
                         MessageTO msgDto;
                         if (list.size() >= 1) {
                             if ((list.get(list.size() - 1).getMsgType()).equals(MessageTO.MSG_TYPE_RECEIVED) || (list.get(list.size() - 1).getMsgType()).equals(MessageTO.MSG_TYPE_RECEIVED_LAST)) {
@@ -86,7 +84,6 @@ public class ChatAsyncTask extends AsyncTask<Void, String, JSONObject> {
                         Log.e("getMsg" + "Error", "The response has no data");
 
                     }
-
                 }
             });
 

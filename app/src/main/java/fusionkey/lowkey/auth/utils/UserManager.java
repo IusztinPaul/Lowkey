@@ -258,6 +258,10 @@ public class UserManager {
         return cognitoPoolUtils.getUser() != null;
     }
 
+    public void requestCurrentUserDetails(AuthCallback callback) {
+        requestCurrentUserDetails(null, callback);
+    }
+
     public void requestCurrentUserDetails(String email, final AuthCallback callback) {
         String checkedEmail;
 
@@ -374,7 +378,7 @@ public class UserManager {
     }
 
     public static String parseEmailToPhotoFileName(String email) {
-        return email.replace("@", "").replace(".", "");
+        return UserDB.parseEmail(email);
     }
 
     public UserDB getUserDetails() {
@@ -382,7 +386,7 @@ public class UserManager {
     }
 
     public void updateCurrentUser(UserDB userDB) {
-
+        UserDBManager.update(userDB);
     }
 
     public String getAccessToken() {

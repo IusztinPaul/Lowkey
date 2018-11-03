@@ -2,6 +2,7 @@ package fusionkey.lowkey.auth.models;
 
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBAttribute;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBHashKey;
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBIgnore;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBTable;
 
 import java.util.List;
@@ -122,6 +123,15 @@ public class UserDB {
 
     public void setTimeStamps(List<Long> _timeStamps) {
         this._timeStamps = _timeStamps;
+    }
+
+    @DynamoDBIgnore
+    public String getParsedEmail() {
+        return parseEmail(this._userEmail);
+    }
+
+    public static String parseEmail(String email) {
+        return email.replace("@", "").replace(".", "");
     }
 
     @Override

@@ -35,7 +35,6 @@ public class LoadUserDataActivity extends AppCompatActivity {
     private static class AsyncTaskChecker extends AsyncTask<Void, Void, Void> {
         private WeakReference<Activity> activityWeakReference;
         private String userEmail;
-        private boolean loadingPhoto;
 
         public AsyncTaskChecker(WeakReference<Activity> activityWeakReference, String userEmail) {
             this.activityWeakReference = activityWeakReference;
@@ -47,11 +46,6 @@ public class LoadUserDataActivity extends AppCompatActivity {
             new RegisterSNS().registerWithSNS();
             LowKeyApplication.userManager.requestCurrentUserDetails(userEmail, null);
             loadUserPhoto();
-            /**
-             * Mai bine renuntam sa facem load aici, Picasso oricum face asta destul de bine si putem face
-             * direct din Pagina de profil .
-             */
-
             return null;
         }
 
@@ -63,7 +57,7 @@ public class LoadUserDataActivity extends AppCompatActivity {
             activityWeakReference.get().startActivity(intent);
         }
 
-        private void loadUserPhoto(){
+        private void loadUserPhoto() {
             final ProfilePhotoUploader photoUploader = new ProfilePhotoUploader();
             photoUploader.download(UserManager.parseEmailToPhotoFileName(LowKeyApplication.userManager.getCachedEmail()),
                     new Callback() {
