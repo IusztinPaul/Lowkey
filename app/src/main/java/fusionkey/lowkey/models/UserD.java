@@ -6,7 +6,6 @@ import android.arch.persistence.room.PrimaryKey;
 
 import java.util.ArrayList;
 
-import fusionkey.lowkey.chat.Message;
 import fusionkey.lowkey.chat.models.MessageTO;
 
 @Entity(tableName = "user")
@@ -16,7 +15,7 @@ public class UserD {
     private int uid;
 
     @ColumnInfo(name = "name")
-    private String username;
+    private String userEmail;
 
     @ColumnInfo(name = "messages")
     private ArrayList<MessageTO> listMessage;
@@ -27,28 +26,30 @@ public class UserD {
     @ColumnInfo(name = "state")
     private String state;
 
-    public UserD(String username, ArrayList<MessageTO> listMessage, String state){
-        this.setUsername(username);
+    public UserD(String userEmail,
+                 ArrayList<MessageTO> listMessage,
+                 String state) {
+        this.setUserEmail(userEmail);
         this.setListMessage(listMessage);
-        this.last_message = (getLastMessage(listMessage));
+        this.setLast_message(getLastMessage(listMessage));
         this.setState(state);
     }
 
-    public UserD(){}
+    public UserD() {}
+
+    public String getEmail() {
+        return userEmail;
+    }
+
+    public void setEmail(String userEmail) {
+        this.userEmail = userEmail;
+    }
 
     private String getLastMessage(ArrayList<MessageTO> arrayList){
-        if((arrayList.get(arrayList.size()-1).getContentType())==1)
+        if((arrayList.get(arrayList.size()-1).getContentType()) == MessageTO.PHOTO)
              return "user sent a photo";
         else
             return arrayList.get(arrayList.size()-1).getRawContent();
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
 
     public ArrayList<MessageTO> getListMessage() {
@@ -85,5 +86,13 @@ public class UserD {
 
     public void setState(String state) {
         this.state = state;
+    }
+
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
     }
 }

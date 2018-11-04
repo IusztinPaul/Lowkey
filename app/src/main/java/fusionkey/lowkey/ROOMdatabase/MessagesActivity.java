@@ -23,12 +23,12 @@ import fusionkey.lowkey.auth.utils.UserAttributeManager;
 import fusionkey.lowkey.auth.utils.UserManager;
 import fusionkey.lowkey.listAdapters.ChatServiceAdapters.ChatAppMsgAdapter;
 import fusionkey.lowkey.main.utils.Callback;
-import fusionkey.lowkey.main.utils.EmailBuilder;
 import fusionkey.lowkey.main.utils.NetworkManager;
 import fusionkey.lowkey.main.utils.ProfilePhotoUploader;
 import fusionkey.lowkey.models.UserD;
 
 public class MessagesActivity extends AppCompatActivity {
+    public static final String OTHER_USER_EMAIL = "otherUserEmail";
 
     private LinearLayout chatLayout;
     private TextView upperText;
@@ -46,32 +46,33 @@ public class MessagesActivity extends AppCompatActivity {
         image = findViewById(R.id.circleImageView2);
         status = findViewById(R.id.status);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        final RecyclerView msgRecyclerView = (RecyclerView)findViewById(R.id.reyclerview_message_list);
+        final RecyclerView msgRecyclerView = (RecyclerView) findViewById(R.id.reyclerview_message_list);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         msgRecyclerView.setLayoutManager(linearLayoutManager);
 
         Intent intent = getIntent();
-        String username = intent.getStringExtra("username");
-        status.setText("disonnected");
+        String otherUserEmail = intent.getStringExtra(OTHER_USER_EMAIL);
+        String otherUserParsedEmail = UserManager.parseEmailToPhotoFileName(otherUserEmail);
+
+        UserDB userDB = new UserAttributeManager(otherUserEmail).getUserDB();
+        USERNAME = userDB.getUsername();
+        try {
+            upperText.setText(USERNAME);
+        } catch (NullPointerException npe) {
+            USERNAME = "not found";
+            upperText.setText("Not found");
+        }
+
         AppDatabase database = Room.databaseBuilder(this, AppDatabase.class, "user-database")
                 .allowMainThreadQueries()   //Allows room to do operation on main thread
                 .build();
         final UserDao userDAO = database.userDao();
 
-        String email = EmailBuilder.buildEmail(username);
-        UserDB userDB = new UserAttributeManager(email).getUserDB();
-        UserAttributeManager userAttributeManager = new UserAttributeManager(email);
-        USERNAME = userAttributeManager.getUsername();
 
-        try {
-            upperText.setText(USERNAME);
-        } catch (NullPointerException npe){
-            USERNAME = "not found";
-            upperText.setText("Not found");
-        }
+        status.setText("disonnected");
 
         final ProfilePhotoUploader photoUploader = new ProfilePhotoUploader();
-        photoUploader.download(UserManager.parseEmailToPhotoFileName(email),
+        photoUploader.download(otherUserParsedEmail,
                 new Callback() {
                     @Override
                     public void handle() {
@@ -90,10 +91,7 @@ public class MessagesActivity extends AppCompatActivity {
                     getApplicationContext().getString(R.string.no_network_message),
                     Toast.LENGTH_SHORT).show();
 
-    UserD user = userDAO.findByName(username);
-
-
-
+        UserD user = userDAO.findByName(otherUserEmail);
         final ChatAppMsgAdapter chatAppMsgAdapter = new ChatAppMsgAdapter(user.getListMessage());
         msgRecyclerView.setAdapter(chatAppMsgAdapter);
 
@@ -106,8 +104,9 @@ public class MessagesActivity extends AppCompatActivity {
             }
         });
     }
+
     @Override
-    public void onBackPressed(){
+    public void onBackPressed() {
         super.onBackPressed();
     }
 

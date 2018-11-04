@@ -10,6 +10,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Map;
 
+import fusionkey.lowkey.auth.models.UserDB;
+
 /**
  * @author Iusztin Paul
  * @version 1.0
@@ -41,12 +43,12 @@ abstract public class QueueMatcherUtils {
 
     public static final JSONObject JSON_FAILED_REQUESTED_OBJECT = new JSONObject();
 
-    String currentUser;
-    Activity currentActivity;
+    protected UserDB currentUser;
+    protected Activity currentActivity;
 
-    LobbyCheckerRunnable findRunnable;
+    protected LobbyCheckerRunnable findRunnable;
 
-    QueueMatcherUtils(String currentUser, Activity currentActivity) {
+    QueueMatcherUtils(UserDB currentUser, Activity currentActivity) {
         this.currentUser = currentUser;
         this.currentActivity = currentActivity;
     }

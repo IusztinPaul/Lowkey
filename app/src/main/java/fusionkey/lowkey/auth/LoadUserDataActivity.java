@@ -1,7 +1,6 @@
 package fusionkey.lowkey.auth;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
@@ -19,12 +18,9 @@ import fusionkey.lowkey.main.utils.Callback;
 import fusionkey.lowkey.main.utils.ProfilePhotoUploader;
 import fusionkey.lowkey.pushnotifications.activities.CommentsFromNotificationActivity;
 import fusionkey.lowkey.pushnotifications.service.IntentMappingSharredPrefferences;
-import fusionkey.lowkey.pushnotifications.service.MyFirebaseMessagingService;
 import fusionkey.lowkey.pushnotifications.service.RegisterSNS;
 
 public class LoadUserDataActivity extends AppCompatActivity {
-
-    private static boolean state = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,8 +36,6 @@ public class LoadUserDataActivity extends AppCompatActivity {
     private static class AsyncTaskChecker extends AsyncTask<Void, Void, Void> {
         private WeakReference<Activity> activityWeakReference;
         private String userEmail;
-        private boolean loadingPhoto;
-        private Context context;
 
         public AsyncTaskChecker(WeakReference<Activity> activityWeakReference, String userEmail) {
             this.activityWeakReference = activityWeakReference;
@@ -72,7 +66,7 @@ public class LoadUserDataActivity extends AppCompatActivity {
             }
         }
 
-        private void loadUserPhoto(){
+        private void loadUserPhoto() {
             final ProfilePhotoUploader photoUploader = new ProfilePhotoUploader();
             photoUploader.download(UserManager.parseEmailToPhotoFileName(LowKeyApplication.userManager.getCachedEmail()),
                     new Callback() {

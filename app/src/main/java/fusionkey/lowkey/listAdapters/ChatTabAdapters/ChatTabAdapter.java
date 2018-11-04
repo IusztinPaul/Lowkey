@@ -15,7 +15,6 @@ import fusionkey.lowkey.auth.models.UserDB;
 import fusionkey.lowkey.auth.utils.UserAttributeManager;
 import fusionkey.lowkey.auth.utils.UserManager;
 import fusionkey.lowkey.main.utils.Callback;
-import fusionkey.lowkey.main.utils.EmailBuilder;
 import fusionkey.lowkey.main.utils.ProfilePhotoUploader;
 import fusionkey.lowkey.models.UserD;
 
@@ -58,14 +57,9 @@ public class ChatTabAdapter extends RecyclerView.Adapter<ChatTabViewHolder> {
 
     @Override
     public void onBindViewHolder(final ChatTabViewHolder holder, int position) {
-             UserD userDto = this.mUsers.get(position);
+            UserD userDto = this.mUsers.get(position);
+            UserDB userDB = new UserAttributeManager(userDto.getUserEmail()).getUserDB();
 
-            // If the message is a received message.
-            // Show received message in left linearlayout.
-
-            //TODO: Why you query the user by it's username ?
-            String email = EmailBuilder.buildEmail(userDto.getUsername());
-            UserDB userDB = new UserAttributeManager(email).getUserDB();
             try {
                 holder.name.setText(userDB.getUsername());
             } catch (NullPointerException npe){
@@ -75,7 +69,7 @@ public class ChatTabAdapter extends RecyclerView.Adapter<ChatTabViewHolder> {
             holder.bind(mUsers.get(position), listener);
 
             final ProfilePhotoUploader photoUploader = new ProfilePhotoUploader();
-            photoUploader.download(UserManager.parseEmailToPhotoFileName(email),
+            photoUploader.download(UserManager.parseEmailToPhotoFileName(userDto.getUserEmail()),
                     new Callback() {
                         @Override
                         public void handle() {

@@ -48,7 +48,6 @@ import fusionkey.lowkey.listAdapters.ChatServiceAdapters.ChatAppMsgAdapter;
 import fusionkey.lowkey.chat.models.MessageTO;
 import fusionkey.lowkey.auth.utils.*;
 import fusionkey.lowkey.main.utils.Callback;
-import fusionkey.lowkey.main.utils.EmailBuilder;
 import fusionkey.lowkey.main.utils.PhotoUploader;
 import fusionkey.lowkey.main.utils.PhotoUtils;
 import fusionkey.lowkey.main.utils.ProfilePhotoUploader;
@@ -89,9 +88,9 @@ public class ChatActivity extends AppCompatActivity {
     TextView connectDot;
     EditText msgInputText;
     LinearLayout chatbox;
-    String listenerRequest;
+    String currentUserEmail;
     private CircleImageView image;
-    String userRequest;
+    String otherUserEmail;
     ArrayList<MessageTO> msgDtoList;
 
     private int stringCounter,
@@ -105,6 +104,9 @@ public class ChatActivity extends AppCompatActivity {
 
     private ChatAppMsgAdapter chatAppMsgAdapter;
     private RecyclerView msgRecyclerView;
+
+    private UserDB currentUser;
+    private UserDB otherUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,33 +124,33 @@ public class ChatActivity extends AppCompatActivity {
         chatbox = findViewById(R.id.layout_chatbox);
         image = findViewById(R.id.circleImageView2);
         msgInputText = findViewById(R.id.chat_input_msg);
-        listenerRequest = listener.replace("[", "").replace("]", "").replace("\"","");
-        userRequest = user.replace("[", "").replace("]", "").replace("\"","");
-        chatRoom = new ChatRoom(userRequest,listenerRequest);
+
+        //TODO: this should be replaced by a normal JSON parser
+        currentUserEmail = listener.replace("[", "").replace("]", "").replace("\"","");
+        otherUserEmail = user.replace("[", "").replace("]", "").replace("\"","");
+
+        currentUser = LowKeyApplication.userManager.getUserDetails();
+        otherUser = new UserAttributeManager(otherUserEmail).getUserDB();
+        USERNAME = otherUser.getUsername();
+
+        chatRoom = new ChatRoom(otherUser.getParsedEmail(), currentUser.getParsedEmail());
         msgDtoList = new ArrayList<>();
         stringL = new ArrayList<>();
-
-        String email = EmailBuilder.buildEmail(userRequest);
-
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         msgRecyclerView.setLayoutManager(linearLayoutManager);
         chatAppMsgAdapter = new ChatAppMsgAdapter(msgDtoList);
         msgRecyclerView.setAdapter(chatAppMsgAdapter);
-        Log.e("INFO","LISTENER : " + listenerRequest + " & USER : " + userRequest);
-
+        Log.e("INFO","LISTENER : " + currentUserEmail + " & USER : " + otherUserEmail);
 
         chatAsyncTask = new ChatAsyncTask(chatRoom,msgRecyclerView,chatAppMsgAdapter,msgDtoList);
         chatAsyncTask.execute();
 
         //Object that makes request and updates the UI if the user is/isn't connected/writting
-        inChatRunnable = new InChatRunnable(status,state,chatRoom);
-
-        UserAttributeManager userAttributeManager = new UserAttributeManager(email);
-        USERNAME = userAttributeManager.getUsername();
+        inChatRunnable = new InChatRunnable(status, state, chatRoom);
 
         final ProfilePhotoUploader photoUploader = new ProfilePhotoUploader();
-        photoUploader.download(UserManager.parseEmailToPhotoFileName(email),
+        photoUploader.download(UserManager.parseEmailToPhotoFileName(otherUserEmail),
                 new Callback() {
                     @Override
                     public void handle() {
@@ -195,7 +197,7 @@ public class ChatActivity extends AppCompatActivity {
             public boolean cancel() {
                 return super.cancel();
             }
-        },delay, periodForT1);
+        }, delay, periodForT1);
 
 
         Button msgSendButton = (Button)findViewById(R.id.sendComment);
@@ -228,28 +230,28 @@ public class ChatActivity extends AppCompatActivity {
         });
     }
 
-
-    private void saveAndCancelTask(){
-
-    }
-
     @Override
     public void onBackPressed(){
         chatAsyncTask.cancel(true);
         t.cancel();
         t1.cancel();
 
+        addMessagesToROOM();
+        updatePoints();
 
+        super.onBackPressed();
+    }
+
+    private void addMessagesToROOM() {
         if(msgDtoList!=null && msgDtoList.size() > 0) {
 
-            UserD userD = new UserD(userRequest, msgDtoList,role);
-
+            UserD userD = new UserD(otherUserEmail, msgDtoList, role);
             AppDatabase database = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "user-database")
                     .allowMainThreadQueries()   //Allows room to do operation on main thread
                     .build();
             UserDao userDAO = database.userDao();
 
-            UserD userF = userDAO.findByName(userRequest);
+            UserD userF = userDAO.findByName(otherUserEmail);
             if (userF != null) {
                 userF.addMessages(msgDtoList);
                 userDAO.update(userF);
@@ -258,9 +260,6 @@ public class ChatActivity extends AppCompatActivity {
             }
             database.close();
         }
-
-        updatePoints();
-        super.onBackPressed();
     }
 
     @Override
@@ -295,11 +294,7 @@ public class ChatActivity extends AppCompatActivity {
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         dialog.cancel();
-                        //rebuild the email
-                        String userEmail = EmailBuilder.buildEmail(userRequest);
-                        Log.e("userEmail ", userEmail);
-
-                        UserAttributeManager userAttributeManager = new UserAttributeManager(userEmail);
+                        UserAttributeManager userAttributeManager = new UserAttributeManager(otherUserEmail);
                         UserDB user = userAttributeManager.getUserDB();
                         long newScore = user.getScore() + POSITIVE_BUTTON_REVIEW_POINTS;
                         updateUserWithNewScore(user, newScore);
@@ -334,7 +329,7 @@ public class ChatActivity extends AppCompatActivity {
         UserAttributeManager.updateUserAttributes(user, null);
     }
 
-    private void startRunnable(){
+    private void startRunnable() {
         t.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
@@ -346,7 +341,7 @@ public class ChatActivity extends AppCompatActivity {
             public boolean cancel() {
                 return super.cancel();
             }
-        },delay, periodForT);
+        }, delay, periodForT);
     }
 
     private void startWritingListener(){
@@ -400,7 +395,7 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void addMsgToAdapter(String msgContent, boolean isPhoto, Timestamp timestamp) {
-        MessageTO msgDto = new MessageTOFactory("me",userRequest,timestamp.getTime(),
+        MessageTO msgDto = new MessageTOFactory("me", otherUserEmail,timestamp.getTime(),
                 msgContent,isPhoto, MessageTO.MSG_TYPE_SENT).createMessage();
         msgDtoList.add(msgDto);
         int newMsgPosition = msgDtoList.size() - 1;
@@ -410,7 +405,8 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void sendMessageRequest(String msgContent, boolean isPhoto, Timestamp timestamp) {
-        Message msgToSend = new Message(listenerRequest,userRequest,listenerRequest,
+        Message msgToSend = new Message(currentUser.getParsedEmail(),
+                        otherUser.getParsedEmail(), currentUser.getParsedEmail(),
                 msgContent, timestamp,isPhoto + "");
         msgToSend.sendMsg();
     }

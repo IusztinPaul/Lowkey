@@ -2,10 +2,7 @@ package fusionkey.lowkey.chat.Runnables;
 
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
-import android.view.View;
 import android.os.Message;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class DisconnectedRunnable implements Runnable {
@@ -16,7 +13,6 @@ public class DisconnectedRunnable implements Runnable {
 
     public DisconnectedRunnable(Handler h1, TextView state){
         this.state=state;
-
         this.h1=h1;
     }
 

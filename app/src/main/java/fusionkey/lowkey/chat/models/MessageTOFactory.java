@@ -5,9 +5,7 @@ import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.ocpsoft.prettytime.PrettyTime;
 
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -77,17 +75,17 @@ public class MessageTOFactory {
     }
 
     public MessageTO createMessage() {
-        String formattedDate = getFormattedDate(timestamp);
+        String formattedDate = getFormattedDate();
         return new MessageTO(sender, receiver, formattedDate, msgType, content, is_photo);
     }
 
 
-    private String getFormattedDate(Long time) {
+    private String getFormattedDate() {
         Calendar cal = Calendar.getInstance();
         TimeZone tz = cal.getTimeZone();
         SimpleDateFormat sf = new SimpleDateFormat("HH:mm");
         sf.setTimeZone(tz);
-        Date date = new Date(time);
+        Date date = new Date(timestamp);
         return sf.format(date);
     }
 

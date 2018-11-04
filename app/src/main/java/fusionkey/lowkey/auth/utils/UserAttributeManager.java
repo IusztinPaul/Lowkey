@@ -53,6 +53,10 @@ public class UserAttributeManager {
         }
     }
 
+    public String getParsedEmail() {
+        return userDB.getParsedEmail();
+    }
+
     public String getEmail() {
         return userEmail;
     }

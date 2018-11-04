@@ -15,6 +15,8 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+import fusionkey.lowkey.auth.models.UserDB;
+
 import static fusionkey.lowkey.LowKeyApplication.requestQueueSingleton;
 
 /**
@@ -32,7 +34,7 @@ public class QueueMatcherSpeakerFinder extends QueueMatcherUtils implements IQue
 
     private boolean hasStep0Response = false;
 
-    public QueueMatcherSpeakerFinder(String currentUser, Activity currentActivity) {
+    public QueueMatcherSpeakerFinder(UserDB currentUser, Activity currentActivity) {
         super(currentUser, currentActivity);
     }
 
@@ -45,10 +47,10 @@ public class QueueMatcherSpeakerFinder extends QueueMatcherUtils implements IQue
     @Override
     public void find() {
         HashMap<String, String> queryParameters = new HashMap<>();
-        queryParameters.put(USER_API_QUERY_STRING, currentUser);
+        queryParameters.put(USER_API_QUERY_STRING, currentUser.getUserEmail());
         String url = getAbsoluteUrlWithQueryString(queryParameters, LISTENER_RELATIVE_URL);
 
-        findRunnable = new LobbyCheckerRunnable(url, currentUser, null);
+        findRunnable = new LobbyCheckerRunnable(url, currentUser.getUserEmail(), null);
 
         // Call L0 lambda function
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, null,

@@ -28,15 +28,15 @@ public class ChatRoom extends AbstractChat implements Ichatroom {
 
     public boolean isChatRoomAlive;
 
-    public ChatRoom(String user, String listener){
-        super(user,listener);
+    public ChatRoom(String otherUser, String currentUser){
+        super(otherUser,currentUser);
     }
+
     /**
      * <h1> POST METHOD FOR LAMBDA /CROOM/join</h1>
      * <p>  This method creates the chat room</p>
      *
      */
-
     public void joinRoom(){
         HashMap<String, String> queryParameters = new HashMap<>();
         queryParameters.put(USER_API_QUERY_STRING, this.getUser());
@@ -168,7 +168,7 @@ public class ChatRoom extends AbstractChat implements Ichatroom {
     public void getMsg(final VolleyResponseListener listener){
 
         HashMap<String, String> queryParameters = new HashMap<>();
-        queryParameters.put(USER_API_QUERY_STRING,getListener());
+        queryParameters.put(USER_API_QUERY_STRING, getListener());
         queryParameters.put(LISTENER_API_QUERY_STRING, getUser());
 
 
