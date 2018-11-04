@@ -2,11 +2,12 @@
     <string name="app_name">lowkeyfinal</string>
     <string name="no_network_message">Check if you\'re connected to the Internet!</string>
     <string name="already_in_queue_message">You are already in queue!</string>
-    <!-- Strings related to login -->
-    <string name="get_help_string">The person you will be talking is a person like you , a volunteer who chose to help, listen,
-    and motivate. You can talk about any issues you have, any minor or major problem that makes you sad, any struggle you are going or even
-    what your cat is doing. You can end the conversation anytime you want if you think the person you're talking to doesn't has the same thinking
-    like you do.</string>
+    <!-- Strings related to login -->Talk to a random volunteer who chose
+    <string name="get_help_string">The person you will be talking is a volunteer who wants to help, listen,
+    and motivate. You can talk about any issue you have, any struggle you have or even
+    what your cat is doing. You can end the conversation anytime you want if you think the person you're talking to doesn't help you that much
+    .</string>
+    <string name="help_others_string">Earn points by talking and helping other people with their issues. </string>
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password (optional)</string>
     <string name="action_sign_in">Sign in or register</string>

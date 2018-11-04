@@ -51,18 +51,18 @@ public class Askaquestion extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(NetworkManager.isNetworkAvailable()) {
+                if (NetworkManager.isNetworkAvailable()) {
                     boolean anon = checkBox.isChecked();
                     if (!title.getText().toString().equals("") && !body.getText().toString().equals("")) {
 
                         newsFeedRequest.postQuestion(timestamp.getTime(), anon, String.valueOf(title.getText()), String.valueOf(body.getText()));
 
-                            Intent retrieveData = new Intent();
-                            retrieveData.putExtra("TitleQ", String.valueOf(title.getText()));
-                            retrieveData.putExtra("BodyQ", String.valueOf(body.getText()));
-                            retrieveData.putExtra("TimestampQ", timestamp.getTime());
-                            retrieveData.putExtra("anonQ", anon);
-                            setResult(Activity.RESULT_OK, retrieveData);
+                        Intent retrieveData = new Intent();
+                        retrieveData.putExtra("TitleQ", String.valueOf(title.getText()));
+                        retrieveData.putExtra("BodyQ", String.valueOf(body.getText()));
+                        retrieveData.putExtra("TimestampQ", timestamp.getTime());
+                        retrieveData.putExtra("anonQ", anon);
+                        setResult(Activity.RESULT_OK, retrieveData);
 
 
                         onBackPressed();
@@ -73,21 +73,18 @@ public class Askaquestion extends AppCompatActivity {
                             getApplicationContext().getString(R.string.no_network_message),
                             Toast.LENGTH_SHORT).show();
 
-        }
+            }
         });
 
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onBackPressed();
-                }
-            });
-
-
+            }
+        });
 
 
     }
-
 
 
 }

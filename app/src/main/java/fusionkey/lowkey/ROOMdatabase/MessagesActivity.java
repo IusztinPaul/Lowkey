@@ -96,7 +96,8 @@ public class MessagesActivity extends AppCompatActivity {
 
         final ChatAppMsgAdapter chatAppMsgAdapter = new ChatAppMsgAdapter(user.getListMessage());
         msgRecyclerView.setAdapter(chatAppMsgAdapter);
-
+        int newMsgPosition = (user.getListMessage()).size() - 1;
+        msgRecyclerView.scrollToPosition(newMsgPosition);
         database.close();
 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
