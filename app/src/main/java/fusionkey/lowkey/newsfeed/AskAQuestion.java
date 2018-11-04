@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -19,7 +20,7 @@ import fusionkey.lowkey.auth.models.UserDB;
 import fusionkey.lowkey.main.utils.NetworkManager;
 import fusionkey.lowkey.newsfeed.util.NewsFeedRequest;
 
-public class Askaquestion extends AppCompatActivity {
+public class AskAQuestion extends AppCompatActivity {
     CircleImageView circleImageView;
     TextView title;
     TextView body;
@@ -48,46 +49,42 @@ public class Askaquestion extends AppCompatActivity {
         newsFeedRequest = new NewsFeedRequest(uniqueID);
         circleImageView.setImageBitmap(LowKeyApplication.userManager.profilePhoto);
         username.setText(id);
+
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(NetworkManager.isNetworkAvailable()) {
+                if (NetworkManager.isNetworkAvailable()) {
                     boolean anon = checkBox.isChecked();
-                    if (!title.getText().toString().equals("") && !body.getText().toString().equals("")) {
+                    String titleText = title.getText().toString().trim();
+                    String bodyText = body.getText().toString().trim();
 
-                        newsFeedRequest.postQuestion(timestamp.getTime(), anon, String.valueOf(title.getText()), String.valueOf(body.getText()));
-
-                            Intent retrieveData = new Intent();
-                            retrieveData.putExtra("TitleQ", String.valueOf(title.getText()));
-                            retrieveData.putExtra("BodyQ", String.valueOf(body.getText()));
-                            retrieveData.putExtra("TimestampQ", timestamp.getTime());
-                            retrieveData.putExtra("anonQ", anon);
-                            setResult(Activity.RESULT_OK, retrieveData);
-
+                    if (isPostDataOk(titleText, bodyText)) {
+                        Intent retrieveData = new Intent();
+                        retrieveData.putExtra("TitleQ", titleText);
+                        retrieveData.putExtra("BodyQ", bodyText);
+                        retrieveData.putExtra("TimestampQ", timestamp.getTime());
+                        retrieveData.putExtra("anonQ", anon);
+                        setResult(Activity.RESULT_OK, retrieveData);
 
                         onBackPressed();
-
                     }
                 } else
                     Toast.makeText(getApplicationContext(),
                             getApplicationContext().getString(R.string.no_network_message),
                             Toast.LENGTH_SHORT).show();
 
-        }
+            }
         });
 
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onBackPressed();
-                }
-            });
-
-
-
-
+            }
+        });
     }
 
-
-
+    private boolean isPostDataOk(String titleText, String bodyText) {
+        return !TextUtils.isEmpty(titleText) && !TextUtils.isEmpty(bodyText);
+    }
 }

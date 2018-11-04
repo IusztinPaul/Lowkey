@@ -24,14 +24,13 @@ public class NewsFeedMessage extends Observable {
     private String id;
     private int weekDay;
     private String type;
-    private ArrayList<Comment> commentArrayList;
+    private ArrayList<Comment> commentArrayList = new ArrayList<>();
     private Bitmap userPhoto;
     private String SNStopic;
     private File file;
 
 
-    public NewsFeedMessage() {
-    }
+    public NewsFeedMessage() { }
 
     public NewsFeedMessage(Long timeStamp) {
         this.timeStamp = timeStamp;
