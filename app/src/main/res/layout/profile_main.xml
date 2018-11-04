@@ -5,7 +5,14 @@
     android:layout_height="match_parent"
     android:background="#F5F5F5"
     xmlns:tools="http://schemas.android.com/tools">
-
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipe"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -259,6 +266,7 @@
                 android:layout_marginBottom="32dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
+                android:visibility="invisible"
                 app:cardElevation="10dp">
 
                 <android.support.constraint.ConstraintLayout
@@ -353,5 +361,5 @@
 
         </LinearLayout>
     </ScrollView>
-
+    </android.support.v4.widget.SwipeRefreshLayout>
 </android.support.constraint.ConstraintLayout>

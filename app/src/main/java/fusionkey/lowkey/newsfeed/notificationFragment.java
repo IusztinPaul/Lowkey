@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -31,6 +32,7 @@ public class notificationFragment extends Fragment {
 
     SharedPreferences sharedPreferences;
     NotificationAdapter adapter;
+    public SwipeRefreshLayout swipeRefreshLayout;
     ArrayList<NotificationTO> mNotification = new ArrayList<>();
     private RecyclerView mRecyclerview;
 
@@ -55,7 +57,7 @@ public class notificationFragment extends Fragment {
         mRecyclerview = (RecyclerView) rootView.findViewById(R.id.notifRec);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
         mRecyclerview.setLayoutManager(linearLayoutManager);
-
+        swipeRefreshLayout = rootView.findViewById(R.id.swipe);
 
         adapter = new NotificationAdapter(getNotifications());
         adapter.setListener(new NotificationAdapter.OnItemClickListener() {
@@ -68,20 +70,42 @@ public class notificationFragment extends Fragment {
         });
         mRecyclerview.setAdapter(adapter);
 
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+
+                adapter.clear();
+                adapter = new NotificationAdapter(getNotifications());
+                adapter.setListener(new NotificationAdapter.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(NotificationTO item) {
+                        Intent intent = new Intent(getActivity(), CommentsFromNotificationActivity.class);
+                        intent.putExtra("timestamp", item.getTimestamp());
+                        startActivity(intent);
+                    }
+                });
+                mRecyclerview.setAdapter(adapter);
+                swipeRefreshLayout.setRefreshing(false);
+
+            }
+        });
+
         return (rootView);
     }
-    private ArrayList<NotificationTO> getNotifications(){
+
+    private ArrayList<NotificationTO> getNotifications() {
         ArrayList<NotificationTO> notif = new ArrayList<>();
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext().getApplicationContext());
-        int counter = preferences.getInt(id,0);
-        for(int i=0;i<counter;i++) {
-            String[] s = preferences.getString(id+i,"").split("muiepsdasdfghjkl");
-            notif.add(new NotificationTO(s[2].replace("}",""),s[0].replace("{default=","") + " answered your question "+ s[1],s[1]));
+        int counter = preferences.getInt(id, 0);
+        for (int i = 0; i < counter; i++) {
+            String[] s = preferences.getString(id + i, "").split("muiepsdasdfghjkl");
+            notif.add(new NotificationTO(s[2].replace("}", ""), s[0].replace("{default=", "") + " answered your question " + s[1], s[1]));
 
         }
         Collections.reverse(notif);
         return notif;
     }
+
     private String localTime(Long time) {
         Calendar cal = Calendar.getInstance();
         TimeZone tz = cal.getTimeZone();

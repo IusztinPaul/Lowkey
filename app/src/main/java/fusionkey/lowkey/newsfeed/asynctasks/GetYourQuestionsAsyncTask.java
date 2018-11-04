@@ -49,9 +49,8 @@ public class GetYourQuestionsAsyncTask extends AsyncTask<Void,String,JSONObject>
     @Override
     protected void onPreExecute() {
 
-       // newsfeedAdapter.clear();
-       // newsfeedAdapter.notifyDataSetChanged();
-
+        newsFeedAdapter.clear();
+        newsFeedAdapter.notifyDataSetChanged();
 
     }
 

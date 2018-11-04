@@ -91,18 +91,16 @@ public class CommentsActivity extends AppCompatActivity {
         setupComments();
 
 
-
-
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    String commentText = inputTxt.getText().toString().trim();
-                    Comment comment = createComment(commentText);
+                String commentText = inputTxt.getText().toString().trim();
+                Comment comment = createComment(commentText);
 
-                    if(comment != null) {
-                        sendNewsFeedRequestWithNewComment(commentText);
-                        adaptViewWithNewComment(comment);
-                    }
+                if (comment != null) {
+                    sendNewsFeedRequestWithNewComment(commentText);
+                    adaptViewWithNewComment(comment);
+                }
 
             }
         });
@@ -121,7 +119,7 @@ public class CommentsActivity extends AppCompatActivity {
 
     private Comment createComment(String commentText) {
         if (TextUtils.isEmpty(commentText))
-                return null;
+            return null;
 
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         String username = LowKeyApplication.userManager.getUserDetails().getUsername();
@@ -133,11 +131,11 @@ public class CommentsActivity extends AppCompatActivity {
     }
 
     private void sendNewsFeedRequestWithNewComment(String commentText) {
-        Long postTimeStamp = getIntent().getLongExtra("timestampID",0);
+        Long postTimeStamp = getIntent().getLongExtra("timestampID", 0);
         String username = LowKeyApplication.userManager.getUserDetails().getUsername();
 
         String SNSTopic = "";
-        if(!isPostOfCurrentUser())
+        if (!isPostOfCurrentUser())
             SNSTopic = getIntent().getStringExtra("SNStopic");
 
         new NewsFeedRequest(username).
@@ -145,7 +143,7 @@ public class CommentsActivity extends AppCompatActivity {
                         true,
                         commentText,
                         SNSTopic
-                        );
+                );
     }
 
     private boolean isPostOfCurrentUser() {
@@ -155,22 +153,21 @@ public class CommentsActivity extends AppCompatActivity {
                 postUserEmail.equals(currentUserEmail);
     }
 
-    private void populateWithData(){
+    private void populateWithData() {
         Bundle b = getIntent().getExtras();
 
         try {
             MyParcelable object = b.getParcelable("parcel");
             commentArrayList = object.getArrList();
-            commentsAdapter = new CommentAdapter(commentArrayList,this);
+            commentsAdapter = new CommentAdapter(commentArrayList, this);
             title.setText(getIntent().getStringExtra("title"));
             body.setText(getIntent().getStringExtra("body"));
-            if(getIntent().getBooleanExtra("anon",false)) {
+            if (getIntent().getBooleanExtra("anon", false)) {
                 String aux = "Anonymous";
                 posted.setText(aux);
                 Picasso.with(getApplicationContext()).load(R.drawable.avatar_placeholder).into(imagepic);
 
-            }
-            else {
+            } else {
                 String aux = getIntent().getStringExtra("username");
                 posted.setText(aux);
                 final ProfilePhotoUploader photoUploader = new ProfilePhotoUploader();
@@ -184,11 +181,12 @@ public class CommentsActivity extends AppCompatActivity {
                         }, null);
             }
             rvComments.setAdapter(commentsAdapter);
-        }catch(NullPointerException e){
-            Log.e("Error","parcelable object failed");
+            int newMsgPosition = commentArrayList.size() - 1;
+            rvComments.scrollToPosition(newMsgPosition);
+        } catch (NullPointerException e) {
+            Log.e("Error", "parcelable object failed");
         }
     }
-
 
 
     private void startIntroAnimation() {
@@ -233,8 +231,8 @@ public class CommentsActivity extends AppCompatActivity {
         MyParcelable object = new MyParcelable();
         object.setArrList(commentsSentList);
         retrieveData.putExtra("NewComments", object);
-        retrieveData.putExtra("ItemID",getIntent().getLongExtra("timestampID",0));
-        setResult(Activity.RESULT_OK,retrieveData);
+        retrieveData.putExtra("ItemID", getIntent().getLongExtra("timestampID", 0));
+        setResult(Activity.RESULT_OK, retrieveData);
 
 
         contentRoot.animate()
