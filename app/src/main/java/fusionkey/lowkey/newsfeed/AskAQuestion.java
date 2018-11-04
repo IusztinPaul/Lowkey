@@ -87,4 +87,5 @@ public class AskAQuestion extends AppCompatActivity {
     private boolean isPostDataOk(String titleText, String bodyText) {
         return !TextUtils.isEmpty(titleText) && !TextUtils.isEmpty(bodyText);
     }
+
 }

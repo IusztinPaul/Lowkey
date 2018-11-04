@@ -42,7 +42,7 @@
             <android.support.constraint.ConstraintLayout
                 android:id="@+id/constraintLayout4"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
                 android:layout_marginBottom="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginRight="8dp"
@@ -54,21 +54,24 @@
 
                 <TextView
                     android:id="@+id/textView9"
-                    android:gravity="center"
-                    android:layout_width="250dp"
-                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
                     android:layout_marginBottom="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginStart="16dp"
                     android:layout_marginTop="8dp"
                     android:fontFamily="serif"
-                    android:text="@string/get_help_string"
+                    android:gravity="center"
+                    android:text="@string/help_others_string"
                     android:textColor="@android:color/white"
-                    android:textSize="18sp"
+                    android:textSize="36sp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:text="@string/get_help_string" />
+                    app:layout_constraintTop_toTopOf="parent" />
             </android.support.constraint.ConstraintLayout>
 
             <Button

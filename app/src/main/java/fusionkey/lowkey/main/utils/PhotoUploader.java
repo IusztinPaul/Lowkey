@@ -55,6 +55,7 @@ public class PhotoUploader implements IS3Uploader{
         File file = LowKeyApplication.instance.getApplicationContext().getFilesDir();
         file = new File(file, PHOTO_NAME_FILE);
 
+
         BitMapOperator bitMapOperator = new BitMapOperator(photo);
         try {
             FileOutputStream fos = new FileOutputStream(file);
@@ -101,7 +102,7 @@ public class PhotoUploader implements IS3Uploader{
                             final Callback failCallback) {
         fileID++;
         final File file = new File(LowKeyApplication.instance.getApplicationContext().getFilesDir(), "photoffs"+fileID);
-
+        Log.e("PHOTO STATUS",file.getPath());
         TransferUtility transferUtility =
                 TransferUtility.builder()
                         .context(LowKeyApplication.instance.getApplicationContext())
@@ -209,7 +210,7 @@ public class PhotoUploader implements IS3Uploader{
     }
     public static void deleteFolder()
     {
-        String folder = LowKeyApplication.instance.getApplicationContext().getFilesDir().getPath() + File.separator + PHOTOS_PATH_DIR;
+        String folder = LowKeyApplication.instance.getApplicationContext().getFilesDir().getPath();
         recursiveDelete(new File(folder));
     }
     private static void recursiveDelete(File file){

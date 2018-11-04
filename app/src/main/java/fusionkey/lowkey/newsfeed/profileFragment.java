@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,12 +21,14 @@ import com.google.android.gms.ads.reward.RewardItem;
 import com.google.android.gms.ads.reward.RewardedVideoAd;
 import com.google.android.gms.ads.reward.RewardedVideoAdListener;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.R;
 import fusionkey.lowkey.auth.models.UserDB;
 import fusionkey.lowkey.listAdapters.NewsFeedAdapter;
+import fusionkey.lowkey.listAdapters.NotificationAdapters.NotificationAdapter;
 import fusionkey.lowkey.main.MainCallback;
 import fusionkey.lowkey.newsfeed.models.NewsFeedMessage;
 import fusionkey.lowkey.newsfeed.util.NewsFeedRequest;
@@ -48,6 +51,7 @@ public class profileFragment extends Fragment {
     ProgressBar paymentBar;
     ProgressBar expBar;
     NewsFeedAdapter adapter;
+    public SwipeRefreshLayout swipeRefreshLayout;
     ArrayList<NewsFeedMessage> messages;
     String uniqueID;
     private RecyclerView msgRecyclerView;
@@ -89,6 +93,7 @@ public class profileFragment extends Fragment {
         paymentBar = rootView.findViewById(R.id.paymentBar);
         showall = rootView.findViewById(R.id.showall);
         reward = rootView.findViewById(R.id.reward);
+        swipeRefreshLayout = rootView.findViewById(R.id.swipe);
 
         UserDB attributes = LowKeyApplication.userManager.getUserDetails();
         uniqueID = attributes.getUserEmail();
@@ -150,6 +155,15 @@ public class profileFragment extends Fragment {
        });
 
         populateUI();
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                populateUI();
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
+
         return(rootView);
     }
 
@@ -176,7 +190,7 @@ public class profileFragment extends Fragment {
             paymentBar.setMax(2500);
             paymentBar.setProgress((int)experience.doubleValue());
            // setExpBar((int)experience.doubleValue());
-            String moneyS = String.valueOf(PointsCalculator.calculatePointsForMoney(experience))+"$";
+            String moneyS = new DecimalFormat("##.####").format(PointsCalculator.calculatePointsForMoney(experience))+"$";
             money.setText(moneyS != null ? moneyS : "");
             String p = "Chat points gained: "+ pointsS + " / 2,500";
             payment.setText(p);

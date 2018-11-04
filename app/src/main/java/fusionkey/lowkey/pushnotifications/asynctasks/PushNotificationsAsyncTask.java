@@ -161,6 +161,8 @@ public class PushNotificationsAsyncTask extends AsyncTask<Void,String,JSONObject
         username.get().setText(newsFeedMessage.getUser());
         commentAdapter.setCommentList(comments);
         commentAdapter.notifyDataSetChanged();
+        int newMsgPosition = comments.size() - 1;
+        recyclerViewWeakReference.get().scrollToPosition(newMsgPosition);
         CommentsFromNotificationActivity.snsTOPIC = newsFeedMessage.getSNStopic();
 
     }

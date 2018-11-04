@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -39,6 +40,7 @@ public class questionsFragment extends Fragment {
     private MainCallback mainCallback;
     NewsFeedAdapter adapter;
     ArrayList<NewsFeedMessage> messages;
+    public SwipeRefreshLayout swipeRefreshLayout;
     String uniqueID;
     private RecyclerView msgRecyclerView;
     NewsFeedRequest newsfeedRequest;
@@ -72,6 +74,7 @@ public class questionsFragment extends Fragment {
         msgRecyclerView = (RecyclerView) rootView.findViewById(R.id.chat_listview);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
         msgRecyclerView.setLayoutManager(linearLayoutManager);
+        swipeRefreshLayout = rootView.findViewById(R.id.swipe);
 
         uniqueID = LowKeyApplication.userManager.getCachedEmail();
 
@@ -126,6 +129,15 @@ public class questionsFragment extends Fragment {
                 adapter.removeItem(position);
             }
         });
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refreshNewsfeed();
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
+
         refreshNewsfeed();
         return(rootView);
     }

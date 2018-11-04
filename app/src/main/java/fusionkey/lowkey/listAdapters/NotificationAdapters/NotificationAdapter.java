@@ -60,4 +60,10 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationViewHo
         mNotifications.remove(pos);
         notifyItemRemoved(pos);
     }
+    public void clear() {
+
+        //TODO: @Sebi I think that we should keep the cached messages for optimization. ||| to @Paul : OK we will find a way
+        mNotifications.clear();
+        notifyDataSetChanged();
+    }
 }
