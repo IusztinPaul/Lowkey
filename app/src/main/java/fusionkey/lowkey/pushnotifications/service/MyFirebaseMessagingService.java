@@ -1,9 +1,11 @@
 package fusionkey.lowkey.pushnotifications.service;
 
+import android.app.ActivityManager;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -15,9 +17,12 @@ import android.util.Log;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+import java.util.List;
+
 import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.R;
 import fusionkey.lowkey.entryActivity.EntryActivity;
+import fusionkey.lowkey.pushnotifications.activities.CommentsFromNotificationActivity;
 
 import static android.content.ContentValues.TAG;
 
@@ -68,6 +73,18 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         Intent intent;
         PendingIntent pendingIntent;
         NotificationCompat.Builder builder;
+
+        if(!isAppIsInBackground(this)) {
+            intent = new Intent(this, CommentsFromNotificationActivity.class);
+            intent.putExtra("timestamp",s[1]);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        }
+        else {
+            intent = new Intent(this, EntryActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        }
+        IntentMappingSharredPrefferences.saveTheIntentMap(IntentMappingSharredPrefferences.FLAG_TO_COMMENTS_STRING,s[1],this);
+
         if (notifManager == null) {
             notifManager = (NotificationManager)this.getSystemService(Context.NOTIFICATION_SERVICE);
         }
@@ -81,8 +98,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 notifManager.createNotificationChannel(mChannel);
             }
             builder = new NotificationCompat.Builder(this, id);
-            intent = new Intent(this, EntryActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
             builder.setContentTitle(username)                            // required
                     .setSmallIcon(R.drawable.notif_image)
@@ -97,8 +112,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         }
         else {
             builder = new NotificationCompat.Builder(this, id);
-            intent = new Intent(this, EntryActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
             pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
             builder.setContentTitle(username)                           // required
                     .setSmallIcon(R.drawable.notif_image)   // required
@@ -129,6 +143,32 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         editor.putInt("newnotif",1);
         editor.apply();
     }
+    private boolean isAppIsInBackground(Context context) {
+        boolean isInBackground = true;
+
+        ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT_WATCH) {
+            List<ActivityManager.RunningAppProcessInfo> runningProcesses = am.getRunningAppProcesses();
+            for (ActivityManager.RunningAppProcessInfo processInfo : runningProcesses) {
+                if (processInfo.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND) {
+                    for (String activeProcess : processInfo.pkgList) {
+                        if (activeProcess.equals(context.getPackageName())) {
+                            isInBackground = false;
+                        }
+                    }
+                }
+            }
+        } else {
+            List<ActivityManager.RunningTaskInfo> taskInfo = am.getRunningTasks(1);
+            ComponentName componentInfo = taskInfo.get(0).topActivity;
+            if (componentInfo.getPackageName().equals(context.getPackageName())) {
+                isInBackground = false;
+            }
+        }
+
+        return isInBackground;
+    }
+
 
 
 

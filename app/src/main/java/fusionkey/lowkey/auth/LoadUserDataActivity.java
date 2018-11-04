@@ -1,6 +1,7 @@
 package fusionkey.lowkey.auth;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
@@ -16,9 +17,14 @@ import fusionkey.lowkey.auth.utils.UserManager;
 import fusionkey.lowkey.main.Main2Activity;
 import fusionkey.lowkey.main.utils.Callback;
 import fusionkey.lowkey.main.utils.ProfilePhotoUploader;
+import fusionkey.lowkey.pushnotifications.activities.CommentsFromNotificationActivity;
+import fusionkey.lowkey.pushnotifications.service.IntentMappingSharredPrefferences;
+import fusionkey.lowkey.pushnotifications.service.MyFirebaseMessagingService;
 import fusionkey.lowkey.pushnotifications.service.RegisterSNS;
 
 public class LoadUserDataActivity extends AppCompatActivity {
+
+    private static boolean state = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +32,8 @@ public class LoadUserDataActivity extends AppCompatActivity {
         setContentView(R.layout.activity_load_user_data);
 
         String userEmail = this.getIntent().getStringExtra(UserAttributesEnum.EMAIL.toString());
+
+
         new AsyncTaskChecker(new WeakReference<Activity>(this), userEmail).execute();
     }
 
@@ -33,6 +41,7 @@ public class LoadUserDataActivity extends AppCompatActivity {
         private WeakReference<Activity> activityWeakReference;
         private String userEmail;
         private boolean loadingPhoto;
+        private Context context;
 
         public AsyncTaskChecker(WeakReference<Activity> activityWeakReference, String userEmail) {
             this.activityWeakReference = activityWeakReference;
@@ -55,9 +64,17 @@ public class LoadUserDataActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            Intent intent = new Intent(activityWeakReference.get(), Main2Activity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            activityWeakReference.get().startActivity(intent);
+            if(IntentMappingSharredPrefferences.getTheIntentFlag(activityWeakReference.get().getApplicationContext()).equals(IntentMappingSharredPrefferences.FLAG_TO_COMMENTS_STRING)){
+                Intent intent = new Intent(activityWeakReference.get(), CommentsFromNotificationActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.putExtra("timestamp",IntentMappingSharredPrefferences.getTheIntentTimestamp(activityWeakReference.get().getApplicationContext()));
+                intent.putExtra("from","fromLoad");
+                activityWeakReference.get().startActivity(intent);
+            }else {
+                Intent intent = new Intent(activityWeakReference.get(), Main2Activity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                activityWeakReference.get().startActivity(intent);
+            }
         }
 
         private void loadUserPhoto(){

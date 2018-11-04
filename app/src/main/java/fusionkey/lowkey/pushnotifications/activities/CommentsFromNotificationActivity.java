@@ -1,5 +1,10 @@
 package fusionkey.lowkey.pushnotifications.activities;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.app.Activity;
+import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -23,12 +28,15 @@ import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.R;
 import fusionkey.lowkey.auth.models.UserDB;
 import fusionkey.lowkey.listAdapters.CommentAdapters.CommentAdapter;
+import fusionkey.lowkey.main.Main2Activity;
+import fusionkey.lowkey.newsfeed.MyParcelable;
 import fusionkey.lowkey.newsfeed.interfaces.NewsFeedCallBack;
 import fusionkey.lowkey.newsfeed.models.Comment;
 import fusionkey.lowkey.newsfeed.models.NewsFeedMessage;
 import fusionkey.lowkey.newsfeed.util.NewsFeedRequest;
 import fusionkey.lowkey.pushnotifications.asynctasks.PushNotificationsAsyncTask;
 import fusionkey.lowkey.pushnotifications.requestUtils.NotificationRequest;
+import fusionkey.lowkey.pushnotifications.service.IntentMappingSharredPrefferences;
 
 public class CommentsFromNotificationActivity extends AppCompatActivity {
 
@@ -96,6 +104,17 @@ public class CommentsFromNotificationActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(getIntent().getStringExtra("from")!=null && getIntent().getStringExtra("from").equals("fromLoad")){
+            Intent intent = new Intent(this, Main2Activity.class);
+            this.startActivity(intent);
+            IntentMappingSharredPrefferences.saveTheIntentMap(IntentMappingSharredPrefferences.NO_FLAG_TO_COMMENTS_STRING,null,this);
+        }
+        else
+            super.onBackPressed();
     }
 
     private void populateWithData(){
