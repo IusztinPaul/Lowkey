@@ -23,7 +23,7 @@ import fusionkey.lowkey.newsfeed.models.Comment;
 
 public class CommentAdapter extends  RecyclerView.Adapter<CommentViewHolder>{
 
-    List<Comment> commentList;
+    private List<Comment> commentList;
     private Context context;
     private int itemsCount = 0;
     private int lastAnimatedPosition = -1;
@@ -34,8 +34,8 @@ public class CommentAdapter extends  RecyclerView.Adapter<CommentViewHolder>{
     private static String ANON_STRING = "Anonymous";
 
 
-    public CommentAdapter(List<Comment> commentList,Context context){
-        this.commentList=commentList;
+    public CommentAdapter(List<Comment> commentList, Context context){
+        this.setCommentList(commentList);
         this.context=context;
     }
     @Override
@@ -50,7 +50,7 @@ public class CommentAdapter extends  RecyclerView.Adapter<CommentViewHolder>{
 
         holder.leftMsgLayout.setVisibility(LinearLayout.VISIBLE);
 
-        Comment comDto = this.commentList.get(position);
+        Comment comDto = this.getCommentList().get(position);
 
 
         if(comDto.getCommentIsAnonymous().equalsIgnoreCase("true")) {
@@ -106,7 +106,7 @@ public class CommentAdapter extends  RecyclerView.Adapter<CommentViewHolder>{
 
     @Override
     public int getItemCount() {
-        return commentList != null ? commentList.size() : 0;
+        return getCommentList() != null ? getCommentList().size() : 0;
     }
 
     private String localTime(String time){
@@ -119,4 +119,11 @@ public class CommentAdapter extends  RecyclerView.Adapter<CommentViewHolder>{
         return t.format(new Date());
     }
 
+    public List<Comment> getCommentList() {
+        return commentList;
+    }
+
+    public void setCommentList(List<Comment> commentList) {
+        this.commentList = commentList;
+    }
 }

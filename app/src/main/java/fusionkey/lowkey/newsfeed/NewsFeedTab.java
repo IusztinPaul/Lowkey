@@ -150,30 +150,23 @@ public class NewsFeedTab extends Fragment{
                 int[] startingLocation = new int[2];
                 v.getLocationOnScreen(startingLocation);
                 intent.putExtra(CommentsActivity.ARG_DRAWING_START_LOCATION, startingLocation[1]);
-                if(m.getCommentArrayList()!=null) {
-                    MyParcelable object = new MyParcelable();
-                    object.setArrList(m.getCommentArrayList());
-                    intent.putExtra("parcel", object);
-                    intent.putExtra("anon", m.getAnon());
-                    intent.putExtra("SNStopic",m.getSNStopic());
-                    intent.putExtra("timestampID",m.getTimeStamp());
-                    intent.putExtra("body",m.getContent());
-                    intent.putExtra("title",m.getTitle());
-                    intent.putExtra("username",m.getUser());
-                    intent.putExtra("email",m.getId());
-                }else {
-                    MyParcelable object = new MyParcelable();
-                    object.setArrList(new ArrayList<Comment>());
-                    intent.putExtra("parcel", object);
-                    intent.putExtra("anon", m.getAnon());
-                    intent.putExtra("SNStopic",m.getSNStopic());
-                    intent.putExtra("timestampID",m.getTimeStamp());
-                    intent.putExtra("body",m.getContent());
-                    intent.putExtra("title",m.getTitle());
-                    intent.putExtra("username",m.getUser());
-                    intent.putExtra("email",m.getId());
 
+                MyParcelable object = new MyParcelable();
+                intent.putExtra("parcel", object);
+                intent.putExtra("anon", m.getAnon());
+                intent.putExtra("SNStopic",m.getSNStopic());
+                intent.putExtra("timestampID",m.getTimeStamp());
+                intent.putExtra("body",m.getContent());
+                intent.putExtra("title",m.getTitle());
+                intent.putExtra("username",m.getUser());
+                intent.putExtra("email",m.getId());
+
+                if(m.getCommentArrayList()!=null) {
+                    object.setArrList(m.getCommentArrayList());
+                } else {
+                    object.setArrList(new ArrayList<Comment>());
                 }
+
                 startActivityForResult(intent, COMMENT_ACTIVITY_REQUEST_CODE);
                 getActivity().overridePendingTransition(0, 0);
             }
@@ -297,7 +290,9 @@ public class NewsFeedTab extends Fragment{
                     })
                     .build()
                     .execute();
-        } else Toast.makeText(getActivity(), "Check if you're connected to the Internet", Toast.LENGTH_SHORT).show();
+        } else Toast.makeText(getActivity(),
+                getActivity().getString(R.string.no_network_message),
+                Toast.LENGTH_SHORT).show();
 
 
 }

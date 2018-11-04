@@ -27,23 +27,29 @@ public class UserD {
     private String state;
 
     public UserD(String userEmail,
-                 String last_message,
                  ArrayList<MessageTO> listMessage,
                  String state) {
         this.setUserEmail(userEmail);
-        this.setUserEmail(userEmail);
-        this.setLast_message(last_message);
         this.setListMessage(listMessage);
+        this.setLast_message(getLastMessage(listMessage));
         this.setState(state);
     }
 
     public UserD() {}
+
     public String getEmail() {
         return userEmail;
     }
 
     public void setEmail(String userEmail) {
         this.userEmail = userEmail;
+    }
+
+    private String getLastMessage(ArrayList<MessageTO> arrayList){
+        if((arrayList.get(arrayList.size()-1).getContentType()) == MessageTO.PHOTO)
+             return "user sent a photo";
+        else
+            return arrayList.get(arrayList.size()-1).getRawContent();
     }
 
     public ArrayList<MessageTO> getListMessage() {

@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">lowkeyfinal</string>
-
+    <string name="no_network_message">Check if you\'re connected to the Internet!</string>
+    <string name="already_in_queue_message">You are already in queue!</string>
     <!-- Strings related to login -->
     <string name="get_help_string">The person you will be talking is a person like you , a volunteer who chose to help, listen,
     and motivate. You can talk about any issues you have, any minor or major problem that makes you sad, any struggle you are going or even

@@ -2,15 +2,13 @@ package fusionkey.lowkey.chat.models;
 
 import android.graphics.Bitmap;
 
-import java.io.File;
-
 import fusionkey.lowkey.listAdapters.ChatServiceAdapters.ChatAppMsgViewHolder;
 import fusionkey.lowkey.main.utils.PhotoUploader;
 import fusionkey.lowkey.main.utils.PhotoUtils;
 
 public class MessageTO extends AbstractMessageTO {
-    private static final int PHOTO = 1;
-    private static final int TEXT = 2;
+    public static final int PHOTO = 1;
+    public static final int TEXT = 2;
 
     private String content;
     private boolean is_photo;

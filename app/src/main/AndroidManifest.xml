@@ -59,7 +59,7 @@
         <activity android:name=".main.menu.Menu" />
         <activity android:name=".main.menu.license.LicenseActivity" />
 
-        <service android:name=".pushnotifications.MyFirebaseMessagingService">
+        <service android:name=".pushnotifications.service.MyFirebaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
@@ -86,6 +86,7 @@
             android:value="ca-app-pub-3940256099942544~3347511713" />
 
         <activity android:name=".newsfeed.Askaquestion"/>
+        <activity android:name=".pushnotifications.activities.CommentsFromNotificationActivity"/>
         <activity android:name=".main.menu.terms.TermsActivity"></activity>
     </application>
 

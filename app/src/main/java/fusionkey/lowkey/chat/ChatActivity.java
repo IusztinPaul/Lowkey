@@ -23,6 +23,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -33,6 +34,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import fusionkey.lowkey.Chat;
 import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.R;
 import fusionkey.lowkey.ROOMdatabase.AppDatabase;
@@ -50,6 +52,7 @@ import fusionkey.lowkey.main.utils.PhotoUploader;
 import fusionkey.lowkey.main.utils.PhotoUtils;
 import fusionkey.lowkey.main.utils.ProfilePhotoUploader;
 import fusionkey.lowkey.models.UserD;
+import fusionkey.lowkey.newsfeed.NewsFeedTab;
 import fusionkey.lowkey.pointsAlgorithm.PointsCalculator;
 
 /**
@@ -65,6 +68,8 @@ public class ChatActivity extends AppCompatActivity {
     private final int PHOTO_SCORE_POINTS = 3;
     private final int POSITIVE_BUTTON_REVIEW_POINTS = 5;
 
+    private static String USER_STATUS_STRING = "User disconnected from the chat!";
+
     final long periodForT = 1000, periodForT1 =10000, delay=0;
     long last_text_edit=0;
 
@@ -79,6 +84,7 @@ public class ChatActivity extends AppCompatActivity {
     Bundle bb = new Bundle();
     Thread thread;
     TextView state;
+    TextView status;
     TextView connectDot;
     EditText msgInputText;
     LinearLayout chatbox;
@@ -109,6 +115,7 @@ public class ChatActivity extends AppCompatActivity {
         //INIT
         Toolbar toolbar = findViewById(R.id.toolbar);
         state = findViewById(R.id.isWritting);
+        status = findViewById(R.id.status);status.setText("wait");
         connectDot = findViewById(R.id.textView8);
         msgRecyclerView = findViewById(R.id.reyclerview_message_list);
         final String listener = getIntent().getStringExtra(LISTENER_INTENT);
@@ -140,7 +147,7 @@ public class ChatActivity extends AppCompatActivity {
         chatAsyncTask.execute();
 
         //Object that makes request and updates the UI if the user is/isn't connected/writting
-        inChatRunnable = new InChatRunnable(state, chatRoom);
+        inChatRunnable = new InChatRunnable(status, state, chatRoom);
 
         final ProfilePhotoUploader photoUploader = new ProfilePhotoUploader();
         photoUploader.download(UserManager.parseEmailToPhotoFileName(otherUserEmail),
@@ -148,7 +155,7 @@ public class ChatActivity extends AppCompatActivity {
                     @Override
                     public void handle() {
                         Log.e("PHOTO", "photo downloaded");
-                        Picasso.with(getApplicationContext()).load((photoUploader.getFileTO())).into(image);
+                        Picasso.with(getApplicationContext()).load(photoUploader.getFileTO()).into(image);
                     }
                 }, null);
 
@@ -167,6 +174,9 @@ public class ChatActivity extends AppCompatActivity {
                     if (str.equals("disconnected")) {
                         Log.e("Checking DISCONNECT", "checking");
                         chatbox.setVisibility(View.INVISIBLE);
+                        Toast.makeText(ChatActivity.this,
+                                USER_STATUS_STRING,
+                                Toast.LENGTH_SHORT).show();
                     }
 
                 } catch(NullPointerException e){
@@ -179,7 +189,7 @@ public class ChatActivity extends AppCompatActivity {
         t1.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                thread = new Thread(new DisconnectedRunnable(h1,state));
+                thread = new Thread(new DisconnectedRunnable(h1,status));
                 thread.start();
             }
 
@@ -234,14 +244,8 @@ public class ChatActivity extends AppCompatActivity {
 
     private void addMessagesToROOM() {
         if(msgDtoList!=null && msgDtoList.size() > 0) {
-            String lastMessage;
-            if((msgDtoList.get(msgDtoList.size()-1).getContentType())==1)
-                lastMessage = "user sent a photo";
-            else
-                lastMessage = msgDtoList.get(msgDtoList.size()-1).getRawContent();
 
-            UserD userD = new UserD(otherUserEmail, lastMessage, msgDtoList,role);
-
+            UserD userD = new UserD(otherUserEmail, msgDtoList, role);
             AppDatabase database = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "user-database")
                     .allowMainThreadQueries()   //Allows room to do operation on main thread
                     .build();
@@ -269,7 +273,7 @@ public class ChatActivity extends AppCompatActivity {
                         Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
 
                         // Resize image and serialize it before saving it.
-                        bitmap = PhotoUtils.resizeBitmap(bitmap, PhotoUtils.LARGE);
+                        bitmap = PhotoUtils.resizeBitmap(bitmap, PhotoUtils.MEDIUM);
                         String msgContent = new PhotoUploader.BitMapOperator(bitmap).serializeToString();
 
                         processMessage(msgContent, true);

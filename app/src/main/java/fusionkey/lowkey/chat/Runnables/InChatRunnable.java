@@ -4,7 +4,9 @@ import android.util.Log;
 import android.widget.TextView;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
+import fusionkey.lowkey.chat.ChatActivity;
 import fusionkey.lowkey.chat.ChatRoom;
 import fusionkey.lowkey.chat.interfaces.VolleyResponseListener;
 
@@ -17,10 +19,12 @@ import fusionkey.lowkey.chat.interfaces.VolleyResponseListener;
 public class InChatRunnable implements Runnable {
 
     private TextView state;
+    private TextView status;
     private ChatRoom c;
 
-    public InChatRunnable(TextView state, ChatRoom c) {
+    public InChatRunnable(TextView status,TextView state, ChatRoom c) {
         this.state = state;
+        this.status = status;
         this.c = c;
     }
     public void run(){
@@ -35,9 +39,9 @@ public class InChatRunnable implements Runnable {
                     Log.e("USER STATE:",response.toString());
                     try {
                         if (!response.getBoolean("data")) {
-                            state.setText("disconnected");
+                            status.setText("disconnected");
                         }else {
-                            state.setText("connected");
+                            status.setText("connected");
                         }
                     }catch(JSONException e){
                         Log.e("JSON-STATE ERROR",e.toString());
@@ -57,6 +61,12 @@ public class InChatRunnable implements Runnable {
                     try {
                         if (response.getBoolean("data")) {
                             state.setText("user is writting");
+                        }
+                        else {
+                            if(ChatActivity.USERNAME!=null)
+                            state.setText(ChatActivity.USERNAME);
+                            else
+                                state.setText("");
                         }
                     }catch (JSONException e){
                         Log.e("JSON WRITE STATE",e.toString());

@@ -3,14 +3,11 @@ package fusionkey.lowkey.listAdapters.NotificationAdapters;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import fusionkey.lowkey.R;
-import fusionkey.lowkey.listAdapters.ChatTabAdapters.ChatTabAdapter;
-import fusionkey.lowkey.models.NotificationTO;
-import fusionkey.lowkey.models.UserD;
+import fusionkey.lowkey.pushnotifications.models.NotificationTO;
 
 public class NotificationViewHolder extends RecyclerView.ViewHolder {
 

@@ -81,7 +81,10 @@ public class ConfirmCodeActivity extends AppCompatActivity {
 
                 LowKeyApplication.userManager.setUser(email);
                 createLayout(2);
-            } else Toast.makeText(ConfirmCodeActivity.this, "Check if you're connected to the Internet", Toast.LENGTH_SHORT).show();
+            } else
+                Toast.makeText(ConfirmCodeActivity.this,
+                        ConfirmCodeActivity.this.getString(R.string.no_network_message),
+                        Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -120,7 +123,10 @@ public class ConfirmCodeActivity extends AppCompatActivity {
 
 
             }
-            else Toast.makeText(ConfirmCodeActivity.this, "Check if you're connected to the Internet", Toast.LENGTH_SHORT).show();
+            else
+                Toast.makeText(ConfirmCodeActivity.this,
+                        ConfirmCodeActivity.this.getString(R.string.no_network_message),
+                        Toast.LENGTH_SHORT).show();
                 }
         });
     }

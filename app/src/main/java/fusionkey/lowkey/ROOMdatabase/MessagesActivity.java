@@ -32,6 +32,7 @@ public class MessagesActivity extends AppCompatActivity {
 
     private LinearLayout chatLayout;
     private TextView upperText;
+    private TextView status;
     private CircleImageView image;
     public static String USERNAME;
 
@@ -43,6 +44,7 @@ public class MessagesActivity extends AppCompatActivity {
         chatLayout.setVisibility(View.GONE);
         upperText = findViewById(R.id.isWritting);
         image = findViewById(R.id.circleImageView2);
+        status = findViewById(R.id.status);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         final RecyclerView msgRecyclerView = (RecyclerView) findViewById(R.id.reyclerview_message_list);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
@@ -52,20 +54,22 @@ public class MessagesActivity extends AppCompatActivity {
         String otherUserEmail = intent.getStringExtra(OTHER_USER_EMAIL);
         String otherUserParsedEmail = UserManager.parseEmailToPhotoFileName(otherUserEmail);
 
-        AppDatabase database = Room.databaseBuilder(this, AppDatabase.class, "user-database")
-                .allowMainThreadQueries()   //Allows room to do operation on main thread
-                .build();
-        final UserDao userDAO = database.userDao();
-
         UserDB userDB = new UserAttributeManager(otherUserEmail).getUserDB();
         USERNAME = userDB.getUsername();
-
         try {
             upperText.setText(USERNAME);
         } catch (NullPointerException npe) {
             USERNAME = "not found";
             upperText.setText("Not found");
         }
+
+        AppDatabase database = Room.databaseBuilder(this, AppDatabase.class, "user-database")
+                .allowMainThreadQueries()   //Allows room to do operation on main thread
+                .build();
+        final UserDao userDAO = database.userDao();
+
+
+        status.setText("disonnected");
 
         final ProfilePhotoUploader photoUploader = new ProfilePhotoUploader();
         photoUploader.download(otherUserParsedEmail,
@@ -82,8 +86,10 @@ public class MessagesActivity extends AppCompatActivity {
                     }
                 });
 
-        if (!NetworkManager.isNetworkAvailable())
-            Toast.makeText(getApplicationContext(), "Check if you're connected to the Internet", Toast.LENGTH_SHORT).show();
+        if(!NetworkManager.isNetworkAvailable())
+            Toast.makeText(getApplicationContext(),
+                    getApplicationContext().getString(R.string.no_network_message),
+                    Toast.LENGTH_SHORT).show();
 
         UserD user = userDAO.findByName(otherUserEmail);
         final ChatAppMsgAdapter chatAppMsgAdapter = new ChatAppMsgAdapter(user.getListMessage());

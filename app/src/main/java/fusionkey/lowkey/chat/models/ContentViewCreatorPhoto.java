@@ -5,6 +5,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import fusionkey.lowkey.ROOMdatabase.MessagesActivity;
 import fusionkey.lowkey.chat.ChatActivity;
 import fusionkey.lowkey.listAdapters.ChatServiceAdapters.ChatAppMsgViewHolder;

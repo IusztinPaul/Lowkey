@@ -1,4 +1,4 @@
-package fusionkey.lowkey.pushnotifications;
+package fusionkey.lowkey.pushnotifications.service;
 
 import android.util.Log;
 
