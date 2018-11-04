@@ -64,7 +64,6 @@ public class NewsFeedAsyncTaskBuilder {
     public NewsFeedAsyncTask build() {
         return new NewsFeedAsyncTask(
                 messages,
-                recyclerView,
                 newsFeedAdapter,
                 newsFeedRequest,
                 referenceTimestamp,

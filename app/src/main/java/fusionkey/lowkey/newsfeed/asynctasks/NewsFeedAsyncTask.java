@@ -2,14 +2,12 @@ package fusionkey.lowkey.newsfeed.asynctasks;
 
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 import fusionkey.lowkey.LowKeyApplication;
@@ -40,7 +38,6 @@ public class NewsFeedAsyncTask extends AsyncTask<Void, String, JSONObject> {
     private boolean isStart;
 
     public NewsFeedAsyncTask(ArrayList<NewsFeedMessage> newsFeedMessageArrayList,
-                             RecyclerView recyclerView,
                              NewsFeedAdapter newsFeedAdapter,
                              NewsFeedRequest newsFeedRequest,
                              Long referenceTimestamp,
@@ -87,8 +84,10 @@ public class NewsFeedAsyncTask extends AsyncTask<Void, String, JSONObject> {
                     }
 
                     if(setter != null) {
-                        if(arr.length() > 0)
-                            setter.consume(arr.getJSONObject(arr.length() - 1).getLong("postTStamp"));
+                        if(arr.length() > 0) {
+                            Long lastPostTStamp = arr.getJSONObject(arr.length() - 1).getLong("postTStamp");
+                            setter.consume(lastPostTStamp);
+                        }
                         else
                             setter.consume(null);
                     }
@@ -144,27 +143,13 @@ public class NewsFeedAsyncTask extends AsyncTask<Void, String, JSONObject> {
                                 newsFeedMessage.setAnon(Boolean.valueOf(anon));
                             else
                                 newsFeedMessage.setAnon(false);
-                            /*
-                            final ProfilePhotoUploader photoUploader = new ProfilePhotoUploader();
-                            photoUploader.download(UserManager.parseEmailToPhotoFileName(m1.getId()),
-                                    new Callback() {
-                                        @Override
-                                        public void handle() {
-                                            Log.e("PHOTO", "photo downloaded");
-                                            m1.setFile(photoUploader.getFileTO());
-                                            //the newsfeedmessage it's added when the downloading it's finished and the file it's exist
-                                            messages.add(m1);
-                                            adapter.notifyDataSetChanged();
-                                        }
-                                    }, null);
-                            */
+
                             newsFeedMessageArrayList.add(newsFeedMessage);
 
                         }
 
                         // Refresh comments in any case.
                         ArrayList<Comment> commentArrayList = new ArrayList<>();
-
                         try {
                             JSONArray arr2 = new JSONArray(obj.getString("comments")); //get comments
                             for (int j = 0; j < arr2.length(); j++) {
@@ -197,8 +182,6 @@ public class NewsFeedAsyncTask extends AsyncTask<Void, String, JSONObject> {
     protected void onProgressUpdate(String... values) {
         int newMsgPosition = newsFeedMessageArrayList.size() - 1;
         newsFeedAdapter.notifyItemInserted(newMsgPosition);
-
-
     }
 
     @Override

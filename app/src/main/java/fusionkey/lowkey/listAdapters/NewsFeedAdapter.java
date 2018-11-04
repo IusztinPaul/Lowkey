@@ -54,16 +54,17 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                if(!recyclerView.canScrollVertically(1)){
-                totalItemCount = linearLayoutManager.getItemCount();
-                lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition();
-                if (!isLoading && totalItemCount <= (lastVisibleItem + visibleThreshold)) {
-                    if (onLoadMoreListener != null) {
-                        onLoadMoreListener.onLoadMore();
+                if (!recyclerView.canScrollVertically(1)) {
+                    totalItemCount = linearLayoutManager.getItemCount();
+                    lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition();
+                    if (!isLoading && totalItemCount <= (lastVisibleItem + visibleThreshold)) {
+                        if (onLoadMoreListener != null) {
+                            onLoadMoreListener.onLoadMore();
+                        }
+                        isLoading = true;
                     }
-                    isLoading = true;
                 }
-            }}
+            }
         });
 
     }
@@ -96,24 +97,23 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
 
-        if(holder instanceof ChatTabViewHolder) {
+        if (holder instanceof ChatTabViewHolder) {
             final NewsFeedMessage msgDto = this.mMessages.get(position);
             final ChatTabViewHolder chatTabViewHolder = (ChatTabViewHolder) holder;
-            if(msgDto.getType().equals(NewsFeedMessage.NORMAL)) {
+            if (msgDto.getType().equals(NewsFeedMessage.NORMAL)) {
                 chatTabViewHolder.type.setVisibility(View.VISIBLE);
-                chatTabViewHolder.bindDelete(chatTabViewHolder,del);
+                chatTabViewHolder.bindDelete(chatTabViewHolder, del);
                 chatTabViewHolder.image.setImageBitmap(msgDto.getUserPhoto());
-            }else {
+            } else {
                 chatTabViewHolder.type.setVisibility(View.GONE);
             }
             chatTabViewHolder.title.setText(msgDto.getTitle());
             //chatTabViewHolder.image.setImageBitmap(msgDto.getUserPhoto());
             if (!msgDto.getAnon()) {
                 chatTabViewHolder.name.setText(msgDto.getUser());
-                if(msgDto.getType().equals(NewsFeedMessage.NORMAL)){
+                if (msgDto.getType().equals(NewsFeedMessage.NORMAL)) {
                     Picasso.with(mcontext).load(LowKeyApplication.userManager.photoFile).into(chatTabViewHolder.image);
-                }
-                else
+                } else
                     Picasso.with(mcontext).load(msgDto.getFile()).into(chatTabViewHolder.image);
 
             } else {
@@ -132,13 +132,7 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
             //Picasso doing the Cached Magic
 
-
-
-
-
-
-        }
-        else if(holder instanceof LoadingViewHolder){
+        } else if (holder instanceof LoadingViewHolder) {
             LoadingViewHolder loadingViewHolder = (LoadingViewHolder) holder;
             loadingViewHolder.progressBar.setIndeterminate(true);
         }
@@ -151,7 +145,9 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     @Override
-    public int getItemViewType(int position) { return mMessages.get(position) == null ? VIEW_TYPE_LOADING : VIEW_TYPE_ITEM; }
+    public int getItemViewType(int position) {
+        return mMessages.get(position) == null ? VIEW_TYPE_LOADING : VIEW_TYPE_ITEM;
+    }
 
     public void setLoaded() {
         isLoading = false;
@@ -176,7 +172,9 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         this.del = listener;
     }
 
-    public void setOnLoadMoreListener(OnLoadMoreListener mOnLoadMoreListener) { this.onLoadMoreListener = mOnLoadMoreListener; }
+    public void setOnLoadMoreListener(OnLoadMoreListener mOnLoadMoreListener) {
+        this.onLoadMoreListener = mOnLoadMoreListener;
+    }
 
     private String localTime(Long time) {
         Calendar cal = Calendar.getInstance();
@@ -189,9 +187,11 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public void removeItem(int position) {
-        mMessages.remove(position);
-        notifyItemRemoved(position);
-        notifyItemRangeChanged(position, mMessages.size());
+        if(position < mMessages.size()) {
+            mMessages.remove(position);
+            notifyItemRemoved(position);
+            notifyItemRangeChanged(position, mMessages.size());
+        }
     }
 
     public NewsFeedMessage getMsg(int position) {
@@ -203,8 +203,8 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         notifyItemInserted(mMessages.size());
     }
 
-    public int getPosition(NewsFeedMessage msg){
-        return  mMessages.indexOf(msg);
+    public int getPosition(NewsFeedMessage msg) {
+        return mMessages.indexOf(msg);
     }
 
 }
