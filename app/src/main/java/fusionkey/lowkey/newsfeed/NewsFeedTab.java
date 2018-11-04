@@ -290,7 +290,9 @@ public class NewsFeedTab extends Fragment{
                     })
                     .build()
                     .execute();
-        } else Toast.makeText(getActivity(), "Check if you're connected to the Internet", Toast.LENGTH_SHORT).show();
+        } else Toast.makeText(getActivity(),
+                getActivity().getString(R.string.no_network_message),
+                Toast.LENGTH_SHORT).show();
 
 
 }

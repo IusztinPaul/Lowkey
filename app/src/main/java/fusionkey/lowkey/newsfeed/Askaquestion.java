@@ -1,10 +1,7 @@
 package fusionkey.lowkey.newsfeed;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -14,20 +11,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.sql.Timestamp;
-import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.R;
 import fusionkey.lowkey.auth.models.UserDB;
-import fusionkey.lowkey.auth.utils.UserAttributesEnum;
 import fusionkey.lowkey.main.utils.NetworkManager;
-import fusionkey.lowkey.newsfeed.models.NewsFeedMessage;
 import fusionkey.lowkey.newsfeed.util.NewsFeedRequest;
 
 public class Askaquestion extends AppCompatActivity {
     CircleImageView circleImageView;
-    TextView time;
     TextView title;
     TextView body;
     TextView username;
@@ -75,7 +68,10 @@ public class Askaquestion extends AppCompatActivity {
                         onBackPressed();
 
                     }
-                } else Toast.makeText(getApplicationContext(), "Check if you're connected to the Internet", Toast.LENGTH_SHORT).show();
+                } else
+                    Toast.makeText(getApplicationContext(),
+                            getApplicationContext().getString(R.string.no_network_message),
+                            Toast.LENGTH_SHORT).show();
 
         }
         });

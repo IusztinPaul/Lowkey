@@ -136,7 +136,9 @@ public class questionsFragment extends Fragment {
             GetYourQuestionsAsyncTask getYourQuestionsAsyncTask = new GetYourQuestionsAsyncTask(messages, msgRecyclerView, adapter, newsfeedRequest);
             getYourQuestionsAsyncTask.execute();
             //adapter.notifyDataSetChanged();
-        } else Toast.makeText(getContext(), "Check if you're connected to the Internet", Toast.LENGTH_SHORT).show();
+        } else Toast.makeText(getContext(),
+            getContext().getString(R.string.no_network_message),
+                Toast.LENGTH_SHORT).show();
 
     }
 
