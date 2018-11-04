@@ -256,6 +256,7 @@ public class NewsFeedTab extends Fragment {
 
     public void refreshNewsFeed() {
         adapter.clear();
+        adapter.notifyDataSetChanged();
         startPopulateNewsFeed();
     }
 

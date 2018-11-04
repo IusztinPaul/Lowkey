@@ -136,7 +136,6 @@ public class NewsFeedAsyncTask extends AsyncTask<Void, String, JSONObject> {
                                 newsFeedMessage.setAnon(false);
 
                             newsFeedMessageArrayList.add(newsFeedMessage);
-
                         }
 
                         // Refresh comments in any case.
@@ -193,6 +192,5 @@ public class NewsFeedAsyncTask extends AsyncTask<Void, String, JSONObject> {
     @Override
     protected void onPostExecute(JSONObject jsonObject) {
         newsFeedAdapter.setLoaded();
-        newsFeedAdapter.notifyDataSetChanged();
     }
 }
