@@ -17,6 +17,7 @@ import android.util.Log;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+import java.util.Iterator;
 import java.util.List;
 
 import fusionkey.lowkey.LowKeyApplication;
@@ -74,16 +75,12 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         PendingIntent pendingIntent;
         NotificationCompat.Builder builder;
 
-        if(!isAppIsInBackground(this)) {
-            intent = new Intent(this, CommentsFromNotificationActivity.class);
-            intent.putExtra("timestamp",s[1]);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        }
-        else {
+
             intent = new Intent(this, EntryActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        }
-        IntentMappingSharredPrefferences.saveTheIntentMap(IntentMappingSharredPrefferences.FLAG_TO_COMMENTS_STRING,s[1],this);
+            IntentMappingSharredPrefferences.saveTheIntentMap(IntentMappingSharredPrefferences.FLAG_TO_COMMENTS_STRING,s[1],this);
+
+
 
         if (notifManager == null) {
             notifManager = (NotificationManager)this.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -167,6 +164,22 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         }
 
         return isInBackground;
+    }
+
+    private boolean isAppRunning() {
+        ActivityManager m = (ActivityManager) this.getSystemService( ACTIVITY_SERVICE );
+        List<ActivityManager.RunningTaskInfo> runningTaskInfoList = m.getRunningTasks(10);
+        Iterator<ActivityManager.RunningTaskInfo> itr = runningTaskInfoList.iterator();
+        int n = 0;
+        while(itr.hasNext()){
+            n++;
+            itr.next();
+        }
+        if( n == 1)
+            return false;
+
+        return true;
+
     }
 
 
