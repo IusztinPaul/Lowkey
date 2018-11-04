@@ -12,7 +12,6 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -28,18 +27,14 @@ import com.squareup.picasso.Picasso;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.R;
-import fusionkey.lowkey.auth.models.UserDB;
-import fusionkey.lowkey.auth.utils.UserAttributesEnum;
 import fusionkey.lowkey.auth.utils.UserManager;
 import fusionkey.lowkey.listAdapters.CommentAdapters.CommentAdapter;
 import fusionkey.lowkey.main.utils.Callback;
 import fusionkey.lowkey.main.utils.ProfilePhotoUploader;
-import fusionkey.lowkey.newsfeed.interfaces.NewsFeedCallBack;
 import fusionkey.lowkey.newsfeed.models.Comment;
 import fusionkey.lowkey.newsfeed.util.NewsFeedRequest;
 
@@ -54,7 +49,6 @@ public class CommentsActivity extends AppCompatActivity {
     Button button;
     EditText inputTxt;
     LinearLayout llAddComment;
-    NewsFeedCallBack newsFeedCallBack;
     CardView questionInfo;
     CircleImageView imagepic;
     List<Comment> commentArrayList;
@@ -102,32 +96,66 @@ public class CommentsActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!TextUtils.isEmpty(inputTxt.getText().toString())) {
-                    Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-                    UserDB attributes = LowKeyApplication.userManager.getUserDetails();
-                    final String uniqueID = attributes.getUserEmail();
-                    final String username = attributes.getUsername();
-                    new NewsFeedRequest(username).postComment(getIntent().getLongExtra("timestampID",0), true, inputTxt.getText().toString(),getIntent().getStringExtra("SNStopic"));
-                    commentArrayList.add(new Comment("true",String.valueOf(timestamp.getTime()),inputTxt.getText().toString(),username));
-                    commentsSentList.add(new Comment("true",String.valueOf(timestamp.getTime()),inputTxt.getText().toString(),username));
+                    String commentText = inputTxt.getText().toString().trim();
+                    Comment comment = createComment(commentText);
 
-                    int newMsgPosition = commentArrayList.size() - 1;
-                    commentsAdapter.notifyItemInserted(newMsgPosition);
-                    rvComments.scrollToPosition(newMsgPosition);
-                    inputTxt.setText("");
-                }
+                    if(comment != null) {
+                        sendNewsFeedRequestWithNewComment(commentText);
+                        adaptViewWithNewComment(comment);
+                    }
 
             }
         });
 
     }
 
+    private void adaptViewWithNewComment(Comment comment) {
+        commentArrayList.add(comment);
+        commentsSentList.add(comment);
 
+        int newMsgPosition = commentArrayList.size() - 1;
+        commentsAdapter.notifyItemInserted(newMsgPosition);
+        rvComments.scrollToPosition(newMsgPosition);
+        inputTxt.setText("");
+    }
 
+    private Comment createComment(String commentText) {
+        if (TextUtils.isEmpty(commentText))
+                return null;
 
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        String username = LowKeyApplication.userManager.getUserDetails().getUsername();
+
+        return new Comment("true",
+                String.valueOf(timestamp.getTime()),
+                commentText,
+                username);
+    }
+
+    private void sendNewsFeedRequestWithNewComment(String commentText) {
+        Long postTimeStamp = getIntent().getLongExtra("timestampID",0);
+        String username = LowKeyApplication.userManager.getUserDetails().getUsername();
+
+        String SNSTopic = "";
+        if(!isPostOfCurrentUser())
+            SNSTopic = getIntent().getStringExtra("SNStopic");
+
+        new NewsFeedRequest(username).
+                postComment(postTimeStamp,
+                        true,
+                        commentText,
+                        SNSTopic
+                        );
+    }
+
+    private boolean isPostOfCurrentUser() {
+        String postUserEmail = getIntent().getStringExtra("email");
+        String currentUserEmail = LowKeyApplication.userManager.getCurrentUserEmail();
+        return postUserEmail != null &&
+                postUserEmail.equals(currentUserEmail);
+    }
 
     private void populateWithData(){
-
         Bundle b = getIntent().getExtras();
 
         try {
@@ -182,12 +210,12 @@ public class CommentsActivity extends AppCompatActivity {
     }
 
     private void animateContent() {
-
         llAddComment.animate().translationY(0)
                 .setInterpolator(new DecelerateInterpolator())
                 .setDuration(200)
                 .start();
     }
+
     private void setupComments() {
         rvComments.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override

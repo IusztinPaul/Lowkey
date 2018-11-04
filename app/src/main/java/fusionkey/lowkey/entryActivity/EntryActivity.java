@@ -23,12 +23,16 @@ import fusionkey.lowkey.auth.utils.AuthCallback;
 import fusionkey.lowkey.auth.utils.UserAttributesEnum;
 import fusionkey.lowkey.main.Main2Activity;
 import fusionkey.lowkey.main.utils.NetworkManager;
+import fusionkey.lowkey.pushnotifications.service.IntentMappingSharredPrefferences;
+import fusionkey.lowkey.pushnotifications.service.MyFirebaseMessagingService;
 
 public class EntryActivity extends AppCompatActivity {
 
     private static final int RC_SIGN_IN = 9001;
 
     private ProgressBar pBar;
+    public String IntentFlag;
+    public String timestamp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,17 +109,18 @@ public class EntryActivity extends AppCompatActivity {
                     @Override
                     public void execute() {
                         Intent myIntent = new Intent(EntryActivity.this, LoadUserDataActivity.class);
-
                         String userEmail = LowKeyApplication.userManager.getCachedEmail();
                         myIntent.putExtra(UserAttributesEnum.EMAIL.toString(), userEmail);
-
                         myIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         EntryActivity.this.startActivity(myIntent);
+
                     }
                 });
 
 
     }
+
+
 
     private void switchView(boolean loading) {
         pBar.setVisibility(loading ? View.VISIBLE : View.GONE);

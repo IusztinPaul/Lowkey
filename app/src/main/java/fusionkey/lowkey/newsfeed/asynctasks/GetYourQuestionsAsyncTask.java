@@ -143,16 +143,5 @@ public class GetYourQuestionsAsyncTask extends AsyncTask<Void,String,JSONObject>
     protected void onPostExecute(JSONObject jsonObject) {
        // newsfeedAdapter.notifyItemInserted(0);
     }
-    private String getUsername(String id) {
-        for (UserType e : userTypeList) {
-            List<AttributeType> attributeTypeList = e.getAttributes();
-            for(AttributeType a : attributeTypeList){
-                if(a.getValue().equals(id)){
-                    for(AttributeType b : attributeTypeList)
-                        if(b.getName().equals("nickname"))
-                            return b.getValue();
-                }}
-        }
-        return "User not found";
-    }
+
 }

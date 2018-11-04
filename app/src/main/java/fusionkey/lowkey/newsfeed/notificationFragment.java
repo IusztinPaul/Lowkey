@@ -1,5 +1,6 @@
 package fusionkey.lowkey.newsfeed;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -19,8 +20,11 @@ import java.util.TimeZone;
 
 import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.R;
+import fusionkey.lowkey.auth.LoginActivity;
+import fusionkey.lowkey.entryActivity.EntryActivity;
 import fusionkey.lowkey.listAdapters.NotificationAdapters.NotificationAdapter;
-import fusionkey.lowkey.models.NotificationTO;
+import fusionkey.lowkey.pushnotifications.activities.CommentsFromNotificationActivity;
+import fusionkey.lowkey.pushnotifications.models.NotificationTO;
 
 public class notificationFragment extends Fragment {
     private static final String KEY_POSITION = "position";
@@ -57,7 +61,9 @@ public class notificationFragment extends Fragment {
         adapter.setListener(new NotificationAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(NotificationTO item) {
-
+                Intent intent = new Intent(getActivity(), CommentsFromNotificationActivity.class);
+                intent.putExtra("timestamp", item.getTimestamp());
+                startActivity(intent);
             }
         });
         mRecyclerview.setAdapter(adapter);
@@ -70,7 +76,7 @@ public class notificationFragment extends Fragment {
         int counter = preferences.getInt(id,0);
         for(int i=0;i<counter;i++) {
             String[] s = preferences.getString(id+i,"").split("muiepsdasdfghjkl");
-            notif.add(new NotificationTO(s[2].replace("}",""),s[0].replace("{default=","") + " answered your question "+ s[1]));
+            notif.add(new NotificationTO(s[2].replace("}",""),s[0].replace("{default=","") + " answered your question "+ s[1],s[1]));
 
         }
         Collections.reverse(notif);

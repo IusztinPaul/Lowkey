@@ -93,7 +93,10 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                 createLayout(2);
             }
         });}
-    else Toast.makeText(ForgotPasswordActivity.this, "Check if you're connected to the Internet", Toast.LENGTH_SHORT).show();
+    else
+        Toast.makeText(ForgotPasswordActivity.this,
+                ForgotPasswordActivity.this.getString(R.string.no_network_message),
+                Toast.LENGTH_SHORT).show();
 
     }
 
@@ -111,7 +114,9 @@ public class ForgotPasswordActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(NetworkManager.isNetworkAvailable())
                 validateCode();
-                else Toast.makeText(ForgotPasswordActivity.this, "Check if you're connected to the Internet", Toast.LENGTH_SHORT).show();
+                else Toast.makeText(ForgotPasswordActivity.this,
+                        ForgotPasswordActivity.this.getString(R.string.no_network_message),
+                        Toast.LENGTH_SHORT).show();
 
             }
         });

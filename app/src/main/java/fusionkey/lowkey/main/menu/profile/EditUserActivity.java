@@ -35,6 +35,7 @@ import fusionkey.lowkey.auth.utils.AuthCallback;
 import fusionkey.lowkey.auth.utils.UserAttributesEnum;
 import fusionkey.lowkey.main.Main2Activity;
 import fusionkey.lowkey.main.utils.Callback;
+import fusionkey.lowkey.main.utils.NetworkManager;
 import fusionkey.lowkey.main.utils.PhotoUtils;
 import fusionkey.lowkey.main.utils.ProfilePhotoUploader;
 
@@ -123,65 +124,71 @@ public class EditUserActivity extends AppCompatActivity {
     }
 
     private void save() {
-        etUsername.setError(null);
-        etFullName.setError(null);
-        etPhone.setError(null);
-        switchView(true);
+        if(!NetworkManager.isNetworkAvailable()) {
+            etUsername.setError(null);
+            etFullName.setError(null);
+            etPhone.setError(null);
+            switchView(true);
 
-        HashMap<UserAttributesEnum, String> attributesToUpdate = new HashMap<>();
+            HashMap<UserAttributesEnum, String> attributesToUpdate = new HashMap<>();
 
-        String username = etUsername.getText().toString().trim(),
-                fullName = etFullName.getText().toString().trim(),
-                phone = etPhone.getText().toString().trim(),
-                gender = spinnerGender.getSelectedItem().toString(),
-                birth = getFormattedDate(dpBirth);
+            String username = etUsername.getText().toString().trim(),
+                    fullName = etFullName.getText().toString().trim(),
+                    phone = etPhone.getText().toString().trim(),
+                    gender = spinnerGender.getSelectedItem().toString(),
+                    birth = getFormattedDate(dpBirth);
 
 
-        if (!TextUtils.isEmpty(username))
-            attributesToUpdate.put(UserAttributesEnum.USERNAME, username);
+            if (!TextUtils.isEmpty(username))
+                attributesToUpdate.put(UserAttributesEnum.USERNAME, username);
 
-        if (!TextUtils.isEmpty(fullName))
-            attributesToUpdate.put(UserAttributesEnum.FULL_NAME, fullName);
+            if (!TextUtils.isEmpty(fullName))
+                attributesToUpdate.put(UserAttributesEnum.FULL_NAME, fullName);
 
-        if (AttributesValidator.isPhoneValid(phone))
-            attributesToUpdate.put(UserAttributesEnum.PHONE, phone);
-        else if (!TextUtils.isEmpty(phone)) {
-            etPhone.requestFocus();
-            etPhone.setError(getApplicationContext().getResources().getString(R.string.invalid));
-            return;
-        }
-
-        attributesToUpdate.put(UserAttributesEnum.GENDER, gender);
-        attributesToUpdate.put(UserAttributesEnum.BIRTH_DATE, birth);
-
-        LowKeyApplication.userManager.updateCurrentUserAttributes(attributesToUpdate, new AuthCallback() {
-            @Override
-            public void execute() {
-                if (newImage != null) {
-                    new ProfilePhotoUploader(newImage).upload(
-                            LowKeyApplication.userManager.getPhotoFileName(),
-                            new Callback() {
-                                @Override
-                                public void handle() {
-                                    LowKeyApplication.userManager.profilePhoto = newImage;
-                                    onSuccessLogic();
-                                }
-                            },
-                            new Callback() {
-                                @Override
-                                public void handle() {
-                                    Toast.makeText(EditUserActivity.this,
-                                            EditUserActivity.this.getResources().getString(R.string.edit_fail_message),
-                                            Toast.LENGTH_SHORT).show();
-                                    switchView(false);
-                                }
-                            }
-                    );
-                } else {
-                    onSuccessLogic();
-                }
+            if (AttributesValidator.isPhoneValid(phone))
+                attributesToUpdate.put(UserAttributesEnum.PHONE, phone);
+            else if (!TextUtils.isEmpty(phone)) {
+                etPhone.requestFocus();
+                etPhone.setError(getApplicationContext().getResources().getString(R.string.invalid));
+                return;
             }
-        });
+
+            attributesToUpdate.put(UserAttributesEnum.GENDER, gender);
+            attributesToUpdate.put(UserAttributesEnum.BIRTH_DATE, birth);
+
+            LowKeyApplication.userManager.updateCurrentUserAttributes(attributesToUpdate, new AuthCallback() {
+                @Override
+                public void execute() {
+                    if (newImage != null) {
+                        new ProfilePhotoUploader(newImage).upload(
+                                LowKeyApplication.userManager.getPhotoFileName(),
+                                new Callback() {
+                                    @Override
+                                    public void handle() {
+                                        LowKeyApplication.userManager.profilePhoto = newImage;
+                                        onSuccessLogic();
+                                    }
+                                },
+                                new Callback() {
+                                    @Override
+                                    public void handle() {
+                                        Toast.makeText(EditUserActivity.this,
+                                                EditUserActivity.this.getResources().getString(R.string.edit_fail_message),
+                                                Toast.LENGTH_SHORT).show();
+                                        switchView(false);
+                                    }
+                                }
+                        );
+                    } else {
+                        onSuccessLogic();
+                    }
+                }
+            });
+        } else {
+            Toast.makeText(this,
+                    this.getString(R.string.no_network_message),
+                    Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void onSuccessLogic() {

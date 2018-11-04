@@ -100,7 +100,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             public void onClick(View view) {
                 if(NetworkManager.isNetworkAvailable())
                 attemptLogin();
-                else Toast.makeText(LoginActivity.this, "Check if you're connected to the Internet", Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(LoginActivity.this,
+                            LoginActivity.this.getString(R.string.no_network_message),
+                            Toast.LENGTH_SHORT).show();
 
             }
         });

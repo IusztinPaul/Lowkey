@@ -86,7 +86,9 @@ public class MessagesActivity extends AppCompatActivity {
                 });
 
         if(!NetworkManager.isNetworkAvailable())
-            Toast.makeText(getApplicationContext(), "Check if you're connected to the Internet", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(),
+                    getApplicationContext().getString(R.string.no_network_message),
+                    Toast.LENGTH_SHORT).show();
 
     UserD user = userDAO.findByName(username);
 

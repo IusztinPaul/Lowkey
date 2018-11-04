@@ -153,7 +153,7 @@ public class ChatActivity extends AppCompatActivity {
                     @Override
                     public void handle() {
                         Log.e("PHOTO", "photo downloaded");
-                        Picasso.with(getApplicationContext()).load((photoUploader.getFileTO())).into(image);
+                        Picasso.with(getApplicationContext()).load(photoUploader.getFileTO()).into(image);
                     }
                 }, null);
 
@@ -274,7 +274,7 @@ public class ChatActivity extends AppCompatActivity {
                         Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
 
                         // Resize image and serialize it before saving it.
-                        bitmap = PhotoUtils.resizeBitmap(bitmap, PhotoUtils.LARGE);
+                        bitmap = PhotoUtils.resizeBitmap(bitmap, PhotoUtils.MEDIUM);
                         String msgContent = new PhotoUploader.BitMapOperator(bitmap).serializeToString();
 
                         processMessage(msgContent, true);
