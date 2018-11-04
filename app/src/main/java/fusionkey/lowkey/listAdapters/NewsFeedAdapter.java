@@ -158,8 +158,6 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public void clear() {
-
-        //TODO: @Sebi I think that we should keep the cached messages for optimization. ||| to @Paul : OK we will find a way
         mMessages.clear();
         notifyDataSetChanged();
     }
@@ -187,7 +185,7 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public void removeItem(int position) {
-        if(position < mMessages.size()) {
+        if(position != -1 && position < mMessages.size()) {
             mMessages.remove(position);
             notifyItemRemoved(position);
             notifyItemRangeChanged(position, mMessages.size());

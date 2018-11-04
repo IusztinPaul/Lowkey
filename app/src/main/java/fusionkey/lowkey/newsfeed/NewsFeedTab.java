@@ -233,8 +233,6 @@ public class NewsFeedTab extends Fragment {
         } else Toast.makeText(getActivity(),
                 getActivity().getString(R.string.no_network_message),
                 Toast.LENGTH_SHORT).show();
-
-        adapter.notifyDataSetChanged();
     }
 
     private void generateNextSetOfNewsFeedItems() {
@@ -254,12 +252,10 @@ public class NewsFeedTab extends Fragment {
                 .addReferenceTimeSTamp(referenceTimestamp)
                 .build()
                 .execute();
-
-        adapter.notifyDataSetChanged();
     }
 
     public void refreshNewsFeed() {
-        initializeAdapterAndListData();
+        adapter.clear();
         startPopulateNewsFeed();
     }
 
