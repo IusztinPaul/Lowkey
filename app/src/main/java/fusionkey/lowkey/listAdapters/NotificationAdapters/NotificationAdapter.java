@@ -7,10 +7,7 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 
 import fusionkey.lowkey.R;
-import fusionkey.lowkey.listAdapters.ChatTabAdapters.ChatTabAdapter;
-import fusionkey.lowkey.listAdapters.ChatTabAdapters.ChatTabViewHolder;
-import fusionkey.lowkey.models.NotificationTO;
-import fusionkey.lowkey.models.UserD;
+import fusionkey.lowkey.pushnotifications.models.NotificationTO;
 
 public class NotificationAdapter extends RecyclerView.Adapter<NotificationViewHolder> {
 

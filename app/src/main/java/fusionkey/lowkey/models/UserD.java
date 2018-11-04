@@ -6,6 +6,7 @@ import android.arch.persistence.room.PrimaryKey;
 
 import java.util.ArrayList;
 
+import fusionkey.lowkey.chat.Message;
 import fusionkey.lowkey.chat.models.MessageTO;
 
 @Entity(tableName = "user")
@@ -26,14 +27,22 @@ public class UserD {
     @ColumnInfo(name = "state")
     private String state;
 
-    public UserD(String username, String last_message, ArrayList<MessageTO> listMessage, String state){
+    public UserD(String username, ArrayList<MessageTO> listMessage, String state){
         this.setUsername(username);
-        this.setLast_message(last_message);
         this.setListMessage(listMessage);
+        this.last_message = (getLastMessage(listMessage));
         this.setState(state);
     }
 
     public UserD(){}
+
+    private String getLastMessage(ArrayList<MessageTO> arrayList){
+        if((arrayList.get(arrayList.size()-1).getContentType())==1)
+             return "user sent a photo";
+        else
+            return arrayList.get(arrayList.size()-1).getRawContent();
+    }
+
     public String getUsername() {
         return username;
     }
