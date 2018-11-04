@@ -20,5 +20,10 @@ can be mapped into real cash $$$ ('.') $$$ as a reward for helping our society.
 * `DynamoDB`, `Redis Cache` and `S3` for storage
 * `Sns` for notifications
 * `Cognito` for authentification and user logic
+
+
+### USER ID'S USAGE
+* `full email`: queue, news-feed, ROOM (`ex: p.e.iusztin@gmail.com`)
+* `parsed email`: chat, s3 photos(`ex: peiusztingmailcom`)
                                                               
 

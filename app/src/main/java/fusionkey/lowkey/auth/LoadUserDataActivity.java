@@ -47,11 +47,6 @@ public class LoadUserDataActivity extends AppCompatActivity {
             new RegisterSNS().registerWithSNS();
             LowKeyApplication.userManager.requestCurrentUserDetails(userEmail, null);
             loadUserPhoto();
-            /**
-             * Mai bine renuntam sa facem load aici, Picasso oricum face asta destul de bine si putem face
-             * direct din Pagina de profil .
-             */
-
             return null;
         }
 
