@@ -178,6 +178,7 @@ public class NewsFeedAsyncTask extends AsyncTask<Void, String, JSONObject> {
     @Override
     protected void onProgressUpdate(String... values) {
         int newMsgPosition = newsFeedMessageArrayList.size() - 1;
+        newsFeedAdapter.notifyDataSetChanged();
         newsFeedAdapter.notifyItemInserted(newMsgPosition);
     }
 

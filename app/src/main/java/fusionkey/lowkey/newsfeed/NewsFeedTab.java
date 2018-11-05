@@ -27,6 +27,7 @@ import fusionkey.lowkey.R;
 
 import fusionkey.lowkey.listAdapters.NewsFeedAdapter;
 import fusionkey.lowkey.main.utils.NetworkManager;
+import fusionkey.lowkey.main.utils.PhotoUploader;
 import fusionkey.lowkey.newsfeed.asynctasks.NewsFeedAsyncTaskBuilder;
 import fusionkey.lowkey.newsfeed.interfaces.IGenericConsumer;
 
@@ -84,7 +85,11 @@ public class NewsFeedTab extends Fragment {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                refreshNewsFeed();
+                adapter.clear();
+                adapter.notifyDataSetChanged();
+                initializeAdapterAndListData();
+                startPopulateNewsFeed();
+                PhotoUploader.deleteFolder();
                 swipeRefreshLayout.setRefreshing(false);
             }
         });
@@ -168,8 +173,6 @@ public class NewsFeedTab extends Fragment {
         if (requestCode == COMMENT_ACTIVITY_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
                 Bundle b = data.getExtras();
-                Long timestampID = null;
-                List<Comment> commentArrayList = null;
 
                 try {
                     MyParcelable object = b.getParcelable("NewComments");

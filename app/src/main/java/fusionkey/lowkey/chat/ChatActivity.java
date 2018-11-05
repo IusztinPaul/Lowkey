@@ -116,7 +116,6 @@ public class ChatActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         state = findViewById(R.id.isWritting);
         status = findViewById(R.id.status);status.setText("wait");
-        connectDot = findViewById(R.id.textView8);
         msgRecyclerView = findViewById(R.id.reyclerview_message_list);
         final String listener = getIntent().getStringExtra(LISTENER_INTENT);
         final String user = getIntent().getStringExtra(USER_INTENT);
