@@ -131,7 +131,7 @@
                         android:layout_marginStart="70dp"
                         android:layout_marginTop="8dp"
                         android:elevation="15dp"
-                        android:src="@drawable/fff"
+                        android:src="@drawable/paul_iusztin"
                         app:layout_constraintEnd_toStartOf="@+id/textView30"
                         app:layout_constraintHorizontal_bias="0.68"
                         app:layout_constraintStart_toStartOf="parent"

@@ -55,10 +55,7 @@ public class NewsFeedAsyncTask extends AsyncTask<Void, String, JSONObject> {
     }
 
     @Override
-    protected void onPreExecute() {
-
-
-    }
+    protected void onPreExecute() { }
 
     @Override
     protected JSONObject doInBackground(Void... voids) {

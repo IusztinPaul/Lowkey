@@ -75,7 +75,7 @@ public class NewsFeedTab extends Fragment {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final Intent intent = new Intent(NewsFeedTab.this.getContext(), Askaquestion.class);
+                final Intent intent = new Intent(NewsFeedTab.this.getContext(), AskAQuestion.class);
                 startActivityForResult(intent, POST_QUESTION_ACTIVITY_REQUEST_CODE);
                 getActivity().overridePendingTransition(0, 0);
             }
@@ -168,6 +168,9 @@ public class NewsFeedTab extends Fragment {
         if (requestCode == COMMENT_ACTIVITY_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
                 Bundle b = data.getExtras();
+                Long timestampID = null;
+                List<Comment> commentArrayList = null;
+
                 try {
                     MyParcelable object = b.getParcelable("NewComments");
                     Long timestampID = b.getLong("ItemID");

@@ -17,7 +17,9 @@ import java.util.Map;
 
 
 import fusionkey.lowkey.LowKeyApplication;
+import fusionkey.lowkey.newsfeed.interfaces.IGenericConsumer;
 import fusionkey.lowkey.newsfeed.interfaces.NewsFeedVolleyCallBack;
+import fusionkey.lowkey.newsfeed.models.NewsFeedMessage;
 
 import static com.android.volley.Request.Method.DELETE;
 import static com.android.volley.Request.Method.GET;
@@ -58,7 +60,28 @@ public class NewsFeedRequest {
         this.setId(id);
     }
 
-    public void postQuestion(Long time,Boolean anon,String title,String text){
+    public void postQuestion(Long time,
+                             Boolean anon,
+                             String title,
+                             String text) {
+        postQuestion(time, anon, title, text, null);
+    }
+
+    public void postQuestion(NewsFeedMessage newsFeedMessage,
+                             IGenericConsumer<JSONObject> responseCallback) {
+
+        postQuestion(newsFeedMessage.getTimeStamp(),
+                newsFeedMessage.getAnon(),
+                newsFeedMessage.getTitle(),
+                newsFeedMessage.getContent(),
+                responseCallback);
+    }
+
+    public void postQuestion(Long time,
+                             Boolean anon,
+                             String title,
+                             String text,
+                             final IGenericConsumer<JSONObject> responseCallback){
 
         HashMap<String,String> queryParameters = new HashMap<>();
         queryParameters.put(USER_API_QUERY_STRING, this.id);
@@ -84,6 +107,9 @@ public class NewsFeedRequest {
                         } catch (JSONException e) {
                             Log.e(POST_QUESTION_STRING, e.toString());
                         }
+
+                        if(responseCallback != null)
+                            responseCallback.consume(response);
                     }
                 },
                 new Response.ErrorListener() {

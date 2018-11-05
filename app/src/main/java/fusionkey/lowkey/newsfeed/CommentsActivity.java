@@ -90,7 +90,6 @@ public class CommentsActivity extends AppCompatActivity {
         populateWithData();
         setupComments();
 
-
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -188,7 +187,6 @@ public class CommentsActivity extends AppCompatActivity {
         }
     }
 
-
     private void startIntroAnimation() {
         contentRoot.setScaleY(0.1f);
         contentRoot.setPivotY(drawingStartLocation);
@@ -231,9 +229,9 @@ public class CommentsActivity extends AppCompatActivity {
         MyParcelable object = new MyParcelable();
         object.setArrList(commentsSentList);
         retrieveData.putExtra("NewComments", object);
+
         retrieveData.putExtra("ItemID", getIntent().getLongExtra("timestampID", 0));
         setResult(Activity.RESULT_OK, retrieveData);
-
 
         contentRoot.animate()
                 .translationY(Resources.getSystem().getDisplayMetrics().heightPixels)
