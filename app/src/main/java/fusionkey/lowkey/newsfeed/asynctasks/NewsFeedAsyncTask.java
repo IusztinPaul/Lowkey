@@ -80,13 +80,6 @@ public class NewsFeedAsyncTask extends AsyncTask<Void, String, JSONObject> {
                         cachedIndex = newsFeedMessageArrayList.indexOf(new NewsFeedMessage(timestamp));
                     }
 
-                    if(setter != null) {
-                        if(arr.length() > 0)
-                            setter.consume(arr.getJSONObject(arr.length() - 1).getLong("postTStamp"));
-                        else
-                            setter.consume(null);
-                    }
-
                     for (int i = 0; i < arr.length(); i++) {
                         JSONObject obj = arr.getJSONObject(i);
 
@@ -140,12 +133,10 @@ public class NewsFeedAsyncTask extends AsyncTask<Void, String, JSONObject> {
                                 newsFeedMessage.setAnon(false);
 
                             newsFeedMessageArrayList.add(newsFeedMessage);
-
                         }
 
                         // Refresh comments in any case.
                         ArrayList<Comment> commentArrayList = new ArrayList<>();
-
                         try {
                             JSONArray arr2 = new JSONArray(obj.getString("comments")); //get comments
                             for (int j = 0; j < arr2.length(); j++) {
@@ -165,6 +156,16 @@ public class NewsFeedAsyncTask extends AsyncTask<Void, String, JSONObject> {
                         publishProgress();
                     }
 
+                    // Let's call it last to handle some callbacks in it.
+                    if(setter != null) {
+                        if(arr.length() > 0) {
+                            Long lastPostTStamp = arr.getJSONObject(arr.length() - 1).getLong("postTStamp");
+                            setter.consume(lastPostTStamp);
+                        }
+                        else
+                            setter.consume(null);
+                    }
+
                 } catch (JSONException e) {
                     Log.e(NewsFeedRequest.GET_QUESTION_STRING, e.toString());
                 }
@@ -178,8 +179,6 @@ public class NewsFeedAsyncTask extends AsyncTask<Void, String, JSONObject> {
     protected void onProgressUpdate(String... values) {
         int newMsgPosition = newsFeedMessageArrayList.size() - 1;
         newsFeedAdapter.notifyItemInserted(newMsgPosition);
-
-
     }
 
     @Override

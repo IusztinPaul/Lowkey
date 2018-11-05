@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Observable;
 
 public class NewsFeedMessage extends Observable {
@@ -143,5 +144,20 @@ public class NewsFeedMessage extends Observable {
 
     public void setSNStopic(String SNStopic) {
         this.SNStopic = SNStopic;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof NewsFeedMessage)) return false;
+
+        NewsFeedMessage that = (NewsFeedMessage) o;
+        return timeStamp.equals(that.timeStamp);
+    }
+
+    @Override
+    public int hashCode() {
+        long timestamp = timeStamp;
+        return 11 * (int) timestamp + 5;
     }
 }

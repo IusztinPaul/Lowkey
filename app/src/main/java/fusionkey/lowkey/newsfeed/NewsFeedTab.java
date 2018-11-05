@@ -17,8 +17,6 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
 import android.widget.Toast;
 
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,17 +64,13 @@ public class NewsFeedTab extends Fragment {
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
         msgRecyclerView.setLayoutManager(linearLayoutManager);
-        // Getting user details from Cognito.
+
         UserDB attributes = LowKeyApplication.userManager.getUserDetails();
         id = attributes.getUsername();
         uniqueID = attributes.getUserEmail();
-
-        // Create the initial data list.
-        messages = new ArrayList<>();
-        adapter = new NewsFeedAdapter(messages, getActivity().getApplicationContext(), msgRecyclerView);
-        msgRecyclerView.setAdapter(adapter);
         newsFeedRequest = new NewsFeedRequest(uniqueID);
 
+        initializeAdapterAndListData();
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,14 +81,22 @@ public class NewsFeedTab extends Fragment {
             }
         });
 
-
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                //refreshNewsFeed();
+                refreshNewsFeed();
                 swipeRefreshLayout.setRefreshing(false);
             }
         });
+
+        startPopulateNewsFeed();
+        return rootView;
+    }
+
+    private void initializeAdapterAndListData() {
+        messages = new ArrayList<>();
+        adapter = new NewsFeedAdapter(messages, getActivity().getApplicationContext(), msgRecyclerView);
+        msgRecyclerView.setAdapter(adapter);
 
         adapter.setListener(new NewsFeedAdapter.OnItemClickListenerNews() {
             @Override
@@ -127,9 +129,6 @@ public class NewsFeedTab extends Fragment {
             }
         });
 
-        startPopulateNewsFeed();
-        adapter.notifyDataSetChanged();
-
         adapter.setOnLoadMoreListener(new NewsFeedAdapter.OnLoadMoreListener() {
             @Override
             public void onLoadMore() {
@@ -140,24 +139,7 @@ public class NewsFeedTab extends Fragment {
                     @Override
                     public void run() {
                         adapter.removeItem(messages.indexOf(m));
-                        // Generate the next set of items.
-                        new NewsFeedAsyncTaskBuilder(newsFeedRequest, messages, msgRecyclerView, adapter)
-                                .addArePostNew()
-                                .addSetter(new IGenericConsumer<Long>() {
-                                    @Override
-                                    public void consume(Long item) {
-                                        if (item != null)
-                                            referenceTimestamp = item;
-                                        else
-                                            Toast.makeText(NewsFeedTab.this.getContext(),
-                                                    NewsFeedTab.this.getResources().getString(R.string.nf_no_more_posts),
-                                                    Toast.LENGTH_SHORT).show();
-                                    }
-                                })
-                                .addReferenceTimeSTamp(referenceTimestamp)
-                                .build()
-                                .execute();
-
+                        generateNextSetOfNewsFeedItems();
                     }
                 }, 2000);
 
@@ -172,8 +154,6 @@ public class NewsFeedTab extends Fragment {
                 adapter.removeItem(position);
             }
         });
-
-        return rootView;
     }
 
     /**
@@ -193,79 +173,49 @@ public class NewsFeedTab extends Fragment {
 
                 try {
                     MyParcelable object = b.getParcelable("NewComments");
-                    timestampID = b.getLong("ItemID");
-                    commentArrayList = object.getArrList();
+                    Long timestampID = b.getLong("ItemID");
+                    List<Comment> commentArrayList = object.getArrList();
+                    for (NewsFeedMessage m : messages) {
+                        if (m.getTimeStamp().equals(timestampID)) {
+                            for (Comment c : commentArrayList)
+                                m.addCommentToList(c);
+                            adapter.notifyDataSetChanged();
+                        }
+                    }
                 } catch (NullPointerException e) {
                     Log.e("Error", "parcelable object failed");
                 }
-
-                try {
-                    NewsFeedMessage newsFeedMessage = getNewsFeedMessageForTimestamp(timestampID);
-                    for (Comment c : commentArrayList)
-                        newsFeedMessage.addCommentToList(c);
-                    adapter.notifyDataSetChanged();
-                } catch (NullPointerException e) {
-                    Log.e("AddCommentsToPost", e.getMessage());
-                }
-
             } else {
                 Log.e("IntentResult", "No comments to update");
             }
-        } else if (requestCode == POST_QUESTION_ACTIVITY_REQUEST_CODE) {
+        }
+        if (requestCode == POST_QUESTION_ACTIVITY_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
+                Bundle b = data.getExtras();
+                try {
+                    NewsFeedMessage m11 = new NewsFeedMessage();
+                    m11.setAnon(b.getBoolean("anonQ"));
+                    m11.setUser(id);
+                    m11.setTimeStamp(b.getLong("TimestampQ"));
+                    m11.setTitle(b.getString("TitleQ"));
+                    m11.setContent(b.getString("BodyQ"));
+                    m11.setId(uniqueID);
+                    m11.setType(NewsFeedMessage.NORMAL);
+                    messages.add(0, m11);
+                    adapter.notifyDataSetChanged();
+                    adapter.notifyItemInserted(0);
 
-                final NewsFeedMessage newsFeedMessage =
-                        createNewsFeedMessageFromActivityResult(data);
-
-                newsFeedRequest.postQuestion(newsFeedMessage,
-                        new IGenericConsumer<JSONObject>() {
-                            @Override
-                            public void consume(JSONObject item) {
-                                messages.add(0, newsFeedMessage);
-                                adapter.notifyDataSetChanged();
-                                adapter.notifyItemInserted(0);
-                            }
-                        });
-
-                Log.e("Q", "ADDEEDDDDDd");
-
+                    Log.e("Q", "ADDEEDDDDDd");
+                } catch (NullPointerException e) {
+                    Log.e("Error", "parcelable object failed");
+                }
             } else {
-                Log.e("POST_REQUEST_CODE", "No comments to update");
+                Log.e("IntentResult", "No comments to update");
             }
         }
     }
 
-    private NewsFeedMessage getNewsFeedMessageForTimestamp(Long timestamp) {
-        if(timestamp == null)
-            return null;
-
-        for (NewsFeedMessage m : messages)
-            if (m.getTimeStamp().equals(timestamp))
-                return m;
-
-        return null;
-    }
-
-    private NewsFeedMessage createNewsFeedMessageFromActivityResult(Intent data) {
-        Bundle b = data.getExtras();
-        try {
-            final NewsFeedMessage m11 = new NewsFeedMessage();
-            m11.setAnon(b.getBoolean("anonQ"));
-            m11.setUser(id);
-            m11.setTimeStamp(b.getLong("TimestampQ"));
-            m11.setTitle(b.getString("TitleQ"));
-            m11.setContent(b.getString("BodyQ"));
-            m11.setId(uniqueID);
-            m11.setType(NewsFeedMessage.NORMAL);
-
-            return m11;
-        } catch (NullPointerException e) {
-            Log.e("Error", "parcelable object failed");
-            return null;
-        }
-    }
-
-    public void startPopulateNewsFeed() {
+    private void startPopulateNewsFeed() {
         if (NetworkManager.isNetworkAvailable()) {
             new NewsFeedAsyncTaskBuilder(newsFeedRequest, messages, msgRecyclerView, adapter)
                     .addIsStart()
@@ -286,18 +236,31 @@ public class NewsFeedTab extends Fragment {
         } else Toast.makeText(getActivity(),
                 getActivity().getString(R.string.no_network_message),
                 Toast.LENGTH_SHORT).show();
+    }
 
-
+    private void generateNextSetOfNewsFeedItems() {
+        new NewsFeedAsyncTaskBuilder(newsFeedRequest, messages, msgRecyclerView, adapter)
+                .addArePostNew()
+                .addSetter(new IGenericConsumer<Long>() {
+                    @Override
+                    public void consume(Long item) {
+                        if (item != null)
+                            referenceTimestamp = item;
+                        else
+                            Toast.makeText(NewsFeedTab.this.getContext(),
+                                    NewsFeedTab.this.getResources().getString(R.string.nf_no_more_posts),
+                                    Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addReferenceTimeSTamp(referenceTimestamp)
+                .build()
+                .execute();
     }
 
     public void refreshNewsFeed() {
-        for (int i = 0; i < messages.size(); i += NEWS_FEED_PAGE_SIZE)
-            if (messages.get(i) != null)
-                new NewsFeedAsyncTaskBuilder(newsFeedRequest, messages, msgRecyclerView, adapter)
-                        .addIsStart()
-                        .addReferenceTimeSTamp(messages.get(i).getTimeStamp())
-                        .build()
-                        .execute();
+        adapter.clear();
+        adapter.notifyDataSetChanged();
+        startPopulateNewsFeed();
     }
 
     public static void expand(final View v, int duration, int targetHeight) {
@@ -332,5 +295,4 @@ public class NewsFeedTab extends Fragment {
         valueAnimator.setDuration(duration);
         valueAnimator.start();
     }
-
 }
