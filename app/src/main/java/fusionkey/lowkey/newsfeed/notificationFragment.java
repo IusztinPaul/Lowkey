@@ -99,7 +99,7 @@ public class notificationFragment extends Fragment {
         int counter = preferences.getInt(id, 0);
         for (int i = 0; i < counter; i++) {
             String[] s = preferences.getString(id + i, "").split("muiepsdasdfghjkl");
-            notif.add(new NotificationTO(s[2].replace("}", ""), s[0].replace("{default=", "") + " answered your question " + s[1], s[1]));
+            notif.add(new NotificationTO(s[2].replace("}", ""), s[0].replace("{default=", "") + " answered your question : " + s[3].replace("}",""), s[1]));
 
         }
         Collections.reverse(notif);
