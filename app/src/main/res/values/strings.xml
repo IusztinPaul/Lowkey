@@ -175,12 +175,17 @@
     <string name="notification_number">1337</string>
 
 
-    <string name="About"> Hi! We are Sandru Sebastian and Paul Iusztin, two individuals
-        with passion for creating and designing software products for people. We truly believe in
-        the power of peer-to-peer support, in the power of connecting people via technology and
-        in the power of innovation. We begin to develop mobile applications as a hobby, nothing more.
-        This is our first major project we've been working on, we do not expect nothing in back, but
-        satisfaction and use of our product from our users.
+    <string name="About">   Hi! We are Sandru Sebastian and Paul Iusztin, two individuals
+        with passion for creating and designing software products for people. We truly
+        believe that throw software we can help peoples live.
+            This app is design to help us to pour out all our thoughts without feeling judged.
+        When we go to a psychologist we think that they only say what we want to hear because we pay
+        them. This is not the case. We want normal people to help each other. To communicate and help
+        each others as we are meant to be, as human beings. Not to be helped only for money,
+        but for compassion.
+            We began to develop mobile applications as a hobby, nothing more. This is our first major
+        project we've been working on, we do not expect nothing in back, but
+        satisfaction for the usage of our app.
     </string>
 
     <string name="circleimagelicense">
