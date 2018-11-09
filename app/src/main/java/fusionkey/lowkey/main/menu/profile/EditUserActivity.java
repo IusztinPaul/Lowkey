@@ -124,7 +124,7 @@ public class EditUserActivity extends AppCompatActivity {
     }
 
     private void save() {
-        if(!NetworkManager.isNetworkAvailable()) {
+        if(NetworkManager.isNetworkAvailable()) {
             etUsername.setError(null);
             etFullName.setError(null);
             etPhone.setError(null);
