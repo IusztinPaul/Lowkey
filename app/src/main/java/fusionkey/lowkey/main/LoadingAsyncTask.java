@@ -57,9 +57,14 @@ public class LoadingAsyncTask extends AsyncTask<Void, Integer, JSONObject> {
 
     @Override
     protected void onPreExecute() {
+        progressBarSetUp();
+        super.onPreExecute();
+    }
+
+    private void progressBarSetUp() {
         this.progressBar.get().setVisibility(View.VISIBLE);
         this.progressBar.get().setMax(LobbyCheckerRunnable.TIME_LOOPING_MILLISECONDS);
-        super.onPreExecute();
+        this.progressBar.get().setProgress(this.progressBar.get().getMax());
     }
 
     @Override

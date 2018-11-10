@@ -25,6 +25,8 @@ import fusionkey.lowkey.newsfeed.interfaces.NewsFeedVolleyCallBack;
 import fusionkey.lowkey.newsfeed.models.Comment;
 import fusionkey.lowkey.newsfeed.models.NewsFeedMessage;
 
+import static fusionkey.lowkey.newsfeed.models.NewsFeedMessage.KEY_SNS_TOPIC;
+
 public class NewsFeedAsyncTask extends AsyncTask<Void, String, JSONObject> {
 
     private ArrayList<NewsFeedMessage> newsFeedMessageArrayList;
@@ -121,7 +123,7 @@ public class NewsFeedAsyncTask extends AsyncTask<Void, String, JSONObject> {
                             newsFeedMessage.setContent(obj.getString("postTxt"));
                             newsFeedMessage.setTimeStamp(obj.getLong("postTStamp"));
                             newsFeedMessage.setTitle(obj.getString("postTitle"));
-                            newsFeedMessage.setSNStopic(obj.getString("snsTopic"));
+                            newsFeedMessage.setSNStopic(obj.getString(KEY_SNS_TOPIC));
                             newsFeedMessage.setUser(userAttributeManager.getUsername());
                             if (newsFeedMessage.getId().equals(userEmail))
                                 newsFeedMessage.setType(NewsFeedMessage.NORMAL);

@@ -1,13 +1,17 @@
 package fusionkey.lowkey.newsfeed.models;
 
 import android.graphics.Bitmap;
+import android.util.Log;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Objects;
 import java.util.Observable;
 
 public class NewsFeedMessage extends Observable {
+    public final static String KEY_SNS_TOPIC = "snsTopic";
 
     public final static String YOUR_QUESTIONS = "yourQuestions";
 
@@ -144,6 +148,14 @@ public class NewsFeedMessage extends Observable {
 
     public void setSNStopic(String SNStopic) {
         this.SNStopic = SNStopic;
+    }
+
+    public void setSNSTopicFromResponse(JSONObject reponse) {
+        try {
+            this.SNStopic = reponse.getString(KEY_SNS_TOPIC);
+        } catch (JSONException e) {
+            Log.e("setSNSTopicFromResponse", e.getMessage());
+        }
     }
 
     @Override

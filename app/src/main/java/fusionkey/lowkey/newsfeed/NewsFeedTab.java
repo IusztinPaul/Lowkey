@@ -17,6 +17,8 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
 import android.widget.Toast;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -85,11 +87,7 @@ public class NewsFeedTab extends Fragment {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                adapter.clear();
-                adapter.notifyDataSetChanged();
-                initializeAdapterAndListData();
-                startPopulateNewsFeed();
-                PhotoUploader.deleteFolder();
+                refreshNewsFeed();
                 swipeRefreshLayout.setRefreshing(false);
             }
         });
@@ -194,28 +192,47 @@ public class NewsFeedTab extends Fragment {
         }
         if (requestCode == POST_QUESTION_ACTIVITY_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
-                Bundle b = data.getExtras();
-                try {
-                    NewsFeedMessage m11 = new NewsFeedMessage();
-                    m11.setAnon(b.getBoolean("anonQ"));
-                    m11.setUser(id);
-                    m11.setTimeStamp(b.getLong("TimestampQ"));
-                    m11.setTitle(b.getString("TitleQ"));
-                    m11.setContent(b.getString("BodyQ"));
-                    m11.setId(uniqueID);
-                    m11.setType(NewsFeedMessage.NORMAL);
-                    messages.add(0, m11);
-                    adapter.notifyDataSetChanged();
-                    adapter.notifyItemInserted(0);
 
-                    Log.e("Q", "ADDEEDDDDDd");
-                } catch (NullPointerException e) {
-                    Log.e("Error", "parcelable object failed");
-                }
+                final NewsFeedMessage nfm = createNewsFeedMessageFromActivityResult(data);
+                newsFeedRequest.postQuestion(nfm, new IGenericConsumer<JSONObject>() {
+                    @Override
+                    public void consume(JSONObject item) {
+                        nfm.setSNSTopicFromResponse(item);
+                        adaptUIWithNewNewsFeedMessage(nfm);
+                    }
+                });
+
             } else {
-                Log.e("IntentResult", "No comments to update");
+                Log.e("IntentRes-PostQuestion", "Result NOT OK -> NewsFeedMessage" +
+                        "could not be added/posted");
             }
         }
+    }
+
+    private NewsFeedMessage createNewsFeedMessageFromActivityResult(Intent data) {
+        Bundle b = data.getExtras();
+        try {
+
+            NewsFeedMessage m11 = new NewsFeedMessage();
+            m11.setAnon(b.getBoolean("anonQ"));
+            m11.setUser(id);
+            m11.setTimeStamp(b.getLong("TimestampQ"));
+            m11.setTitle(b.getString("TitleQ"));
+            m11.setContent(b.getString("BodyQ"));
+            m11.setId(uniqueID);
+            m11.setType(NewsFeedMessage.NORMAL);
+
+            return m11;
+        } catch (NullPointerException e) {
+            Log.e("createNewsFeedMessage", "parcelable object failed");
+            return null;
+        }
+    }
+
+    private void adaptUIWithNewNewsFeedMessage(NewsFeedMessage nfm) {
+        messages.add(0, nfm);
+        adapter.notifyDataSetChanged();
+        adapter.notifyItemInserted(0);
     }
 
     private void startPopulateNewsFeed() {
@@ -263,7 +280,9 @@ public class NewsFeedTab extends Fragment {
     public void refreshNewsFeed() {
         adapter.clear();
         adapter.notifyDataSetChanged();
+        initializeAdapterAndListData();
         startPopulateNewsFeed();
+        PhotoUploader.deleteFolder();
     }
 
     public static void expand(final View v, int duration, int targetHeight) {

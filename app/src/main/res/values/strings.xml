@@ -5,7 +5,7 @@
     <!-- Strings related to login -->Talk to a random volunteer who chose
     <string name="get_help_string">The person you will be talking is a volunteer who wants to help, listen,
     and motivate. You can talk about any issue you have, any struggle you have or even
-    what your cat is doing. You can end the conversation anytime you want if you think the person you're talking to doesn't help you that much
+    what your cat is doing. You can end the conversation anytime you want if you think the person you\'re talking to doesn\'t help you that much
     .</string>
     <string name="help_others_string">Earn points by talking and helping other people with their issues. </string>
     <string name="prompt_email">Email</string>
