@@ -150,6 +150,7 @@ public class EditUserActivity extends AppCompatActivity {
             else if (!TextUtils.isEmpty(phone)) {
                 etPhone.requestFocus();
                 etPhone.setError(getApplicationContext().getResources().getString(R.string.invalid));
+                switchView(false);
                 return;
             }
 
@@ -237,12 +238,12 @@ public class EditUserActivity extends AppCompatActivity {
                 }
             }
 
-            // Try to get profile photo from S3.
-            if(LowKeyApplication.userManager.profilePhoto != null) {
+            if(isProfilePhotoCached()) {
                 ivProfile.setImageBitmap(LowKeyApplication.userManager.profilePhoto);
                 switchView(false);
             }
             else {
+                // Try to get profile photo from S3.
                 final ProfilePhotoUploader profilePhotoUploader = new ProfilePhotoUploader();
                 profilePhotoUploader.download(
                         LowKeyApplication.userManager.getPhotoFileName(),
@@ -267,6 +268,10 @@ public class EditUserActivity extends AppCompatActivity {
             Log.e("NullPointerExp", "User details not loaded yet");
             switchView(false);
         }
+    }
+
+    private boolean isProfilePhotoCached() {
+        return LowKeyApplication.userManager.profilePhoto != null;
     }
 
     private String getFormattedDate(@NonNull DatePicker datePicker) {
