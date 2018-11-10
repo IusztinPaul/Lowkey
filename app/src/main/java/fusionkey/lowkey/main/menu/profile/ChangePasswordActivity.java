@@ -48,7 +48,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
     }
 
     private void save() {
-        if(!NetworkManager.isNetworkAvailable()) {
+        if(NetworkManager.isNetworkAvailable()) {
             etOldPass.setError(null);
             etNewPass1.setError(null);
             etNewPass2.setError(null);
