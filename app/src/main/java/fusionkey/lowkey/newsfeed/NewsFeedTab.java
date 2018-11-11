@@ -17,6 +17,8 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
 import android.widget.Toast;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -196,7 +198,8 @@ public class NewsFeedTab extends Fragment {
             if (resultCode == Activity.RESULT_OK) {
                 Bundle b = data.getExtras();
                 try {
-                    NewsFeedMessage m11 = new NewsFeedMessage();
+                    final NewsFeedMessage m11 = new NewsFeedMessage();
+                    Log.e("FOR F","NEW RELEASE LM");
                     m11.setAnon(b.getBoolean("anonQ"));
                     m11.setUser(id);
                     m11.setTimeStamp(b.getLong("TimestampQ"));
@@ -204,10 +207,15 @@ public class NewsFeedTab extends Fragment {
                     m11.setContent(b.getString("BodyQ"));
                     m11.setId(uniqueID);
                     m11.setType(NewsFeedMessage.NORMAL);
-                    messages.add(0, m11);
-                    adapter.notifyDataSetChanged();
-                    adapter.notifyItemInserted(0);
 
+                    new NewsFeedRequest(id).postQuestion(b.getLong("TimestampQ"), b.getBoolean("anonQ"), b.getString("TitleQ"), b.getString("BodyQ"), new IGenericConsumer<JSONObject>() {
+                        @Override
+                        public void consume(JSONObject item) {
+                            messages.add(0, m11);
+                            adapter.notifyDataSetChanged();
+                            adapter.notifyItemInserted(0);
+                        }
+                    });
                     Log.e("Q", "ADDEEDDDDDd");
                 } catch (NullPointerException e) {
                     Log.e("Error", "parcelable object failed");
