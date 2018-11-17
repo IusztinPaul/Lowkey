@@ -8,6 +8,7 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Observable;
 
 public class NewsFeedMessage extends Observable {
@@ -31,7 +32,7 @@ public class NewsFeedMessage extends Observable {
     private String type;
     private ArrayList<Comment> commentArrayList = new ArrayList<>();
     private Bitmap userPhoto;
-    private String SNStopic;
+    private String SNSTopic;
     private File file;
 
 
@@ -79,6 +80,10 @@ public class NewsFeedMessage extends Observable {
 
     public void addCommentToList(Comment m) {
         commentArrayList.add(m);
+    }
+
+    public void addCommentsToList(List<Comment> comments) {
+        commentArrayList.addAll(comments);
     }
 
     public void setTitle(String title) {
@@ -142,17 +147,17 @@ public class NewsFeedMessage extends Observable {
         this.file = file;
     }
 
-    public String getSNStopic() {
-        return SNStopic;
+    public String getSNSTopic() {
+        return SNSTopic;
     }
 
-    public void setSNStopic(String SNStopic) {
-        this.SNStopic = SNStopic;
+    public void setSNSTopic(String SNSTopic) {
+        this.SNSTopic = SNSTopic;
     }
 
-    public void setSNSTopicFromResponse(JSONObject reponse) {
+    public void setSNSTopicFromResponse(JSONObject response) {
         try {
-            this.SNStopic = reponse.getString(KEY_SNS_TOPIC);
+            this.SNSTopic = response.getString(KEY_SNS_TOPIC);
         } catch (JSONException e) {
             Log.e("setSNSTopicFromResponse", e.getMessage());
         }

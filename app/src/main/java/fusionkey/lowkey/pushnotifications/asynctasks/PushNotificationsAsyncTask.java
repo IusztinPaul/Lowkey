@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import de.hdodenhof.circleimageview.CircleImageView;
 import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.R;
-import fusionkey.lowkey.auth.models.UserDB;
 import fusionkey.lowkey.auth.utils.UserAttributeManager;
 import fusionkey.lowkey.auth.utils.UserManager;
 import fusionkey.lowkey.listAdapters.CommentAdapters.CommentAdapter;
@@ -116,7 +115,7 @@ public class PushNotificationsAsyncTask extends AsyncTask<Void,String,JSONObject
                     newsFeedMessage.setContent(obj.getString("postTxt"));
                     newsFeedMessage.setTimeStamp(obj.getLong("postTStamp"));
                     newsFeedMessage.setTitle(obj.getString("postTitle"));
-                    newsFeedMessage.setSNStopic(obj.getString("snsTopic"));
+                    newsFeedMessage.setSNSTopic(obj.getString("snsTopic"));
                     newsFeedMessage.setUser(userAttributeManager.getUsername());
                     if (newsFeedMessage.getId().equals(userEmail))
                         newsFeedMessage.setType(NewsFeedMessage.NORMAL);
@@ -163,7 +162,7 @@ public class PushNotificationsAsyncTask extends AsyncTask<Void,String,JSONObject
         commentAdapter.notifyDataSetChanged();
         int newMsgPosition = comments.size() - 1;
         recyclerViewWeakReference.get().scrollToPosition(newMsgPosition);
-        CommentsFromNotificationActivity.snsTOPIC = newsFeedMessage.getSNStopic();
+        CommentsFromNotificationActivity.snsTOPIC = newsFeedMessage.getSNSTopic();
 
     }
 

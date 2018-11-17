@@ -387,6 +387,7 @@ public class UserManager {
 
     public void updateCurrentUser(UserDB userDB) {
         UserDBManager.update(userDB);
+        currentUser = userDB;
     }
 
     public String getAccessToken() {

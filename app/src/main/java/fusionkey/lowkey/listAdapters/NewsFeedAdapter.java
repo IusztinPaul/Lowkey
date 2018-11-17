@@ -193,6 +193,9 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public NewsFeedMessage getMsg(int position) {
+        if(position < 0)
+            return new NewsFeedMessage();
+
         return mMessages.get(position);
     }
 
