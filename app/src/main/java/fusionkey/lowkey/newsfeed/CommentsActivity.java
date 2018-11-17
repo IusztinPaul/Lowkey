@@ -121,11 +121,13 @@ public class CommentsActivity extends AppCompatActivity {
             return null;
 
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        String email = LowKeyApplication.userManager.getCurrentUserEmail();
         String username = LowKeyApplication.userManager.getUserDetails().getUsername();
 
         return new Comment("true",
                 String.valueOf(timestamp.getTime()),
                 commentText,
+                email,
                 username);
     }
 

@@ -11,6 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 
+import fusionkey.lowkey.auth.utils.UserAttributeManager;
+import fusionkey.lowkey.main.utils.JsonExtractor;
+
 public class NewsFeedMessage extends Observable {
     public final static String KEY_SNS_TOPIC = "snsTopic";
 
@@ -19,7 +22,6 @@ public class NewsFeedMessage extends Observable {
     public final static String OTHER_QUESTIONS = "otherQuestions";
 
     public final static String NORMAL = "normal";
-
 
     private String content;
     private Long timeStamp;
@@ -40,6 +42,24 @@ public class NewsFeedMessage extends Observable {
 
     public NewsFeedMessage(Long timeStamp) {
         this.timeStamp = timeStamp;
+    }
+
+    public NewsFeedMessage(JSONObject jsonObject) {
+        populate(jsonObject);
+    }
+
+    public void populate(JSONObject jsonObject) {
+        JsonExtractor extractor = new JsonExtractor(jsonObject);
+        this.weekDay = extractor.extractInteger("weekDay");
+        this.id = extractor.extractString("userId");
+        this.content = extractor.extractString("postTxt");
+        this.timeStamp = extractor.extractLong("postTStamp");
+        this.title = extractor.extractString("postTitle");
+        this.SNSTopic = extractor.extractString(KEY_SNS_TOPIC);
+        this.anon = extractor.extractBoolean("isAnonymous");
+
+        UserAttributeManager userAttributeManager = new UserAttributeManager(id);
+        this.user = userAttributeManager.getUsername();
     }
 
     public String getContent() {

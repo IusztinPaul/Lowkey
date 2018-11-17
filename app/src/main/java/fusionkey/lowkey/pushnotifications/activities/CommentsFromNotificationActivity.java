@@ -1,10 +1,6 @@
 package fusionkey.lowkey.pushnotifications.activities;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.app.Activity;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -12,7 +8,6 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -21,7 +16,6 @@ import android.widget.TextView;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import fusionkey.lowkey.LowKeyApplication;
@@ -29,19 +23,13 @@ import fusionkey.lowkey.R;
 import fusionkey.lowkey.auth.models.UserDB;
 import fusionkey.lowkey.listAdapters.CommentAdapters.CommentAdapter;
 import fusionkey.lowkey.main.Main2Activity;
-import fusionkey.lowkey.newsfeed.MyParcelable;
-import fusionkey.lowkey.newsfeed.interfaces.NewsFeedCallBack;
 import fusionkey.lowkey.newsfeed.models.Comment;
-import fusionkey.lowkey.newsfeed.models.NewsFeedMessage;
 import fusionkey.lowkey.newsfeed.util.NewsFeedRequest;
 import fusionkey.lowkey.pushnotifications.asynctasks.PushNotificationsAsyncTask;
 import fusionkey.lowkey.pushnotifications.requestUtils.NotificationRequest;
 import fusionkey.lowkey.pushnotifications.service.IntentMappingSharredPrefferences;
 
 public class CommentsFromNotificationActivity extends AppCompatActivity {
-
-
-    public static NewsFeedMessage newsFeedMessage;
 
     TextView body;
     TextView posted;
@@ -54,7 +42,6 @@ public class CommentsFromNotificationActivity extends AppCompatActivity {
     CardView questionInfo;
     CircleImageView imagepic;
     ArrayList<Comment> commentArrayList = new ArrayList<>();
-    ArrayList<Comment> commentsSentList = new ArrayList<>();
     private CommentAdapter commentsAdapter = new CommentAdapter(commentArrayList,this);
     private PushNotificationsAsyncTask pushNotificationsAsyncTask;
     private NotificationRequest notificationRequest;
@@ -86,24 +73,45 @@ public class CommentsFromNotificationActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!TextUtils.isEmpty(inputTxt.getText().toString())) {
-                    Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-                    UserDB attributes = LowKeyApplication.userManager.getUserDetails();
-                    final String uniqueID = attributes.getUserEmail();
-                    final String username = attributes.getUsername();
-                    new NewsFeedRequest(username).postComment( Long.parseLong(getIntent().getStringExtra("timestamp")), true, inputTxt.getText().toString(),snsTOPIC);
-                    commentArrayList.add(new Comment("true",String.valueOf(timestamp.getTime()),inputTxt.getText().toString(),username));
+                String commentText = inputTxt.getText().toString().trim();
 
-                    int newMsgPosition = commentArrayList.size() - 1;
-                    commentsAdapter.notifyItemInserted(newMsgPosition);
-                    commentsAdapter.notifyDataSetChanged();
-                    rvComments.scrollToPosition(newMsgPosition);
-                    inputTxt.setText("");
+                if(!TextUtils.isEmpty(commentText)) {
+                    Comment comment = createComment(commentText);
+                    saveComment(comment);
+                    adaptView();
                 }
-
             }
         });
 
+    }
+
+    private Comment createComment(String commentText) {
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        UserDB attributes = LowKeyApplication.userManager.getUserDetails();
+        final String userEmail = attributes.getUserEmail();
+        final String username = attributes.getUsername();
+
+        return new Comment(
+                "true",
+                timestamp + "",
+                commentText,
+                userEmail,
+                username
+        );
+    }
+
+    private void saveComment(Comment comment) {
+        new NewsFeedRequest(comment.getCommentUserUsername()).
+                postComment(comment, snsTOPIC);
+        commentArrayList.add(comment);
+    }
+
+    private void adaptView() {
+        int newMsgPosition = commentArrayList.size() - 1;
+        commentsAdapter.notifyItemInserted(newMsgPosition);
+        commentsAdapter.notifyDataSetChanged();
+        rvComments.scrollToPosition(newMsgPosition);
+        inputTxt.setText("");
     }
 
     @Override
