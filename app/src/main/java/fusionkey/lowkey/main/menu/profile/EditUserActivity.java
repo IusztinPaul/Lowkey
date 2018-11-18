@@ -230,7 +230,7 @@ public class EditUserActivity extends AppCompatActivity {
                 try {
                     String[] date = birth.split(BIRTH_DATE_SEPARATOR);
                     dpBirth.init(Integer.parseInt(date[2]),
-                            Integer.parseInt(date[1]),
+                            Integer.parseInt(date[1]) - 1, // Starts from 0.
                             Integer.parseInt(date[0]),
                             null);
                 } catch (Exception e) {

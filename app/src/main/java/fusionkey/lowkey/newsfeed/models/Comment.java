@@ -3,17 +3,28 @@ package fusionkey.lowkey.newsfeed.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import fusionkey.lowkey.main.utils.JsonExtractor;
+
 public class Comment implements Parcelable{
     private String commentIsAnonymous;
     private String commentTStamp;
     private String commentTxt;
     private String commentUserId;
+    private String commentUserUsername;
 
-    public Comment(String commentIsAnonymous,String commentTStamp,String commentTxt,String commentUserId){
+    public Comment(String commentIsAnonymous,
+                   String commentTStamp,
+                   String commentTxt,
+                   String commentUserId,
+                   String commentUserUsername) {
         this.setCommentIsAnonymous(commentIsAnonymous);
         this.setCommentTStamp(commentTStamp);
         this.setCommentTxt(commentTxt);
         this.setCommentUserId(commentUserId);
+        this.setCommentUserUsername(commentUserUsername);
     }
 
     public Comment(Parcel read){
@@ -21,7 +32,27 @@ public class Comment implements Parcelable{
         commentTStamp = read.readString();
         commentTxt = read.readString();
         commentUserId = read.readString();
+        commentUserUsername = read.readString();
     }
+
+    public Comment(JSONObject data) {
+        JsonExtractor extractor = new JsonExtractor(data);
+
+        commentIsAnonymous = extractor.extractString("commentIsAnonymous");
+        commentTStamp = extractor.extractString("commentTStamp");
+        commentTxt = extractor.extractString("commentTxt");
+        commentUserId = extractor.extractString("commentUserId");
+        commentUserUsername = extractor.extractString("commentUserUsername");
+    }
+
+    private String extractString(JSONObject data, String key) {
+        try {
+            return data.getString(key);
+        } catch (JSONException e) {
+            return "";
+        }
+    }
+
     public static final Parcelable.Creator<Comment> CREATOR =
             new Parcelable.Creator<Comment>() {
 
@@ -46,6 +77,7 @@ public class Comment implements Parcelable{
         dest.writeString(getCommentTStamp());
         dest.writeString(getCommentTxt());
         dest.writeString(getCommentUserId());
+        dest.writeString(getCommentUserUsername());
     }
 
 
@@ -79,5 +111,13 @@ public class Comment implements Parcelable{
 
     public void setCommentUserId(String commentUserId) {
         this.commentUserId = commentUserId;
+    }
+
+    public String getCommentUserUsername() {
+        return commentUserUsername;
+    }
+
+    public void setCommentUserUsername(String commentUserUsername) {
+        this.commentUserUsername = commentUserUsername;
     }
 }

@@ -92,11 +92,7 @@ public class GetYourQuestionsAsyncTask extends AsyncTask<Void,String,JSONObject>
                             JSONArray arr2 = new JSONArray(obj.getString("comments")); //get comments
                             for (int j = 0; j < arr2.length(); j++) {
                                 JSONObject comment = arr2.getJSONObject(j);
-                                Comment commentObj = new Comment(
-                                        comment.getString("commentIsAnonymous"),
-                                        comment.getString("commentTStamp"),
-                                        comment.getString("commentTxt"),
-                                        comment.getString("commentUserId"));
+                                Comment commentObj = new Comment(comment);
                                 commentArrayList.add(commentObj);
 
                             }

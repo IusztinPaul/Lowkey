@@ -68,6 +68,12 @@ public class QueueMatcherListenerFinder extends QueueMatcherUtils implements IQu
                             });
                         }
 
+                        try {
+                            Thread.sleep(250);
+                        } catch (InterruptedException e) {
+                            Log.e("ListenerFinder", e.getMessage());
+                        }
+
                         hasStep0Response = true;
                     }
                 },

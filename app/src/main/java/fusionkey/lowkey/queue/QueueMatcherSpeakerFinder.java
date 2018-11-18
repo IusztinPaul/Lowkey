@@ -71,6 +71,12 @@ public class QueueMatcherSpeakerFinder extends QueueMatcherUtils implements IQue
                                 });
                         }
 
+                        try {
+                            Thread.sleep(250);
+                        } catch (InterruptedException e) {
+                            Log.e("SpeakerFinder", e.getMessage());
+                        }
+
                         hasStep0Response = true;
                     }
                 },

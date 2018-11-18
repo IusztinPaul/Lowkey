@@ -19,6 +19,7 @@ import java.util.Map;
 import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.newsfeed.interfaces.IGenericConsumer;
 import fusionkey.lowkey.newsfeed.interfaces.NewsFeedVolleyCallBack;
+import fusionkey.lowkey.newsfeed.models.Comment;
 import fusionkey.lowkey.newsfeed.models.NewsFeedMessage;
 
 import static com.android.volley.Request.Method.DELETE;
@@ -215,9 +216,16 @@ public class NewsFeedRequest {
         requestQueueSingleton.addToRequestQueue(jsonObjectRequest);
     }
 
+    public void postComment(Comment comment, String SNSTopic) {
+        postComment(
+                Long.parseLong(comment.getCommentTStamp()),
+                Boolean.parseBoolean(comment.getCommentIsAnonymous()),
+                comment.getCommentTxt(),
+                SNSTopic
+        );
+    }
 
-
-    public void postComment(Long time,Boolean anon,String text,String SNStopic){
+    public void postComment(Long time,Boolean anon,String text,String SNSTopic){
 
         HashMap<String,String> queryParameters = new HashMap<>();
 
@@ -231,7 +239,7 @@ public class NewsFeedRequest {
             jsonBody.put("commentUserId", getId());
             jsonBody.put("commentTStamp", String.valueOf(timestamp.getTime()));
             jsonBody.put("commentIsAnonymous", Boolean.toString(anon));
-            jsonBody.put("snsTopic",SNStopic);
+            jsonBody.put("snsTopic",SNSTopic);
         }catch (JSONException e) {
             e.printStackTrace();
         }
