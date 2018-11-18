@@ -141,7 +141,7 @@ public class NewsFeedTab extends Fragment {
                 MyParcelable object = new MyParcelable();
                 intent.putExtra("parcel", object);
                 intent.putExtra("anon", m.getAnon());
-                intent.putExtra("SNStopic", m.getSNStopic());
+                intent.putExtra("SNStopic", m.getSNSTopic());
                 intent.putExtra("timestampID", m.getTimeStamp());
                 intent.putExtra("body", m.getContent());
                 intent.putExtra("title", m.getTitle());
@@ -239,11 +239,12 @@ public class NewsFeedTab extends Fragment {
                     MyParcelable object = b.getParcelable("NewComments");
                     Long timestampID = b.getLong("ItemID");
                     List<Comment> commentArrayList = object.getArrList();
+
                     for (NewsFeedMessage m : messages) {
                         if (m.getTimeStamp().equals(timestampID)) {
-                            for (Comment c : commentArrayList)
-                                m.addCommentToList(c);
+                            m.addCommentsToList(commentArrayList);
                             adapter.notifyDataSetChanged();
+                            break;
                         }
                     }
                 } catch (NullPointerException e) {
@@ -263,6 +264,7 @@ public class NewsFeedTab extends Fragment {
                     public void consume(JSONObject item) {
                         nfm.setSNSTopicFromResponse(item);
                         adaptUIWithNewNewsFeedMessage(nfm);
+                        updateCurrentUserWithNewTimestamp(nfm.getTimeStamp());
                     }
                 });
 
@@ -297,6 +299,12 @@ public class NewsFeedTab extends Fragment {
         messages.add(0, nfm);
         adapter.notifyDataSetChanged();
         adapter.notifyItemInserted(0);
+    }
+
+    private void updateCurrentUserWithNewTimestamp(Long timestamp) {
+        UserDB currentUser = LowKeyApplication.userManager.getUserDetails();
+        currentUser.getTimeStamps().add(timestamp);
+        LowKeyApplication.userManager.updateCurrentUser(currentUser);
     }
 
     private void startPopulateNewsFeed() {

@@ -57,7 +57,8 @@ public class NewsFeedAsyncTask extends AsyncTask<Void, String, JSONObject> {
     }
 
     @Override
-    protected void onPreExecute() { }
+    protected void onPreExecute() {
+    }
 
     @Override
     protected JSONObject doInBackground(Void... voids) {
@@ -77,12 +78,13 @@ public class NewsFeedAsyncTask extends AsyncTask<Void, String, JSONObject> {
                     // Try to find the items in the existing array list.
                     if (!isNew && isStart && arr.length() > 0) {
                         cachedIndex = newsFeedMessageArrayList.indexOf(new NewsFeedMessage(referenceTimestamp));
-                    } else if(!isNew && !isStart && arr.length() > 0) {
+                    } else if (!isNew && !isStart && arr.length() > 0) {
                         long timestamp = arr.getJSONObject(0).getLong("postTStamp");
                         cachedIndex = newsFeedMessageArrayList.indexOf(new NewsFeedMessage(timestamp));
                     }
 
                     for (int i = 0; i < arr.length(); i++) {
+<<<<<<< HEAD
                         JSONObject obj = arr.getJSONObject(i);
 
                         if (obj == null)
@@ -154,22 +156,73 @@ public class NewsFeedAsyncTask extends AsyncTask<Void, String, JSONObject> {
                                         comment.getString("commentTxt"),
                                         comment.getString("commentUserId"));
                                 commentArrayList.add(commentObj);
-                            }
-                        } catch (JSONException e) {
-                            Log.e("Comments", "The post has no comments");
-                        }
-                        newsFeedMessage.setCommentArrayList(commentArrayList);
+=======
+                        try {
 
-                        publishProgress();
+                            JSONObject obj = arr.getJSONObject(i);
+                            String email = obj.getString("userId");
+
+                            final NewsFeedMessage newsFeedMessage;
+                            if (cachedIndex != -1)
+                                newsFeedMessage = newsFeedMessageArrayList.get(cachedIndex + i);
+                            else {
+                                // Update post only if it doesn't exists.
+                                newsFeedMessage = new NewsFeedMessage(obj);
+
+                                // Set photo logic.
+                                newsFeedMessage.setUserPhoto(BitmapFactory.decodeResource(
+                                        LowKeyApplication.instance.getResources(),
+                                        R.drawable.avatar_placeholder)
+                                );
+                                final ProfilePhotoUploader photoUploader = new ProfilePhotoUploader();
+                                photoUploader.download(UserManager.parseEmailToPhotoFileName(email),
+                                        new Callback() {
+                                            @Override
+                                            public void handle() {
+                                                Log.e("PHOTO", "photo downloaded");
+                                                newsFeedMessage.setFile(photoUploader.getFileTO());
+                                                newsFeedAdapter.notifyDataSetChanged();
+                                            }
+                                        }, null);
+
+
+                                if (newsFeedMessage.getId().equals(userEmail))
+                                    newsFeedMessage.setType(NewsFeedMessage.NORMAL);
+                                else
+                                    newsFeedMessage.setType(NewsFeedMessage.OTHER_QUESTIONS);
+
+                                newsFeedMessageArrayList.add(newsFeedMessage);
+>>>>>>> 0014647df882702b46f0f9d15754931d51cf17c9
+                            }
+
+
+                            // Refresh comments in any case.
+                            ArrayList<Comment> commentArrayList = new ArrayList<>();
+                            try {
+                                JSONArray arr2 = new JSONArray(obj.getString("comments")); //get comments
+                                for (int j = 0; j < arr2.length(); j++) {
+                                    JSONObject comment = arr2.getJSONObject(j);
+                                    Comment commentObj = new Comment(comment);
+                                    commentArrayList.add(commentObj);
+                                }
+                            } catch (JSONException e) {
+                                Log.e("Comments", "The post has no comments");
+                            }
+                            newsFeedMessage.setCommentArrayList(commentArrayList);
+
+                            publishProgress();
+
+                        } catch (JSONException e) {
+                            Log.e("Post error", "Post does not have any userId");
+                        }
                     }
 
                     // Let's call it last to handle some callbacks in it.
-                    if(setter != null) {
-                        if(arr.length() > 0) {
+                    if (setter != null) {
+                        if (arr.length() > 0) {
                             Long lastPostTStamp = arr.getJSONObject(arr.length() - 1).getLong("postTStamp");
                             setter.consume(lastPostTStamp);
-                        }
-                        else
+                        } else
                             setter.consume(null);
                     }
 

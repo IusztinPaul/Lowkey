@@ -8,7 +8,11 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Observable;
+
+import fusionkey.lowkey.auth.utils.UserAttributeManager;
+import fusionkey.lowkey.main.utils.JsonExtractor;
 
 public class NewsFeedMessage extends Observable {
     public final static String KEY_SNS_TOPIC = "snsTopic";
@@ -18,7 +22,6 @@ public class NewsFeedMessage extends Observable {
     public final static String OTHER_QUESTIONS = "otherQuestions";
 
     public final static String NORMAL = "normal";
-
 
     private String content;
     private Long timeStamp;
@@ -31,7 +34,7 @@ public class NewsFeedMessage extends Observable {
     private String type;
     private ArrayList<Comment> commentArrayList = new ArrayList<>();
     private Bitmap userPhoto;
-    private String SNStopic;
+    private String SNSTopic;
     private File file;
 
 
@@ -39,6 +42,24 @@ public class NewsFeedMessage extends Observable {
 
     public NewsFeedMessage(Long timeStamp) {
         this.timeStamp = timeStamp;
+    }
+
+    public NewsFeedMessage(JSONObject jsonObject) {
+        populate(jsonObject);
+    }
+
+    public void populate(JSONObject jsonObject) {
+        JsonExtractor extractor = new JsonExtractor(jsonObject);
+        this.weekDay = extractor.extractInteger("weekDay");
+        this.id = extractor.extractString("userId");
+        this.content = extractor.extractString("postTxt");
+        this.timeStamp = extractor.extractLong("postTStamp");
+        this.title = extractor.extractString("postTitle");
+        this.SNSTopic = extractor.extractString(KEY_SNS_TOPIC);
+        this.anon = extractor.extractBoolean("isAnonymous");
+
+        UserAttributeManager userAttributeManager = new UserAttributeManager(id);
+        this.user = userAttributeManager.getUsername();
     }
 
     public String getContent() {
@@ -79,6 +100,10 @@ public class NewsFeedMessage extends Observable {
 
     public void addCommentToList(Comment m) {
         commentArrayList.add(m);
+    }
+
+    public void addCommentsToList(List<Comment> comments) {
+        commentArrayList.addAll(comments);
     }
 
     public void setTitle(String title) {
@@ -142,17 +167,17 @@ public class NewsFeedMessage extends Observable {
         this.file = file;
     }
 
-    public String getSNStopic() {
-        return SNStopic;
+    public String getSNSTopic() {
+        return SNSTopic;
     }
 
-    public void setSNStopic(String SNStopic) {
-        this.SNStopic = SNStopic;
+    public void setSNSTopic(String SNSTopic) {
+        this.SNSTopic = SNSTopic;
     }
 
-    public void setSNSTopicFromResponse(JSONObject reponse) {
+    public void setSNSTopicFromResponse(JSONObject response) {
         try {
-            this.SNStopic = reponse.getString(KEY_SNS_TOPIC);
+            this.SNSTopic = response.getString(KEY_SNS_TOPIC);
         } catch (JSONException e) {
             Log.e("setSNSTopicFromResponse", e.getMessage());
         }

@@ -17,12 +17,9 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.R;
-import fusionkey.lowkey.auth.models.UserDB;
-import fusionkey.lowkey.auth.utils.UserAttributesEnum;
 import fusionkey.lowkey.listAdapters.ChatTabViewHolder;
 import fusionkey.lowkey.listAdapters.NewsFeedAdapter;
 import fusionkey.lowkey.main.MainCallback;
@@ -97,7 +94,7 @@ public class questionsFragment extends Fragment {
                     object.setArrList(m.getCommentArrayList());
                     intent.putExtra("parcel", object);
                     intent.putExtra("anon", m.getAnon());
-                    intent.putExtra("SNStopic",m.getSNStopic());
+                    intent.putExtra("SNStopic",m.getSNSTopic());
                     intent.putExtra("timestampID",m.getTimeStamp());
                     intent.putExtra("body",m.getContent());
                     intent.putExtra("title",m.getTitle());
@@ -108,7 +105,7 @@ public class questionsFragment extends Fragment {
                     object.setArrList(new ArrayList<Comment>());
                     intent.putExtra("parcel", object);
                     intent.putExtra("anon", m.getAnon());
-                    intent.putExtra("SNStopic",m.getSNStopic());
+                    intent.putExtra("SNStopic",m.getSNSTopic());
                     intent.putExtra("timestampID",m.getTimeStamp());
                     intent.putExtra("body",m.getContent());
                     intent.putExtra("title",m.getTitle());

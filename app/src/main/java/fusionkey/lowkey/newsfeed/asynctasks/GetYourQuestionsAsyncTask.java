@@ -1,11 +1,9 @@
 package fusionkey.lowkey.newsfeed.asynctasks;
 
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
-import com.amazonaws.services.cognitoidentityprovider.model.AttributeType;
 import com.amazonaws.services.cognitoidentityprovider.model.UserType;
 
 import org.json.JSONArray;
@@ -17,13 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fusionkey.lowkey.LowKeyApplication;
-import fusionkey.lowkey.R;
 import fusionkey.lowkey.auth.models.UserDB;
 import fusionkey.lowkey.auth.utils.UserAttributesEnum;
-import fusionkey.lowkey.auth.utils.UserManager;
 import fusionkey.lowkey.listAdapters.NewsFeedAdapter;
-import fusionkey.lowkey.main.utils.Callback;
-import fusionkey.lowkey.main.utils.ProfilePhotoUploader;
 import fusionkey.lowkey.newsfeed.util.NewsFeedRequest;
 import fusionkey.lowkey.newsfeed.interfaces.NewsFeedVolleyCallBack;
 import fusionkey.lowkey.newsfeed.models.Comment;
@@ -80,7 +74,7 @@ public class GetYourQuestionsAsyncTask extends AsyncTask<Void,String,JSONObject>
                         newsFeedMessage.setContent(obj.getString("postTxt"));newsFeedMessage.setTimeStamp(obj.getLong("postTStamp"));
                         newsFeedMessage.setTitle(obj.getString("postTitle"));
                         newsFeedMessage.setType(NewsFeedMessage.NORMAL);
-                        newsFeedMessage.setSNStopic(obj.getString("snsTopic"));
+                        newsFeedMessage.setSNSTopic(obj.getString("snsTopic"));
                         newsFeedMessage.setUser(usernameS);
                         newsFeedMessage.setUserPhoto(LowKeyApplication.userManager.profilePhoto);
                         String anon = (obj.getString("isAnonymous"));
@@ -98,12 +92,16 @@ public class GetYourQuestionsAsyncTask extends AsyncTask<Void,String,JSONObject>
                             JSONArray arr2 = new JSONArray(obj.getString("comments")); //get comments
                             for (int j = 0; j < arr2.length(); j++) {
                                 JSONObject comment = arr2.getJSONObject(j);
+<<<<<<< HEAD
                                 Comment commentObj = new Comment(
                                         comment.getString("commentIsAnonymous"),
                                         comment.getString("commentTStamp"),
                                         comment.getString("commentUserUsername"),
                                         comment.getString("commentTxt"),
                                         comment.getString("commentUserId"));
+=======
+                                Comment commentObj = new Comment(comment);
+>>>>>>> 0014647df882702b46f0f9d15754931d51cf17c9
                                 commentArrayList.add(commentObj);
 
                             }

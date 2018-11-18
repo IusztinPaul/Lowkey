@@ -20,6 +20,7 @@ import java.util.Map;
 import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.newsfeed.interfaces.IGenericConsumer;
 import fusionkey.lowkey.newsfeed.interfaces.NewsFeedVolleyCallBack;
+import fusionkey.lowkey.newsfeed.models.Comment;
 import fusionkey.lowkey.newsfeed.models.NewsFeedMessage;
 
 import static com.android.volley.Request.Method.DELETE;
@@ -216,9 +217,21 @@ public class NewsFeedRequest {
         requestQueueSingleton.addToRequestQueue(jsonObjectRequest);
     }
 
+    public void postComment(Comment comment, String SNSTopic) {
+        postComment(
+                Long.parseLong(comment.getCommentTStamp()),
+                Boolean.parseBoolean(comment.getCommentIsAnonymous()),
+                comment.getCommentTxt(),
+                SNSTopic
+        );
+    }
 
+<<<<<<< HEAD
 
     public void postComment(Long time, Boolean anon,String username, String text, String SNStopic, @Nullable String ENDpoint){
+=======
+    public void postComment(Long time,Boolean anon,String text,String SNSTopic){
+>>>>>>> 0014647df882702b46f0f9d15754931d51cf17c9
 
         HashMap<String,String> queryParameters = new HashMap<>();
 
@@ -233,8 +246,12 @@ public class NewsFeedRequest {
             jsonBody.put("commentUserUsername", username);
             jsonBody.put("commentTStamp", String.valueOf(timestamp.getTime()));
             jsonBody.put("commentIsAnonymous", Boolean.toString(anon));
+<<<<<<< HEAD
             jsonBody.put("snsTopic",SNStopic);
             jsonBody.put("endpoint",ENDpoint);
+=======
+            jsonBody.put("snsTopic",SNSTopic);
+>>>>>>> 0014647df882702b46f0f9d15754931d51cf17c9
         }catch (JSONException e) {
             e.printStackTrace();
         }

@@ -141,7 +141,7 @@
     <!-- Edit profile -->
     <string name="edit_username">Username</string>
     <string name="edit_name">Name</string>
-    <string name="edit_phone">Phone(ex. +40732509516)</string>
+    <string name="edit_phone">Phone(ex. +40733419646)</string>
     <string name="edit_btn_save">Save</string>
     <string name="edit_success_message">You have changed your account successfully!</string>
     <string name="edit_fail_message">There were problems while updating your profile!</string>
