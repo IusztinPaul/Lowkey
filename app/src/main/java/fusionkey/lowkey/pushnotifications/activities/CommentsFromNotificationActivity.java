@@ -103,7 +103,7 @@ public class CommentsFromNotificationActivity extends AppCompatActivity {
 
     private void saveComment(Comment comment) {
         new NewsFeedRequest(comment.getCommentUserUsername()).
-                postComment(comment, snsTOPIC);
+                postComment(comment, snsTOPIC, LowKeyApplication.endpointArn);
         commentArrayList.add(comment);
     }
 

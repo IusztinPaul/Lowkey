@@ -45,7 +45,7 @@ public class GroupingLowLevel {
         ArrayList<Notification> items = _hashMap.get(mapKey);
 
         if (items == null) {
-            items = new ArrayList<Notification>();
+            items = new ArrayList<>();
             items.add(notificationTO);
             _hashMap.put(mapKey, items);
         } else {

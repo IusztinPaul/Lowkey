@@ -38,18 +38,10 @@ import fusionkey.lowkey.pushnotifications.notificationsV2.models.GroupNotificati
 public class notificationFragment extends Fragment {
     private static final String KEY_POSITION = "position";
 
-    SharedPreferences sharedPreferences;
     NotificationAdapter adapter;
     public SwipeRefreshLayout swipeRefreshLayout;
-    ArrayList<NotificationTO> mNotification = new ArrayList<>();
     private RecyclerView mRecyclerview;
-    private Boolean finished = false;
-    private static int GOD_INT = 0;
     ArrayList<GroupNotificationAbstract> notif = new ArrayList<>();
-
-    List<Long> timestamps = new ArrayList<>();
-
-    String id = LowKeyApplication.userManager.getCachedEmail();
 
     static notificationFragment newInstance(int position) {
         notificationFragment frag = new notificationFragment();
@@ -94,7 +86,7 @@ public class notificationFragment extends Fragment {
     }
 
     private void initAdapter() {
-        adapter.setOnLoadMoreListener(new NotificationAdapter.OnLoadMoreListener() {
+        /*adapter.setOnLoadMoreListener(new NotificationAdapter.OnLoadMoreListener() {
             @Override
             public void onLoadMore() {
                 final GroupNotificationAbstract m = null;
@@ -109,7 +101,7 @@ public class notificationFragment extends Fragment {
                 }, 2000);
 
             }
-        });
+        });*/
         adapter.setListener(new NotificationAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(GroupNotificationAbstract item) {

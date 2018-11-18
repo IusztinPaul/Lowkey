@@ -39,26 +39,26 @@ public class NewsFeedRequest {
     private static final String COMMENT_RELATIVE_URL = POST_RELATIVE_URL + "comment/";
     private static final String USER_QUESTIONS_RELATIVE_URL = POST_RELATIVE_URL + "user/";
 
-    private  static final String USER_API_QUERY_STRING = "userId";
+    private static final String USER_API_QUERY_STRING = "userId";
     private static final String TIME_API_QUERY_STRING = "postTStamp";
-    private static final String ANON_API_QUERY_STRING ="isAnonymous";
+    private static final String ANON_API_QUERY_STRING = "isAnonymous";
     private static final String POST_TITLE_API_QUERY_STRING = "postTitle";
     private static final String POST_TEXT_API_QUERY_STRING = "postTxt";
     private static final String REFERENCE_TIMESTAMP_API_QUERY_STRING = "referenceTimestamp";
     private static final String IS_START_API_QUERY_STRING = "isStart";
     private static final String ENDPOINT_API_QUERY_STRING = "endpoint";
 
-    private static final String POST_QUESTION_STRING ="postQuestion";
-    public static final String GET_QUESTION_STRING ="getQuestion";
-    private static final String DELETE_QUESTION_STRING ="deleteQuestion";
-    private static final String POST_COMMENT_STRING ="postComment";
+    private static final String POST_QUESTION_STRING = "postQuestion";
+    public static final String GET_QUESTION_STRING = "getQuestion";
+    private static final String DELETE_QUESTION_STRING = "deleteQuestion";
+    private static final String POST_COMMENT_STRING = "postComment";
 
     public static final String RESPONSE_NO_DATA = "";
     public static final String RESPONSE_ERROR = "error";
     public static final String DATA_JSON_KEY = "data";
     public static final String NO_DATA = "the response has no data";
 
-    public NewsFeedRequest(String id){
+    public NewsFeedRequest(String id) {
         this.setId(id);
     }
 
@@ -83,9 +83,9 @@ public class NewsFeedRequest {
                              Boolean anon,
                              String title,
                              String text,
-                             final IGenericConsumer<JSONObject> responseCallback){
+                             final IGenericConsumer<JSONObject> responseCallback) {
 
-        HashMap<String,String> queryParameters = new HashMap<>();
+        HashMap<String, String> queryParameters = new HashMap<>();
         queryParameters.put(USER_API_QUERY_STRING, this.id);
         queryParameters.put(TIME_API_QUERY_STRING, String.valueOf(time));
 
@@ -110,7 +110,7 @@ public class NewsFeedRequest {
                             Log.e(POST_QUESTION_STRING, e.toString());
                         }
 
-                        if(responseCallback != null)
+                        if (responseCallback != null)
                             responseCallback.consume(response);
                     }
                 },
@@ -135,11 +135,10 @@ public class NewsFeedRequest {
     }
 
 
-
-    public void getNewsFeed(Long timestamp, boolean isStart, final NewsFeedVolleyCallBack listener){
-        Map<String,String> queryParameters = new HashMap<>();
+    public void getNewsFeed(Long timestamp, boolean isStart, final NewsFeedVolleyCallBack listener) {
+        Map<String, String> queryParameters = new HashMap<>();
         queryParameters.put(IS_START_API_QUERY_STRING, String.valueOf(isStart));
-        if(timestamp != null)
+        if (timestamp != null)
             queryParameters.put(REFERENCE_TIMESTAMP_API_QUERY_STRING, String.valueOf(timestamp));
 
         String URL = getAbsoluteUrlWithQueryString(queryParameters, POST_RELATIVE_URL);
@@ -149,7 +148,7 @@ public class NewsFeedRequest {
 
                     @Override
                     public void onResponse(JSONObject response) {
-                        if(listener != null)
+                        if (listener != null)
                             listener.onResponse(response);
                     }
                 },
@@ -157,7 +156,7 @@ public class NewsFeedRequest {
 
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        if(listener != null)
+                        if (listener != null)
                             listener.onError(error.toString());
                     }
 
@@ -175,15 +174,14 @@ public class NewsFeedRequest {
     }
 
 
+    public void deleteQuestion(String time) {
 
-    public void deleteQuestion(String time){
-
-        HashMap<String,String> queryParameters = new HashMap<>();
-        queryParameters.put(TIME_API_QUERY_STRING,time);
+        HashMap<String, String> queryParameters = new HashMap<>();
+        queryParameters.put(TIME_API_QUERY_STRING, time);
 
         String URL = getAbsoluteUrlWithQueryString(queryParameters, POST_RELATIVE_URL);
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(DELETE, URL,null,
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(DELETE, URL, null,
                 new Response.Listener<JSONObject>() {
 
                     @Override
@@ -217,25 +215,23 @@ public class NewsFeedRequest {
         requestQueueSingleton.addToRequestQueue(jsonObjectRequest);
     }
 
-    public void postComment(Comment comment, String SNSTopic) {
+    public void postComment(Comment comment, String SNSTopic, String Endpoint) {
         postComment(
                 Long.parseLong(comment.getCommentTStamp()),
                 Boolean.parseBoolean(comment.getCommentIsAnonymous()),
+                comment.getCommentUserUsername(),
                 comment.getCommentTxt(),
-                SNSTopic
+                SNSTopic,
+                Endpoint
         );
     }
 
-<<<<<<< HEAD
 
-    public void postComment(Long time, Boolean anon,String username, String text, String SNStopic, @Nullable String ENDpoint){
-=======
-    public void postComment(Long time,Boolean anon,String text,String SNSTopic){
->>>>>>> 0014647df882702b46f0f9d15754931d51cf17c9
+    public void postComment(Long time, Boolean anon, String username, String text, String SNStopic, @Nullable String ENDpoint) {
 
-        HashMap<String,String> queryParameters = new HashMap<>();
+        HashMap<String, String> queryParameters = new HashMap<>();
 
-        queryParameters.put(TIME_API_QUERY_STRING,time.toString());
+        queryParameters.put(TIME_API_QUERY_STRING, time.toString());
 
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
@@ -246,18 +242,15 @@ public class NewsFeedRequest {
             jsonBody.put("commentUserUsername", username);
             jsonBody.put("commentTStamp", String.valueOf(timestamp.getTime()));
             jsonBody.put("commentIsAnonymous", Boolean.toString(anon));
-<<<<<<< HEAD
-            jsonBody.put("snsTopic",SNStopic);
-            jsonBody.put("endpoint",ENDpoint);
-=======
-            jsonBody.put("snsTopic",SNSTopic);
->>>>>>> 0014647df882702b46f0f9d15754931d51cf17c9
-        }catch (JSONException e) {
+            jsonBody.put("snsTopic", SNStopic);
+            jsonBody.put("endpoint", ENDpoint);
+
+        } catch (JSONException e) {
             e.printStackTrace();
         }
         String URL = getAbsoluteUrlWithQueryString(queryParameters, COMMENT_RELATIVE_URL);
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(POST, URL,jsonBody,
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(POST, URL, jsonBody,
                 new Response.Listener<JSONObject>() {
 
                     @Override
@@ -292,14 +285,13 @@ public class NewsFeedRequest {
     }
 
 
-
-    public void getYourQuestions(final NewsFeedVolleyCallBack listener){
-        HashMap<String,String> queryParameters = new HashMap<>();
+    public void getYourQuestions(final NewsFeedVolleyCallBack listener) {
+        HashMap<String, String> queryParameters = new HashMap<>();
         queryParameters.put(USER_API_QUERY_STRING, getId());
 
         String URL = getAbsoluteUrlWithQueryString(queryParameters, USER_QUESTIONS_RELATIVE_URL);
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(GET, URL,null,
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(GET, URL, null,
                 new Response.Listener<JSONObject>() {
 
                     @Override
@@ -331,7 +323,7 @@ public class NewsFeedRequest {
     private String getAbsoluteUrlWithQueryString(Map<?, ?> queryParameters, String relativeUrl) {
         StringBuilder sb = new StringBuilder();
 
-        if(queryParameters != null) {
+        if (queryParameters != null) {
             for (Map.Entry<?, ?> entry : queryParameters.entrySet()) {
                 if (sb.length() > 0) {
                     sb.append("&");

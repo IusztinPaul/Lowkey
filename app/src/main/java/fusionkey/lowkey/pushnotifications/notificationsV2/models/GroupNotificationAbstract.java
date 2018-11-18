@@ -11,7 +11,7 @@ public abstract class GroupNotificationAbstract {
 
     public abstract String mapTheString();
 
-    public GroupNotificationAbstract(String timestmap, int counter, Notification notification){
+    public GroupNotificationAbstract(String timestmap, int counter, Notification notification) {
         this.setTimestamp(timestmap);
         this.setCounter(counter);
         this.setNotification(notification);

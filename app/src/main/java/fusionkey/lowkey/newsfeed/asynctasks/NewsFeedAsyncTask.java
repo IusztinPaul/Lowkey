@@ -84,79 +84,7 @@ public class NewsFeedAsyncTask extends AsyncTask<Void, String, JSONObject> {
                     }
 
                     for (int i = 0; i < arr.length(); i++) {
-<<<<<<< HEAD
-                        JSONObject obj = arr.getJSONObject(i);
 
-                        if (obj == null)
-                            Log.e("don't add", "!!");
-
-                        String email = obj.getString("userId");
-
-                        final NewsFeedMessage newsFeedMessage;
-                        if (cachedIndex != -1)
-                            newsFeedMessage = newsFeedMessageArrayList.get(cachedIndex + i);
-                        else
-                            newsFeedMessage = new NewsFeedMessage();
-
-                        // Update post only if it doesn't exists.
-                        if (cachedIndex == -1) {
-                            String anon = obj.getString("isAnonymous");
-
-                            // Set photo logic.
-                            newsFeedMessage.setUserPhoto(BitmapFactory.decodeResource(
-                                    LowKeyApplication.instance.getResources(),
-                                    R.drawable.avatar_placeholder)
-                            );
-                            final ProfilePhotoUploader photoUploader = new ProfilePhotoUploader();
-                            photoUploader.download(UserManager.parseEmailToPhotoFileName(email),
-                                    new Callback() {
-                                        @Override
-                                        public void handle() {
-                                            Log.e("PHOTO", "photo downloaded");
-                                            newsFeedMessage.setFile(photoUploader.getFileTO());
-                                            newsFeedAdapter.notifyDataSetChanged();
-                                        }
-                                    }, new Callback() {
-                                        @Override
-                                        public void handle() {
-                                        }
-                                    });
-
-
-                            UserAttributeManager userAttributeManager = new UserAttributeManager(email);
-                            newsFeedMessage.setWeekDay(obj.getInt("weekDay"));
-                            newsFeedMessage.setId(obj.getString("userId"));
-                            newsFeedMessage.setContent(obj.getString("postTxt"));
-                            newsFeedMessage.setTimeStamp(obj.getLong("postTStamp"));
-                            newsFeedMessage.setTitle(obj.getString("postTitle"));
-                            newsFeedMessage.setSNStopic(obj.getString(KEY_SNS_TOPIC));
-                            newsFeedMessage.setUser(userAttributeManager.getUsername());
-                            if (newsFeedMessage.getId().equals(userEmail))
-                                newsFeedMessage.setType(NewsFeedMessage.NORMAL);
-                            else
-                                newsFeedMessage.setType(NewsFeedMessage.OTHER_QUESTIONS);
-                            if (anon.equalsIgnoreCase("true") || anon.equalsIgnoreCase("true"))
-                                newsFeedMessage.setAnon(Boolean.valueOf(anon));
-                            else
-                                newsFeedMessage.setAnon(false);
-
-                            newsFeedMessageArrayList.add(newsFeedMessage);
-                        }
-
-                        // Refresh comments in any case.
-                        ArrayList<Comment> commentArrayList = new ArrayList<>();
-                        try {
-                            JSONArray arr2 = new JSONArray(obj.getString("comments")); //get comments
-                            for (int j = 0; j < arr2.length(); j++) {
-                                JSONObject comment = arr2.getJSONObject(j);
-                                Comment commentObj = new Comment(
-                                        comment.getString("commentIsAnonymous"),
-                                        comment.getString("commentTStamp"),
-                                        comment.getString("commentUserUsername"),
-                                        comment.getString("commentTxt"),
-                                        comment.getString("commentUserId"));
-                                commentArrayList.add(commentObj);
-=======
                         try {
 
                             JSONObject obj = arr.getJSONObject(i);
@@ -192,7 +120,6 @@ public class NewsFeedAsyncTask extends AsyncTask<Void, String, JSONObject> {
                                     newsFeedMessage.setType(NewsFeedMessage.OTHER_QUESTIONS);
 
                                 newsFeedMessageArrayList.add(newsFeedMessage);
->>>>>>> 0014647df882702b46f0f9d15754931d51cf17c9
                             }
 
 

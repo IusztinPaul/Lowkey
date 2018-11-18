@@ -69,10 +69,10 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == VIEW_TYPE_ITEM) {
-            View view = LayoutInflater.from(context).inflate(R.layout.notification_item, parent, false);
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.notification_item, parent, false);
             return new NotificationViewHolder(view);
         } else if (viewType == VIEW_TYPE_LOADING) {
-            View view = LayoutInflater.from(context).inflate(R.layout.item_loading, parent, false);
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_loading, parent, false);
             return new LoadingViewHolder(view);
         }
         return null;
@@ -81,13 +81,14 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof NotificationViewHolder) {
+
             final GroupNotificationAbstract notification = this.mNotifications.get(position);
             final NotificationViewHolder holder1 = (NotificationViewHolder) holder;
 
             holder1.name.setText(notification.mapTheString());
             holder1.data.setText(notification.getNotification().getComment());
-
-            Picasso.with(context).load(notification.getFile()).into(holder1.pic);
+            Picasso.with(holder.itemView.getContext()).cancelRequest(holder1.pic);
+            Picasso.with(holder.itemView.getContext()).load(notification.getFile()).into(holder1.pic);
 
 
             holder1.bind(mNotifications.get(position), listener);

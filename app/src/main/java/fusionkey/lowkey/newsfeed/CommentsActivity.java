@@ -125,7 +125,7 @@ public class CommentsActivity extends AppCompatActivity {
         String username = LowKeyApplication.userManager.getUserDetails().getUsername();
         String userId = LowKeyApplication.userManager.getUserDetails().getUserEmail();
 
-        return new Comment("true",
+        return new Comment("false",
                 String.valueOf(timestamp.getTime()),
                 commentText,
                 email,

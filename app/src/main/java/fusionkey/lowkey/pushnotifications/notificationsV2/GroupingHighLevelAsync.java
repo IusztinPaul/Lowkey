@@ -3,7 +3,6 @@ package fusionkey.lowkey.pushnotifications.notificationsV2;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.squareup.picasso.Picasso;
 
 import org.json.JSONObject;
 
@@ -37,6 +36,7 @@ public class GroupingHighLevelAsync extends AsyncTask<Void, String, JSONObject> 
     @Override
     protected void onPreExecute() {
         highLevelHashMap = GroupingLowLevel.getHashMap();
+
     }
 
     @Override
@@ -47,7 +47,6 @@ public class GroupingHighLevelAsync extends AsyncTask<Void, String, JSONObject> 
                 int size = highLevelHashMap.get(String.valueOf(l)).size() - 1;
                 Notification notification = highLevelHashMap.get(String.valueOf(l)).get(size);
                 final NotificationY notificationY = new NotificationY(notification.getTimestamp(), size, notification);
-                notificationAbstracts.add(notificationY);
                 highLevelHashMap.remove(String.valueOf(l));
                 final ProfilePhotoUploader photoUploader = new ProfilePhotoUploader();
                 photoUploader.download(notification.getUserID(),
@@ -56,6 +55,7 @@ public class GroupingHighLevelAsync extends AsyncTask<Void, String, JSONObject> 
                             public void handle() {
                                 Log.e("PHOTO", "photo downloaded");
                                 notificationY.setFile(photoUploader.getFileTO());
+                                notificationAbstracts.add(notificationY);
                                 publishProgress();
                             }
                         }, new Callback() {
@@ -63,7 +63,7 @@ public class GroupingHighLevelAsync extends AsyncTask<Void, String, JSONObject> 
                             public void handle() {
                             }
                         });
-                notificationAbstracts.add(notificationY);
+
             }
         for (Map.Entry<String, ArrayList<Notification>> map : highLevelHashMap.entrySet()) {
             int size = map.getValue().size() - 1;
@@ -76,6 +76,7 @@ public class GroupingHighLevelAsync extends AsyncTask<Void, String, JSONObject> 
                         public void handle() {
                             Log.e("PHOTO", "photo downloaded");
                             notificationO.setFile(photoUploader.getFileTO());
+                            notificationAbstracts.add(notificationO);
                             publishProgress();
                         }
                     }, new Callback() {
@@ -83,15 +84,14 @@ public class GroupingHighLevelAsync extends AsyncTask<Void, String, JSONObject> 
                         public void handle() {
                         }
                     });
-            notificationAbstracts.add(notificationO);
+
         }
         return null;
     }
 
     @Override
     protected void onProgressUpdate(String... values) {
-        notificationAdapter.notifyDataSetChanged();
-        //notificationAdapter.notifyItemInserted(notificationAbstracts.size()-1);
+        notificationAdapter.notifyItemInserted(notificationAbstracts.size()-1);
     }
 
     @Override
