@@ -101,6 +101,7 @@
 
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/ivProfile"
+                    android:src="@drawable/avatar_placeholder"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
                     android:layout_gravity="center"

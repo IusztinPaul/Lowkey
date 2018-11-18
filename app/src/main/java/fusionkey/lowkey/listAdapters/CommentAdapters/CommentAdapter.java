@@ -54,7 +54,7 @@ public class CommentAdapter extends  RecyclerView.Adapter<CommentViewHolder>{
 
 
         if(comDto.getCommentIsAnonymous().equalsIgnoreCase("true")) {
-            holder.name.setText(comDto.getCommentUserId());
+            holder.name.setText(comDto.getCommentUserUsername());
         }else{
             holder.name.setText(ANON_STRING);
         }

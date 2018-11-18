@@ -7,19 +7,22 @@ public class Comment implements Parcelable{
     private String commentIsAnonymous;
     private String commentTStamp;
     private String commentTxt;
+    private String commentUserUsername;
     private String commentUserId;
 
-    public Comment(String commentIsAnonymous,String commentTStamp,String commentTxt,String commentUserId){
+    public Comment(String commentIsAnonymous,String commentTStamp,String commentUserUsername,String commentTxt,String commentUserId){
         this.setCommentIsAnonymous(commentIsAnonymous);
         this.setCommentTStamp(commentTStamp);
         this.setCommentTxt(commentTxt);
         this.setCommentUserId(commentUserId);
+        this.setCommentUserUsername(commentUserUsername);
     }
 
     public Comment(Parcel read){
         commentIsAnonymous = read.readString();
         commentTStamp = read.readString();
         commentTxt = read.readString();
+        setCommentUserUsername(read.readString());
         commentUserId = read.readString();
     }
     public static final Parcelable.Creator<Comment> CREATOR =
@@ -79,5 +82,13 @@ public class Comment implements Parcelable{
 
     public void setCommentUserId(String commentUserId) {
         this.commentUserId = commentUserId;
+    }
+
+    public String getCommentUserUsername() {
+        return commentUserUsername;
+    }
+
+    public void setCommentUserUsername(String commentUserUsername) {
+        this.commentUserUsername = commentUserUsername;
     }
 }

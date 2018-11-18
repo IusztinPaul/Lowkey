@@ -41,6 +41,7 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private Context mcontext;
     private OnLoadMoreListener onLoadMoreListener;
     public OnItemClickListenerNews listener;
+    public onViewProfile viewProfileListener;
     private OnDeleteItem del;
     private int visibleThreshold = 5;
     private int lastVisibleItem, totalItemCount;
@@ -81,6 +82,10 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         void deleteItem(ChatTabViewHolder item, View v);
     }
 
+    public interface onViewProfile {
+        void viewProfile(ChatTabViewHolder item,View v);
+    }
+
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
@@ -113,9 +118,13 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 chatTabViewHolder.name.setText(msgDto.getUser());
                 if (msgDto.getType().equals(NewsFeedMessage.NORMAL)) {
                     Picasso.with(mcontext).load(LowKeyApplication.userManager.photoFile).into(chatTabViewHolder.image);
-                } else
-                    Picasso.with(mcontext).load(msgDto.getFile()).into(chatTabViewHolder.image);
+                } else {
+                 if(msgDto.getFile()==null)
+                        Picasso.with(mcontext).load(R.drawable.avatar_placeholder).into(chatTabViewHolder.image);
+                    else
+                        Picasso.with(mcontext).load(msgDto.getFile()).into(chatTabViewHolder.image);
 
+                }
             } else {
                 Picasso.with(mcontext).load(R.drawable.avatar_placeholder).into(chatTabViewHolder.image);
                 chatTabViewHolder.name.setText(ANON_STRING);
@@ -129,7 +138,7 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 chatTabViewHolder.answers.setText("0 Answers");
             }
             chatTabViewHolder.bind(chatTabViewHolder, listener);
-
+            chatTabViewHolder.bindViewProfile(chatTabViewHolder,viewProfileListener);
             //Picasso doing the Cached Magic
 
         } else if (holder instanceof LoadingViewHolder) {
@@ -161,6 +170,8 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         mMessages.clear();
         notifyDataSetChanged();
     }
+
+    public void setViewProfile(onViewProfile listener) { this.viewProfileListener = listener;}
 
     public void setListener(OnItemClickListenerNews listener) {
         this.listener = listener;

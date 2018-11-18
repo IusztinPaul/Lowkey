@@ -144,7 +144,7 @@ public class LoadingAsyncTask extends AsyncTask<Void, Integer, JSONObject> {
         int loopState = queueMatcher.getLoopState();
 
         if (loopState < 0)
-            loopState = 0; // ProgressBar progress cannot be negative.
+            loopState = LobbyCheckerRunnable.TIME_LOOPING_MILLISECONDS; // ProgressBar progress cannot be negative.
 
         publishProgress(loopState);
     }

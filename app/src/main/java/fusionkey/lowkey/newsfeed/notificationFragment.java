@@ -3,11 +3,13 @@ package fusionkey.lowkey.newsfeed;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,15 +19,21 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.TimeZone;
 
 import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.R;
-import fusionkey.lowkey.auth.LoginActivity;
-import fusionkey.lowkey.entryActivity.EntryActivity;
 import fusionkey.lowkey.listAdapters.NotificationAdapters.NotificationAdapter;
+import fusionkey.lowkey.main.utils.Callback;
+import fusionkey.lowkey.main.utils.ProfilePhotoUploader;
+import fusionkey.lowkey.newsfeed.util.NewsFeedRequest;
 import fusionkey.lowkey.pushnotifications.activities.CommentsFromNotificationActivity;
-import fusionkey.lowkey.pushnotifications.models.NotificationTO;
+import fusionkey.lowkey.pushnotifications.notificationsV1.models.LoadNotifPhotosAsync;
+import fusionkey.lowkey.pushnotifications.notificationsV1.models.NotificationTO;
+import fusionkey.lowkey.pushnotifications.notificationsV1.models.NotificationTOBuilder;
+import fusionkey.lowkey.pushnotifications.notificationsV2.GroupingHighLevelAsync;
+import fusionkey.lowkey.pushnotifications.notificationsV2.models.GroupNotificationAbstract;
 
 public class notificationFragment extends Fragment {
     private static final String KEY_POSITION = "position";
@@ -35,6 +43,11 @@ public class notificationFragment extends Fragment {
     public SwipeRefreshLayout swipeRefreshLayout;
     ArrayList<NotificationTO> mNotification = new ArrayList<>();
     private RecyclerView mRecyclerview;
+    private Boolean finished = false;
+    private static int GOD_INT = 0;
+    ArrayList<GroupNotificationAbstract> notif = new ArrayList<>();
+
+    List<Long> timestamps = new ArrayList<>();
 
     String id = LowKeyApplication.userManager.getCachedEmail();
 
@@ -58,33 +71,16 @@ public class notificationFragment extends Fragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
         mRecyclerview.setLayoutManager(linearLayoutManager);
         swipeRefreshLayout = rootView.findViewById(R.id.swipe);
+        adapter = new NotificationAdapter(notif, mRecyclerview, getContext());
 
-        adapter = new NotificationAdapter(getNotifications());
-        adapter.setListener(new NotificationAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(NotificationTO item) {
-                Intent intent = new Intent(getActivity(), CommentsFromNotificationActivity.class);
-                intent.putExtra("timestamp", item.getTimestamp());
-                startActivity(intent);
-            }
-        });
-        mRecyclerview.setAdapter(adapter);
+        initAdapter();
+        getData();
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
 
-                adapter.clear();
-                adapter = new NotificationAdapter(getNotifications());
-                adapter.setListener(new NotificationAdapter.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(NotificationTO item) {
-                        Intent intent = new Intent(getActivity(), CommentsFromNotificationActivity.class);
-                        intent.putExtra("timestamp", item.getTimestamp());
-                        startActivity(intent);
-                    }
-                });
-                mRecyclerview.setAdapter(adapter);
+                initAdapter();
                 swipeRefreshLayout.setRefreshing(false);
 
             }
@@ -93,17 +89,37 @@ public class notificationFragment extends Fragment {
         return (rootView);
     }
 
-    private ArrayList<NotificationTO> getNotifications() {
-        ArrayList<NotificationTO> notif = new ArrayList<>();
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext().getApplicationContext());
-        int counter = preferences.getInt(id, 0);
-        for (int i = 0; i < counter; i++) {
-            String[] s = preferences.getString(id + i, "").split("muiepsdasdfghjkl");
-            notif.add(new NotificationTO(s[2].replace("}", ""), s[0].replace("{default=", "") + " answered your question : " + s[3].replace("}",""), s[1]));
+    private void getData() {
+        new GroupingHighLevelAsync(adapter, notif).execute();
+    }
 
-        }
-        Collections.reverse(notif);
-        return notif;
+    private void initAdapter() {
+        adapter.setOnLoadMoreListener(new NotificationAdapter.OnLoadMoreListener() {
+            @Override
+            public void onLoadMore() {
+                final GroupNotificationAbstract m = null;
+                notif.add(m);
+                adapter.notifyItemInserted(notif.size() - 1);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        adapter.removeItem(notif.indexOf(m));
+
+                    }
+                }, 2000);
+
+            }
+        });
+        adapter.setListener(new NotificationAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(GroupNotificationAbstract item) {
+                Intent intent = new Intent(getActivity(), CommentsFromNotificationActivity.class);
+                intent.putExtra("timestamp", item.getTimestamp());
+                adapter.notifyDataSetChanged();
+                startActivity(intent);
+            }
+        });
+        mRecyclerview.setAdapter(adapter);
     }
 
     private String localTime(Long time) {
@@ -114,5 +130,6 @@ public class notificationFragment extends Fragment {
         Date date = new Date(time);
         return sf.format(date);
     }
+
 
 }

@@ -7,7 +7,8 @@ import android.widget.TextView;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import fusionkey.lowkey.R;
-import fusionkey.lowkey.pushnotifications.models.NotificationTO;
+import fusionkey.lowkey.pushnotifications.notificationsV1.models.NotificationTO;
+import fusionkey.lowkey.pushnotifications.notificationsV2.models.GroupNotificationAbstract;
 
 public class NotificationViewHolder extends RecyclerView.ViewHolder {
 
@@ -18,15 +19,13 @@ public class NotificationViewHolder extends RecyclerView.ViewHolder {
     public NotificationViewHolder(View itemView) {
         super(itemView);
 
-        if(itemView!=null) {
             name = (TextView) itemView.findViewById(R.id.username);
             data = (TextView) itemView.findViewById(R.id.data);
             pic = (CircleImageView) itemView.findViewById(R.id.profilePic);
-
-        }
+            leftMsgLayout = itemView.findViewById(R.id.layout);
     }
 
-    public void bind(final NotificationTO item, final NotificationAdapter.OnItemClickListener listener) {
+    public void bind(final GroupNotificationAbstract item, final NotificationAdapter.OnItemClickListener listener) {
 
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {

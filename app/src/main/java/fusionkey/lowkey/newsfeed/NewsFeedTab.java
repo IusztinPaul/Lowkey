@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,27 +16,36 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONObject;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.auth.models.UserDB;
+import fusionkey.lowkey.auth.utils.UserAttributeManager;
 import fusionkey.lowkey.listAdapters.ChatTabViewHolder;
 import fusionkey.lowkey.R;
 
 import fusionkey.lowkey.listAdapters.NewsFeedAdapter;
+import fusionkey.lowkey.main.utils.Callback;
 import fusionkey.lowkey.main.utils.NetworkManager;
 import fusionkey.lowkey.main.utils.PhotoUploader;
+import fusionkey.lowkey.main.utils.ProfilePhotoUploader;
 import fusionkey.lowkey.newsfeed.asynctasks.NewsFeedAsyncTaskBuilder;
 import fusionkey.lowkey.newsfeed.interfaces.IGenericConsumer;
 
 import fusionkey.lowkey.newsfeed.models.Comment;
 import fusionkey.lowkey.newsfeed.models.NewsFeedMessage;
 import fusionkey.lowkey.newsfeed.util.NewsFeedRequest;
+import fusionkey.lowkey.pointsAlgorithm.PointsCalculator;
 
 
 public class NewsFeedTab extends Fragment {
@@ -45,6 +55,13 @@ public class NewsFeedTab extends Fragment {
 
     private NewsFeedAdapter adapter;
     private ArrayList<NewsFeedMessage> messages;
+
+    private ConstraintLayout viewProfileCard;
+    private CircleImageView ivProfile;
+    private CircleImageView exit;
+    private TextView viewUsername;
+    private TextView viewPoints;
+
 
     private RecyclerView msgRecyclerView;
     private Button button;
@@ -62,6 +79,13 @@ public class NewsFeedTab extends Fragment {
 
         msgRecyclerView = (RecyclerView) rootView.findViewById(R.id.chat_listview);
         button = rootView.findViewById(R.id.email_sign_in_button2);
+
+        viewProfileCard = rootView.findViewById(R.id.viewProfileCard);
+        viewProfileCard.setVisibility(View.INVISIBLE);
+        ivProfile = rootView.findViewById(R.id.ivProfile2);
+        viewUsername = rootView.findViewById(R.id.textView8);
+        viewPoints = rootView.findViewById(R.id.points);
+        exit = rootView.findViewById(R.id.exit);
 
         swipeRefreshLayout = rootView.findViewById(R.id.swipe);
 
@@ -96,6 +120,8 @@ public class NewsFeedTab extends Fragment {
         return rootView;
     }
 
+
+
     private void initializeAdapterAndListData() {
         messages = new ArrayList<>();
         adapter = new NewsFeedAdapter(messages, getActivity().getApplicationContext(), msgRecyclerView);
@@ -104,6 +130,7 @@ public class NewsFeedTab extends Fragment {
         adapter.setListener(new NewsFeedAdapter.OnItemClickListenerNews() {
             @Override
             public void onItemClick(ChatTabViewHolder item, View v) {
+                try{
                 int position = item.getAdapterPosition();
                 NewsFeedMessage m = adapter.getMsg(position);
                 final Intent intent = new Intent(NewsFeedTab.this.getContext(), CommentsActivity.class);
@@ -129,6 +156,10 @@ public class NewsFeedTab extends Fragment {
 
                 startActivityForResult(intent, COMMENT_ACTIVITY_REQUEST_CODE);
                 getActivity().overridePendingTransition(0, 0);
+            }catch(ArrayIndexOutOfBoundsException ioobe){
+
+                }
+
             }
         });
 
@@ -155,6 +186,38 @@ public class NewsFeedTab extends Fragment {
                 NewsFeedMessage m = adapter.getMsg(position);
                 new NewsFeedRequest(uniqueID).deleteQuestion(String.valueOf(m.getTimeStamp()));
                 adapter.removeItem(position);
+            }
+        });
+        adapter.setViewProfile(new NewsFeedAdapter.onViewProfile() {
+            @Override
+            public void viewProfile(ChatTabViewHolder item, View v) {
+                viewProfileCard.setVisibility(View.VISIBLE);
+                String userID = adapter.getMsg(item.getAdapterPosition()).getId();
+                try {
+                    if(adapter.getMsg(item.getAdapterPosition()).getAnon()) {
+                        Picasso.with(getContext()).load(R.drawable.avatar_placeholder).into(ivProfile);
+                        viewUsername.setText("Anonymous");
+                    }
+                    else {
+                        Picasso.with(getContext()).load(adapter.getMsg(item.getAdapterPosition()).getFile()).into(ivProfile);
+                        viewUsername.setText(adapter.getMsg(item.getAdapterPosition()).getUser());
+                    }
+                } catch (NullPointerException npe){
+                    Picasso.with(getContext()).load(R.drawable.avatar_placeholder).into(ivProfile);
+                }
+
+                UserAttributeManager userAttributeManager = new UserAttributeManager(userID);
+                UserDB user = userAttributeManager.getUserDB();
+                String displayPoints = "Has " + new DecimalFormat("##.####").format(user.getScore()) + " points";
+                viewPoints.setText(displayPoints);
+
+                exit.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        viewProfileCard.setVisibility(View.INVISIBLE);
+                    }
+                });
+
             }
         });
     }

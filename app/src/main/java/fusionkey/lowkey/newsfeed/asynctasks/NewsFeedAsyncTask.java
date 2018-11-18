@@ -114,7 +114,11 @@ public class NewsFeedAsyncTask extends AsyncTask<Void, String, JSONObject> {
                                             newsFeedMessage.setFile(photoUploader.getFileTO());
                                             newsFeedAdapter.notifyDataSetChanged();
                                         }
-                                    }, null);
+                                    }, new Callback() {
+                                        @Override
+                                        public void handle() {
+                                        }
+                                    });
 
 
                             UserAttributeManager userAttributeManager = new UserAttributeManager(email);
@@ -146,6 +150,7 @@ public class NewsFeedAsyncTask extends AsyncTask<Void, String, JSONObject> {
                                 Comment commentObj = new Comment(
                                         comment.getString("commentIsAnonymous"),
                                         comment.getString("commentTStamp"),
+                                        comment.getString("commentUserUsername"),
                                         comment.getString("commentTxt"),
                                         comment.getString("commentUserId"));
                                 commentArrayList.add(commentObj);
@@ -180,7 +185,6 @@ public class NewsFeedAsyncTask extends AsyncTask<Void, String, JSONObject> {
     @Override
     protected void onProgressUpdate(String... values) {
         int newMsgPosition = newsFeedMessageArrayList.size() - 1;
-        newsFeedAdapter.notifyDataSetChanged();
         newsFeedAdapter.notifyItemInserted(newMsgPosition);
     }
 

@@ -8,14 +8,18 @@ import android.os.Bundle;
 import android.util.Log;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 
 import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.R;
+import fusionkey.lowkey.auth.models.UserDB;
 import fusionkey.lowkey.auth.utils.UserAttributesEnum;
 import fusionkey.lowkey.auth.utils.UserManager;
 import fusionkey.lowkey.main.Main2Activity;
 import fusionkey.lowkey.main.utils.Callback;
 import fusionkey.lowkey.main.utils.ProfilePhotoUploader;
+import fusionkey.lowkey.newsfeed.asynctasks.GetYourTimestampsAsyncTask;
+import fusionkey.lowkey.newsfeed.util.NewsFeedRequest;
 import fusionkey.lowkey.pushnotifications.activities.CommentsFromNotificationActivity;
 import fusionkey.lowkey.pushnotifications.service.IntentMappingSharredPrefferences;
 import fusionkey.lowkey.pushnotifications.service.RegisterSNS;
@@ -46,6 +50,7 @@ public class LoadUserDataActivity extends AppCompatActivity {
         protected Void doInBackground(Void... voids) {
             new RegisterSNS().registerWithSNS();
             LowKeyApplication.userManager.requestCurrentUserDetails(userEmail, null);
+            new GetYourTimestampsAsyncTask(new NewsFeedRequest(userEmail)).execute();
             loadUserPhoto();
             return null;
         }

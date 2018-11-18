@@ -122,26 +122,29 @@ public class CommentsActivity extends AppCompatActivity {
 
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         String username = LowKeyApplication.userManager.getUserDetails().getUsername();
+        String userId = LowKeyApplication.userManager.getUserDetails().getUserEmail();
 
         return new Comment("true",
                 String.valueOf(timestamp.getTime()),
+                username,
                 commentText,
-                username);
+                userId);
     }
 
     private void sendNewsFeedRequestWithNewComment(String commentText) {
         Long postTimeStamp = getIntent().getLongExtra("timestampID", 0);
         String username = LowKeyApplication.userManager.getUserDetails().getUsername();
-
-        String SNSTopic = "";
+        String userId = LowKeyApplication.userManager.getUserDetails().getUserEmail();
+        String SNSTopic = "";String endPointArn = "";
         if (!isPostOfCurrentUser())
             SNSTopic = getIntent().getStringExtra("SNStopic");
-
-        new NewsFeedRequest(username).
+        new NewsFeedRequest(userId).
                 postComment(postTimeStamp,
                         true,
+                        username,
                         commentText,
-                        SNSTopic
+                        SNSTopic,
+                        LowKeyApplication.endpointArn
                 );
     }
 

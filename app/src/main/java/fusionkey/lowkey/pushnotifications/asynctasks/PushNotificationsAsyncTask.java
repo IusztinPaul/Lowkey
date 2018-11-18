@@ -135,6 +135,8 @@ public class PushNotificationsAsyncTask extends AsyncTask<Void,String,JSONObject
                             Comment commentObj = new Comment(
                                     comment.getString("commentIsAnonymous"),
                                     comment.getString("commentTStamp"),
+                                    "MODIFY DYNAMO TABLE",
+                                    //comment.getString("commentUserUsername"),
                                     comment.getString("commentTxt"),
                                     comment.getString("commentUserId"));
                             comments.add(commentObj);

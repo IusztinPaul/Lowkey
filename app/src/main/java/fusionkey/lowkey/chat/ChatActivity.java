@@ -1,7 +1,9 @@
 package fusionkey.lowkey.chat;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.arch.persistence.room.Room;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -59,9 +61,8 @@ import fusionkey.lowkey.pointsAlgorithm.PointsCalculator;
  * @author Sandru Sebastian
  * @version 1.0
  * @since 24-Aug-18
- *
+ * <p>
  * <h1>MAIN CHAT ACTIVITY</h1>
- *
  */
 public class ChatActivity extends AppCompatActivity {
     private final int GALLERY_REQUEST = 1;
@@ -70,8 +71,8 @@ public class ChatActivity extends AppCompatActivity {
 
     private static String USER_STATUS_STRING = "User disconnected from the chat!";
 
-    final long periodForT = 1000, periodForT1 =10000, delay=0;
-    long last_text_edit=0;
+    final long periodForT = 1000, periodForT1 = 10000, delay = 0;
+    long last_text_edit = 0;
 
     public static String USERNAME;
     String role;
@@ -79,7 +80,7 @@ public class ChatActivity extends AppCompatActivity {
     ChatRoom chatRoom;
     DisconnectedRunnable disconnectedRunnable;
     ChatAsyncTask chatAsyncTask;
-    Timer t,t1;
+    Timer t, t1;
     Handler h1;
     Bundle bb = new Bundle();
     Thread thread;
@@ -98,8 +99,8 @@ public class ChatActivity extends AppCompatActivity {
     ArrayList<Integer> stringL;
 
     private static final String disconnectedDialog = "just disconnected from the chat !";
-    public static final String LISTENER_INTENT ="Listener";
-    public static final String USER_INTENT ="User";
+    public static final String LISTENER_INTENT = "Listener";
+    public static final String USER_INTENT = "User";
     public static final String ROLE_INTENT = "role";
 
     private ChatAppMsgAdapter chatAppMsgAdapter;
@@ -115,7 +116,8 @@ public class ChatActivity extends AppCompatActivity {
         //INIT
         Toolbar toolbar = findViewById(R.id.toolbar);
         state = findViewById(R.id.isWritting);
-        status = findViewById(R.id.status);status.setText("wait");
+        status = findViewById(R.id.status);
+        status.setText("wait");
         msgRecyclerView = findViewById(R.id.reyclerview_message_list);
         final String listener = getIntent().getStringExtra(LISTENER_INTENT);
         final String user = getIntent().getStringExtra(USER_INTENT);
@@ -123,10 +125,9 @@ public class ChatActivity extends AppCompatActivity {
         chatbox = findViewById(R.id.layout_chatbox);
         image = findViewById(R.id.circleImageView2);
         msgInputText = findViewById(R.id.chat_input_msg);
-
         //TODO: this should be replaced by a normal JSON parser
-        currentUserEmail = listener.replace("[", "").replace("]", "").replace("\"","");
-        otherUserEmail = user.replace("[", "").replace("]", "").replace("\"","");
+        currentUserEmail = listener.replace("[", "").replace("]", "").replace("\"", "");
+        otherUserEmail = user.replace("[", "").replace("]", "").replace("\"", "");
 
         currentUser = LowKeyApplication.userManager.getUserDetails();
         otherUser = new UserAttributeManager(otherUserEmail).getUserDB();
@@ -140,9 +141,9 @@ public class ChatActivity extends AppCompatActivity {
         msgRecyclerView.setLayoutManager(linearLayoutManager);
         chatAppMsgAdapter = new ChatAppMsgAdapter(msgDtoList);
         msgRecyclerView.setAdapter(chatAppMsgAdapter);
-        Log.e("INFO","LISTENER : " + currentUserEmail + " & USER : " + otherUserEmail);
+        Log.e("INFO", "LISTENER : " + currentUserEmail + " & USER : " + otherUserEmail);
 
-        chatAsyncTask = new ChatAsyncTask(chatRoom,msgRecyclerView,chatAppMsgAdapter,msgDtoList);
+        chatAsyncTask = new ChatAsyncTask(chatRoom, msgRecyclerView, chatAppMsgAdapter, msgDtoList);
         chatAsyncTask.execute();
 
         //Object that makes request and updates the UI if the user is/isn't connected/writting
@@ -172,13 +173,11 @@ public class ChatActivity extends AppCompatActivity {
                 try {
                     if (str.equals("disconnected")) {
                         Log.e("Checking DISCONNECT", "checking");
-                        chatbox.setVisibility(View.INVISIBLE);
-                        Toast.makeText(ChatActivity.this,
-                                USER_STATUS_STRING,
-                                Toast.LENGTH_SHORT).show();
+                        //chatbox.setVisibility(View.INVISIBLE);
+                        Toast.makeText(ChatActivity.this, USER_STATUS_STRING, Toast.LENGTH_SHORT).show();
                     }
 
-                } catch(NullPointerException e){
+                } catch (NullPointerException e) {
                     Log.e("h1->handleMessage", e.getMessage());
                 }
             }
@@ -188,7 +187,7 @@ public class ChatActivity extends AppCompatActivity {
         t1.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                thread = new Thread(new DisconnectedRunnable(h1,status));
+                thread = new Thread(new DisconnectedRunnable(h1, status));
                 thread.start();
             }
 
@@ -199,14 +198,13 @@ public class ChatActivity extends AppCompatActivity {
         }, delay, periodForT1);
 
 
-        Button msgSendButton = (Button)findViewById(R.id.sendComment);
+        Button msgSendButton = (Button) findViewById(R.id.sendComment);
         msgSendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String msgContent = msgInputText.getText().toString();
                 chatRoom.stopIsWritting();
-                if(!TextUtils.isEmpty(msgContent))
-                {
+                if (!TextUtils.isEmpty(msgContent)) {
                     processMessage(msgContent, false);
                     msgInputText.setText("");
                 }
@@ -230,7 +228,7 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onBackPressed(){
+    public void onBackPressed() {
         chatAsyncTask.cancel(true);
         t.cancel();
         t1.cancel();
@@ -242,7 +240,7 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void addMessagesToROOM() {
-        if(msgDtoList!=null && msgDtoList.size() > 0) {
+        if (msgDtoList != null && msgDtoList.size() > 0) {
 
             UserD userD = new UserD(otherUserEmail, msgDtoList, role);
             AppDatabase database = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "user-database")
@@ -283,7 +281,7 @@ public class ChatActivity extends AppCompatActivity {
             }
     }
 
-    private void showDialog(){
+    private void showDialog() {
         AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
         builder1.setMessage("Was this helpful ?");
         builder1.setCancelable(true);
@@ -315,11 +313,11 @@ public class ChatActivity extends AppCompatActivity {
         alert11.show();
     }
 
-    private void updatePoints(){
+    private void updatePoints() {
         UserDB user = LowKeyApplication.userManager.getUserDetails();
-        long newScore = user.getScore() + (long) PointsCalculator.calculateStringsValue(stringCounter,stringL,clock);
+        long newScore = user.getScore() + (long) PointsCalculator.calculateStringsValue(stringCounter, stringL, clock);
         updateUserWithNewScore(user, newScore);
-        Log.e("points ::::: ", "score"+newScore);
+        Log.e("points ::::: ", "score" + newScore);
     }
 
 
@@ -343,14 +341,14 @@ public class ChatActivity extends AppCompatActivity {
         }, delay, periodForT);
     }
 
-    private void startWritingListener(){
+    private void startWritingListener() {
         //Following lines set your writting-flag true/false if you're writting
         final Handler handler = new Handler();
         final Runnable input_finish_checker = new Runnable() {
             @Override
             public void run() {
                 chatRoom.stopIsWritting();
-                if(System.currentTimeMillis() > (last_text_edit + periodForT - 500)){
+                if (System.currentTimeMillis() > (last_text_edit + periodForT - 500)) {
 
                 }
             }
@@ -370,7 +368,7 @@ public class ChatActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(final Editable s) {
-                if(s.length() > 0){
+                if (s.length() > 0) {
                     last_text_edit = System.currentTimeMillis();
                     handler.postDelayed(input_finish_checker, periodForT);
                     chatRoom.userIsWritting();
@@ -394,8 +392,8 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void addMsgToAdapter(String msgContent, boolean isPhoto, Timestamp timestamp) {
-        MessageTO msgDto = new MessageTOFactory("me", otherUserEmail,timestamp.getTime(),
-                msgContent,isPhoto, MessageTO.MSG_TYPE_SENT).createMessage();
+        MessageTO msgDto = new MessageTOFactory("me", otherUserEmail, timestamp.getTime(),
+                msgContent, isPhoto, MessageTO.MSG_TYPE_SENT).createMessage();
         msgDtoList.add(msgDto);
         int newMsgPosition = msgDtoList.size() - 1;
 
@@ -405,19 +403,19 @@ public class ChatActivity extends AppCompatActivity {
 
     private void sendMessageRequest(String msgContent, boolean isPhoto, Timestamp timestamp) {
         Message msgToSend = new Message(currentUser.getParsedEmail(),
-                        otherUser.getParsedEmail(), currentUser.getParsedEmail(),
-                msgContent, timestamp,isPhoto + "");
+                otherUser.getParsedEmail(), currentUser.getParsedEmail(),
+                msgContent, timestamp, isPhoto + "");
         msgToSend.sendMsg();
     }
 
     private void calculateScore(String msgContent, boolean isPhoto) {
         int score = -1;
-        if(isPhoto)
+        if (isPhoto)
             score = PHOTO_SCORE_POINTS;
-        else if(msgContent != null)
+        else if (msgContent != null)
             score = msgContent.length();
 
-        if(score != -1) {
+        if (score != -1) {
             stringL.add(score);
             stringCounter++;
         }

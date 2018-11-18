@@ -55,7 +55,7 @@ public class CommentsFromNotificationActivity extends AppCompatActivity {
     CircleImageView imagepic;
     ArrayList<Comment> commentArrayList = new ArrayList<>();
     ArrayList<Comment> commentsSentList = new ArrayList<>();
-    private CommentAdapter commentsAdapter = new CommentAdapter(commentArrayList,this);
+    private CommentAdapter commentsAdapter = new CommentAdapter(commentArrayList, this);
     private PushNotificationsAsyncTask pushNotificationsAsyncTask;
     private NotificationRequest notificationRequest;
     public static String snsTOPIC;
@@ -86,13 +86,13 @@ public class CommentsFromNotificationActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!TextUtils.isEmpty(inputTxt.getText().toString())) {
+                if (!TextUtils.isEmpty(inputTxt.getText().toString())) {
                     Timestamp timestamp = new Timestamp(System.currentTimeMillis());
                     UserDB attributes = LowKeyApplication.userManager.getUserDetails();
                     final String uniqueID = attributes.getUserEmail();
                     final String username = attributes.getUsername();
-                    new NewsFeedRequest(username).postComment( Long.parseLong(getIntent().getStringExtra("timestamp")), true, inputTxt.getText().toString(),snsTOPIC);
-                    commentArrayList.add(new Comment("true",String.valueOf(timestamp.getTime()),inputTxt.getText().toString(),username));
+                    new NewsFeedRequest(uniqueID).postComment(Long.parseLong(getIntent().getStringExtra("timestamp")), true, username, inputTxt.getText().toString(), snsTOPIC, LowKeyApplication.endpointArn);
+                    commentArrayList.add(new Comment("true", String.valueOf(timestamp.getTime()), username, inputTxt.getText().toString(), uniqueID));
 
                     int newMsgPosition = commentArrayList.size() - 1;
                     commentsAdapter.notifyItemInserted(newMsgPosition);
@@ -108,16 +108,15 @@ public class CommentsFromNotificationActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if(getIntent().getStringExtra("from")!=null && getIntent().getStringExtra("from").equals("fromLoad")){
+        if (getIntent().getStringExtra("from") != null && getIntent().getStringExtra("from").equals("fromLoad")) {
             Intent intent = new Intent(this, Main2Activity.class);
             this.startActivity(intent);
-            IntentMappingSharredPrefferences.saveTheIntentMap(IntentMappingSharredPrefferences.NO_FLAG_TO_COMMENTS_STRING,null,this);
-        }
-        else
+            IntentMappingSharredPrefferences.saveTheIntentMap(IntentMappingSharredPrefferences.NO_FLAG_TO_COMMENTS_STRING, null, this);
+        } else
             super.onBackPressed();
     }
 
-    private void populateWithData(){
+    private void populateWithData() {
         notificationRequest = new NotificationRequest(getIntent().getStringExtra("timestamp"));
         pushNotificationsAsyncTask = new PushNotificationsAsyncTask(notificationRequest,
                 imagepic,

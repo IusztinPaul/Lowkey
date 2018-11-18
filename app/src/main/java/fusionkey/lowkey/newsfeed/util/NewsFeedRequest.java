@@ -1,5 +1,6 @@
 package fusionkey.lowkey.newsfeed.util;
 
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.android.volley.Response;
@@ -217,7 +218,7 @@ public class NewsFeedRequest {
 
 
 
-    public void postComment(Long time,Boolean anon,String text,String SNStopic){
+    public void postComment(Long time, Boolean anon,String username, String text, String SNStopic, @Nullable String ENDpoint){
 
         HashMap<String,String> queryParameters = new HashMap<>();
 
@@ -229,9 +230,11 @@ public class NewsFeedRequest {
         try {
             jsonBody.put("commentTxt", text);
             jsonBody.put("commentUserId", getId());
+            jsonBody.put("commentUserUsername", username);
             jsonBody.put("commentTStamp", String.valueOf(timestamp.getTime()));
             jsonBody.put("commentIsAnonymous", Boolean.toString(anon));
             jsonBody.put("snsTopic",SNStopic);
+            jsonBody.put("endpoint",ENDpoint);
         }catch (JSONException e) {
             e.printStackTrace();
         }

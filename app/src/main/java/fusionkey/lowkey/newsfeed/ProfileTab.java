@@ -21,6 +21,7 @@ import fusionkey.lowkey.LowKeyApplication;
 import fusionkey.lowkey.auth.models.UserDB;
 import fusionkey.lowkey.auth.utils.UserManager;
 import fusionkey.lowkey.R;
+import fusionkey.lowkey.main.menu.profile.EditUserActivity;
 import fusionkey.lowkey.main.utils.Callback;
 import fusionkey.lowkey.main.utils.ProfilePhotoUploader;
 
@@ -74,6 +75,13 @@ public class ProfileTab extends Fragment {
             }
         });
 
+        circleImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getActivity().startActivity(new Intent(getContext().getApplicationContext(), EditUserActivity.class));
+
+            }
+        });
 
         loadUserPhoto();
         setupNotifications();
